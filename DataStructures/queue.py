@@ -15,7 +15,7 @@ class Queue:
         """ Agregar un tope al tope"""
         self._data.append(item)
 
-    def removeQueue(self, item):
+    def removeQueue(self):
         """ Elimina y retorna el elemento (que entró primero)"""
         if self.is_empty():
             raise IndexError("remove - La cola está vacia")
@@ -38,3 +38,6 @@ class Queue:
     
     def clear(self):
         self._data.clear()
+
+    def __repr__(self):
+        return f"Queue(front → {list(self._data)} ← rear)"

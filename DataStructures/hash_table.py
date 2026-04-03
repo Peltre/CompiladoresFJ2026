@@ -32,5 +32,6 @@ class HashTable:
         """ Retorna pares (clave, valor) en orden de inserción """
         return list(self._data.items())
     
-
+    def __repr__(self):
+        return f"HashTable({self._data})"
     

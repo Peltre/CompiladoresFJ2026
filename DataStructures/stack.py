@@ -33,3 +33,6 @@ class Stack:
         """ Vacia el stack """
         return self._data.clear()
     
+    def __repr__(self):
+        return f"Stack(top → {self._data[::-1]})"
+    
