@@ -1,4 +1,6 @@
-
+""" 
+Tarea 1 - LIFO - Python
+"""
 class Stack:
     """
     Implementación de Stack LIFO (Last in First Out)
@@ -30,5 +32,4 @@ class Stack:
     def clear(self):
         """ Vacia el stack """
         return self._data.clear()
-    
     
