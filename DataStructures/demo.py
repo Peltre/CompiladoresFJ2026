@@ -55,6 +55,7 @@ print(ht)
 print("get nombre:", ht.get("nombre")) # María
 print("get país:", ht.get("país", "N/A")) # N/A (default)
 print("contains 'edad':", ht.contains("edad")) # True
+ht.delete("foo")
 ht.delete("edad")
 print("items:", ht.items())
 ht.set("nombre", "Ana") # actualizar clave existente
