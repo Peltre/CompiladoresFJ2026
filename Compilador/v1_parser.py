@@ -32,7 +32,9 @@ def p_funcs(p):
 # Cuerpo
 def p_cuerpo(p):
     '''cuerpo : estatuto
-              | cuerpo estatuto'''
+              | cuerpo estatuto
+              | empty'''
+              
 
 # Estatuto
 def p_estatuto(p):
