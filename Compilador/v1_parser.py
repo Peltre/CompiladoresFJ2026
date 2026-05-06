@@ -1,5 +1,5 @@
 import ply.yacc as yacc
-from lexer import tokens
+from v1_lexer import tokens
 
 # Programa principal
 def p_programa(p):
@@ -9,7 +9,7 @@ def p_programa(p):
 # Variables 
 def p_vars(p):
     '''vars : VARS lista_vars
-            ! empty'''
+            | empty'''
     
 def p_lista_vars(p):
     '''lista_vars : ID mas_ids DOS_PUNTOS tipo PUNTO_COMA
@@ -44,17 +44,17 @@ def p_estatuto(p):
     
 # Asignación
 def p_asigna(p):
-    'asigna : ID ASIGNA expresión PUNTO_COMA'
+    'asigna : ID ASIGNA expresion PUNTO_COMA'
 
 # Impresion
 def p_imprime(p):
-    'imprime: ESCRIBE PAREN_IZQ imp_lista PAREN_DER PUNTO_COMA'
+    'imprime : ESCRIBE PAREN_IZQ imp_lista PAREN_DER PUNTO_COMA'
 
 def p_imp_lista(p):
     '''imp_lista : expresion
-                 | LETRERO
+                 | CADENA
                  | imp_lista COMA expresion
-                 | imp_lista COMA LETRERO'''
+                 | imp_lista COMA CADENA'''
 
 # Condición 
 def p_condicion(p):

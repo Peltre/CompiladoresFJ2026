@@ -19,7 +19,7 @@ reserved = {
 
 # Lista de tokens
 tokens = [
-    'ID', 'CTE_ENT', 'CTE_FLOT', 'LETRERO',
+    'ID', 'CTE_ENT', 'CTE_FLOT', 'CADENA',
     'ASIGNA', 'IGUAL', 'DIFERENTE',
     'SUMA', 'RESTA', 'MULT', 'DIV',
     'MAYOR', 'MENOR',
