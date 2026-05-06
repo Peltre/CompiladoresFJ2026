@@ -1,5 +1,5 @@
-from lexer import lexer
-from parser import parser
+from v1_lexer import lexer
+from v1_parser import parser
 
 def compilar(codigo):
     parser.parse(codigo, lexer=lexer)
