@@ -97,7 +97,7 @@ def p_asigna(p):
     'asigna : ID ASIGNA expresion PUNTO_COMA'
     nombre = p[1]
     if not directorio.variable_existe(nombre):
-        raise ErrorSemantico(f"Variable '{nombre}' no existe (linea {p.lineno(1)})")
+        print(f"[ERROR SEMANTICO] Variable '{nombre}' no declarada (linea {p.lineno(1)})")
 
 # Impresion
 def p_imprime(p):
@@ -123,7 +123,7 @@ def p_llamada(p):
     'llamada : ID PAREN_IZQ args PAREN_DER'
     nombre = p[1]
     if not directorio.existe_funcion(nombre):
-        raise ErrorSemantico(f"Funcion {nombre} no declarada (linea {p.lineno(1)})")
+        print(f"[ERROR SEMANTICO] Funcion '{nombre}' no declarada (linea {p.lineno(1)})")
 
 def p_args(p):
     '''args : expresion
@@ -154,10 +154,11 @@ def p_factor(p):
               | RESTA cte
               | cte
               | ID'''
+    # Filtrado de factores posibles para caso de (ID) y verificar existencia
     if len(p) == 2 and isinstance(p[1], str):
         nombre = p[1]
         if not directorio.variable_existe(nombre):
-            raise ErrorSemantico(f"Variable '{nombre}' no declarada")
+            print(f"[ERROR SEMANTICO] Variable '{nombre}' no declarada")
 
 def p_cte(p):
     '''cte : CTE_ENT
