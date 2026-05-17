@@ -1,5 +1,12 @@
 import ply.yacc as yacc
 from v1_lexer import tokens
+from symbol_table import DirectorioFunciones, ErrorSemantico
+
+# Definir estructuras globales
+directorio = DirectorioFunciones()
+
+# Lista auxiliar para acumular ids antes de conocer tipo
+_ids_pendientes = []
 
 # Programa principal
 def p_programa(p):
@@ -15,13 +22,29 @@ def p_lista_vars(p):
     '''lista_vars : ID mas_ids DOS_PUNTOS tipo PUNTO_COMA
                   | lista_vars ID mas_ids DOS_PUNTOS tipo PUNTO_COMA'''
     
-def p_mas_ids(p):
-    '''mas_ids : COMA ID mas_ids
-               | empty'''
+    # Identificar el tipo (en este caso su posicion siempre es 4 o 5)
+    tipo = p[4] if len(p) == 6 else p[5]
+
+    for nombre in _ids_pendientes:
+        try:
+            directorio.agregar_var(nombre, tipo)
+        except ErrorSemantico as e:
+            print(e)
+    _ids_pendientes.clear()
+    
+def p_mas_ids_multiple(p):
+    'mas_ids : COMA ID mas_ids'
+    # Acumular el id encontrado
+    _ids_pendientes.append(p[2])
+
+def p_mas_ids_vacio(p):
+    'mas_ids : empty'
+            
     
 def p_tipo(p):
     '''tipo : ENTERO
             | FLOTANTE'''
+    p[0] = p[1] # propagar el tipo hacia arriba para que lista vars lo vea
     
 # Funciones
 def p_funcs(p):
