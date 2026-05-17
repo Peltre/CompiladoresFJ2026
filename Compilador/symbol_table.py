@@ -1,4 +1,9 @@
-# Clase que define el diccionario donde se guardaran las variables y tipos del compilador
+
+# Clase personalizada, para resaltar errores semanticos
+class ErrorSemantico(Exception):
+    def __int__(self, mensaje):
+        super().__init__(f"[ERROR SEMANTICO] {mensaje}")
+        
 
 class TablaVariables:
     # Diccionario / contenedor principal
@@ -8,8 +13,7 @@ class TablaVariables:
     # Detectar si la variable ya existe, si no, guardarla
     def agregar(self, nombre, tipo):
         if nombre in self.variables:
-            print(f"[ERROR SEMANTICO], Variable '{nombre}' ya fue declarada")
-            return
+            raise ErrorSemantico(f"Variable '{nombre}' ya fue declarada en el scope")
         self.variables[nombre] = {'tipo': tipo}
     
     # Retornar el tipo de variable o none si no existe
@@ -17,4 +21,5 @@ class TablaVariables:
         if nombre in self.variables:
             return self.variables[nombre]['tipo']
         return None
+    
 
