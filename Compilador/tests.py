@@ -146,8 +146,11 @@ test_cases = [
     ("TC-12", "Llamada a funcion",
      """
      programa test;
+     miFuncion (nula) {
+      escribe("hola");
+     };
      inicio
-       miFuncion(1 + 2);
+      miFuncion();
      fin
      """, True),
 
