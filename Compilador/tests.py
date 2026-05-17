@@ -4,6 +4,9 @@ import sys
 import os
 sys.path.insert(0, os.path.dirname(__file__))
 
+import v1_parser
+from symbol_table import DirectorioFunciones
+
 from v1_lexer import lexer
 from v1_parser import parser
 
@@ -236,9 +239,9 @@ def run_tests():
         print(f"\n{tc_id}: {desc}")
         print(f"  Esperado: {'VALIDO' if should_pass else 'INVALIDO'}")
 
-        # Captura si el parser detectó error
-        error_found = [False]
-        original_error = parser.errorfunc if hasattr(parser, 'errorfunc') else None
+        # Resetear el directorio antes de cada test
+        v1_parser.directorio = DirectorioFunciones()
+        v1_parser._ids_pendientes = []
 
         import io, contextlib
         buf = io.StringIO()
