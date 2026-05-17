@@ -22,8 +22,16 @@ def p_lista_vars(p):
     '''lista_vars : ID mas_ids DOS_PUNTOS tipo PUNTO_COMA
                   | lista_vars ID mas_ids DOS_PUNTOS tipo PUNTO_COMA'''
     
-    # Identificar el tipo (en este caso su posicion siempre es 4 o 5)
-    tipo = p[4] if len(p) == 6 else p[5]
+    # Guardar correctamente el tipo dependinendo de la posicion
+    if len(p) == 6:
+        primer_id = p[1]
+        tipo      = p[4]
+    else:
+        primer_id = p[2]
+        tipo      = p[5]
+
+    # Agregar a ids pendientes
+    _ids_pendientes.insert(0, primer_id)
 
     for nombre in _ids_pendientes:
         try:
