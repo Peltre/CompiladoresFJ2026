@@ -47,11 +47,36 @@ def p_tipo(p):
     p[0] = p[1] # propagar el tipo hacia arriba para que lista vars lo vea
     
 # Funciones
-def p_funcs(p):
-    '''funcs : funcs ID PAREN_IZQ tipo PAREN_DER LLAVE_IZQ vars cuerpo LLAVE_DER PUNTO_COMA
-             | funcs ID PAREN_IZQ NULA PAREN_DER LLAVE_IZQ vars cuerpo LLAVE_DER PUNTO_COMA
-             | empty'''
-    
+# Separadas en 2 reglas, header y el cuerpo completo, esto para poder realizar acciones antes
+# de ejecutar el cuerpo
+
+def p_func_header_tipo(p):
+    'func_header : ID PAREN_IZQ tipo PAREN_DER'
+    nombre = p[1]
+    tipo = p[3]
+    try:
+        directorio.agregar_funcion(nombre, tipo)
+        directorio.entrar_funcion(nombre)
+    except ErrorSemantico as e:
+        print(e)
+
+def p_func_header_nula(p):
+    'func_header : ID PAREN_IZQ NULA PAREN_DER'
+    nombre = p[1]
+    try:
+        directorio.agregar_funcion(nombre, 'nula')
+        directorio.entrar_funcion(nombre)
+    except ErrorSemantico as e:
+        print(e)
+
+def p_funcs_func(p):
+    'funcs : funcs func_header LLAVE_IZQ vars cuerpo LLAVE_DER PUNTO_COMA'
+    directorio.salir_funcion()
+
+def p_funcs_empty(p):
+    'funcs : empty'
+    pass
+
 # Cuerpo
 def p_cuerpo(p):
     '''cuerpo : estatuto
