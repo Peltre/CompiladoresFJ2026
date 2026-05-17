@@ -68,7 +68,7 @@ class DirectorioFunciones:
             return tipo
         # Si no se encontro en local, y no estamos en el scope global, buscarla en global
         if self.scope_actual != 'global':
-            tipo = self.scope_actual['global']['variables'].buscar(nombre)
+            tipo = self.funciones['global']['variables'].buscar(nombre)
             if tipo is not None:
                 return tipo
         return None
