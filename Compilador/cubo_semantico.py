@@ -17,3 +17,12 @@ cubo_semantico = {
     }
 }
 
+def tipo_resultado(tipo_izq, tipo_der, operador):
+    # Consulta el cubo dados 2 tipos y un operador
+    try:
+        return cubo_semantico[tipo_izq][tipo_der][operador]
+    # Si no encuentra la combinacion, retorna error
+    except KeyError:
+        return 'error'
+
+
