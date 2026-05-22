@@ -202,21 +202,53 @@ def p_diferente_op(p):
     'diferente_op : DIFERENTE'
     generador.push_operador('!=', tipo_resultado)
 
-def p_factor(p):
-    '''factor : PAREN_IZQ expresion PAREN_DER
-              | SUMA cte
-              | RESTA cte
-              | cte
-              | ID'''
-    # Filtrado de factores posibles para caso de (ID) y verificar existencia
-    if len(p) == 2 and isinstance(p[1], str):
-        nombre = p[1]
-        if not directorio.variable_existe(nombre):
-            print(f"[ERROR SEMANTICO] Variable '{nombre}' no declarada")
+def p_factor_paren(p):
+    'factor : PAREN_IZQ expresion PAREN_DER'
+    # los parentesis no generan cuadruplos, solo agrupan
+    pass
 
-def p_cte(p):
-    '''cte : CTE_ENT
-           | CTE_FLOT'''
+def p_factor_signo_pos(p):
+    'factor : SUMA cte'
+    pass # signo positivo no cambia nada
+
+def p_factor_signo_neg(p):
+    'factor : RESTA cte'
+    # Generar cuadruplo de negacion
+    dir_menos1 = memoria.asignar_constante(-1, 'entero')
+    op = generador.pila_operandos.pop()
+    tip = generador.pila_tipos.pop()
+    dir_temp = memoria.asignar_temporal(tip)
+    generador.agregar_cuadruplo('*', dir_menos1, op, dir_temp)
+    generador.pila_operandos.append(dir_temp)
+    generador.pila_tipos.append(tip)
+
+def p_factor_cte(p):
+    'factor : cte'
+    pass # cte ya metio el operando a la pila
+
+def p_factor_id(p):
+    'factor : ID'
+    nombre = p[1]
+    info = directorio.buscar_variable(nombre)
+    if info is None:
+        print(f"[ERROR SEMANTICO] Variable '{nombre}' no declarada")
+        return 
+    # Meter la direccion virtual del ID a la pila
+    generador.push_operando(info['direccion'], info['tipo'])
+
+def p_cte_ent(p):
+    'cte : CTE_ENT'
+    # Asignar direccion a la constante y meter a la pila
+    direccion = memoria.asignar_constante(p[1], 'entero')
+    generador.push_operando(direccion, 'entero')
+    p[0] = p[1]
+
+def p_cte_flot(p):
+    'cte : CTE_FLOT'
+    direccion = memoria.asignar_constante(p[1], 'flotante')
+    generador.push_operando(direccion, 'flotante')
+    p[0] = p[1]
+
 
 # Epsilon (vació)
 def p_empty(p):
