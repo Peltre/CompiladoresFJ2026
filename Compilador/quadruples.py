@@ -3,8 +3,8 @@
 # Generador de codigo intermedio
 
 class GeneradorCuadruplos:
-    def __init__(self):
-        self.memory_manager = self.memory_manager
+    def __init__(self, memory_manager):
+        self.memory_manager = memory_manager
 
         # 3 pilas
         self.pila_operandos = []
@@ -21,7 +21,7 @@ class GeneradorCuadruplos:
         # Agregar un cuadruplo a la fila, "_" representa un cuadruplo vacio
         cuad = (operador, op1, op2, res)
         self.cuadruplos.append(cuad)
-        self.contador =+ 1
+        self.contador += 1
         return self.contador - 1
     
     def generar_operacion(self, cubo_semantico):
@@ -40,14 +40,14 @@ class GeneradorCuadruplos:
             return
         
         # Asginar direccion temporal para el resultado
-        dir_temp = self.memory_manager.asignar_temporal(tipo_resultado)
+        dir_temp = self.memory_manager.asignar_temp(tipo_resultado)
 
         # generar el cuadruplo
         self.agregar_cuadruplo(operador, op_izq, op_der, dir_temp)
 
         # El resultado se convierte a operando para la siguiente operacion
         self.pila_operandos.append(dir_temp)
-        self.pila_operadores.append(tipo_resultado)
+        self.pila_tipos.append(tipo_resultado)
 
     def generar_asignacion(self, dir_destino):
         # Generar el cuadruplo de asignacion, tomar el valor tope de la pila y asignarlo a dir_destino
@@ -86,7 +86,7 @@ class GeneradorCuadruplos:
         self.pila_tipos.append(tipo)
 
     def push_constante(self, valor, tipo):
-        # Mete una constante a la pila, pero primero le asgigna una direccion virtual
+        # Mete una constante a la pila, pero primero le asigna una direccion virtual
         direccion = self.memory_manager.asignar_constante(valor, tipo)
         self.pila_operandos.append(direccion)
         self.pila_tipos.append(tipo)
