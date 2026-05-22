@@ -15,6 +15,12 @@ LIMITES_MEMORIA = {
     'constante': { 'entero': 13999, 'flotante': 1599},
 }
 
+# Clase personalizada, para resaltar errores semanticos
+class ErrorMemoria(Exception):
+    def __int__(self, mensaje):
+        super().__init__(f"[ERROR de MEMORIA] {mensaje}")
+        
+
 class ManejoMemoria:
     def __init__(self):
         # Inicializar contadores por segmento y tipo, cada vez que se asigna una direccion, contador sube
