@@ -7,7 +7,7 @@ lenguaje. Los elementos principales del lexico son:
 
 - Identificador: `[a-zA-Z][a-zA-Z0-9_]*`
 - Constante entera: `[0-9]+`
-- Constante flotante: `[0-9]+\.[0-9]+`
+- Constante flotante: "[0-9]+\.[0-9]+"
 - Cadena: `"[^"\n]*"`
 - Palabras reservadas: `programa | inicio | fin | vars | entero | flotante |
   si | sino | mientras | haz | escribe | nula`
