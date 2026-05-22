@@ -56,3 +56,28 @@ class GeneradorCuadruplos:
 
         self.agregar_cuadruplo('=', valor, '_', dir_destino)
 
+    # Manejo de operadores con precedencia
+
+    ALTA_PREC = {'*','/'}
+    BAJA_PREC = {'+','-'}
+    REL = {'>', '<', '==', '!='}
+
+    def push_operador(self, operador, cubo_semantico):
+        # Mete un operador a la pila, pero antes de meterlo resuelve los operadores de mayor precedencia pendientes
+        if operador in self.BAJA_PREC or operador in self.REL:
+            while self.pila_operadores and self.pila_operadores[-1] in self.ALTA_PREC:
+                self.generar_operacion(cubo_semantico)
+
+        # Si llega un relacional, resolver primero cualquier aritmetico pendiente
+        if operador in self.REL:
+            while self.pila_operadores and self.pila_operadores[-1] in self.BAJA_PREC:
+                self.generar_operacion(cubo_semantico)
+
+        self.pila_operadores.append(operador)
+
+    def resolver_pendientes(self, operadores_validos, cubo_semantico):
+        # Resolver todos los operadores pendientes de un conjunto dado (al cerrar parentesis o terminar exp)
+        while self.pila_operadores and self.pila_operadores[-1] in operadores_validos:
+            self.generar_operacion(cubo_semantico)
+
+            
