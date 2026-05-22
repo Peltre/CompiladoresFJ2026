@@ -40,6 +40,7 @@ def p_lista_vars(p):
 
     for nombre in _ids_pendientes:
         try:
+            # Asignar direccion virtual al registrar variable
             directorio.agregar_var(nombre, tipo, memoria)
         except ErrorSemantico as e:
             print(e)
@@ -150,16 +151,23 @@ def p_expresion(p):
                  | exp MENOR exp
                  | exp IGUAL exp
                  | exp DIFERENTE exp'''
+    # Al terminar la expresion, resolver operadores relacionales pendientes
+    generador.resolver_pendientes({'>','<','==','!='}, tipo_resultado)
+    p[0] = p[1]
 
 def p_exp(p):
     '''exp : termino
            | exp SUMA termino
            | exp RESTA termino'''
+    # Al terminar exp, resolver + y - pendientes
+    generador.resolver_pendientes({'+','-'}, tipo_resultado)
 
 def p_termino(p):
     '''termino : factor
                | termino MULT factor
                | termino DIV factor'''
+    # Al terminar un termino, resolver * y / pendientes
+    generador.resolver_pendientes({'*','/'}, tipo_resultado)
 
 def p_factor(p):
     '''factor : PAREN_IZQ expresion PAREN_DER
