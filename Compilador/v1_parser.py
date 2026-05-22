@@ -1,9 +1,14 @@
 import ply.yacc as yacc
 from v1_lexer import tokens
 from symbol_table import DirectorioFunciones, ErrorSemantico
+from semantic_cube import tipo_resultado
+from memory_manager import ManejoMemoria
+from quadruples import GeneradorCuadruplos
 
 # Definir estructuras globales
 directorio = DirectorioFunciones()
+memoria = ManejoMemoria()
+generador = GeneradorCuadruplos(memoria)
 
 # Lista auxiliar para acumular ids antes de conocer tipo
 _ids_pendientes = []
@@ -35,7 +40,7 @@ def p_lista_vars(p):
 
     for nombre in _ids_pendientes:
         try:
-            directorio.agregar_var(nombre, tipo)
+            directorio.agregar_var(nombre, tipo, memoria)
         except ErrorSemantico as e:
             print(e)
     _ids_pendientes.clear()
