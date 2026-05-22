@@ -1,5 +1,3 @@
----
-
 ## Etapa 0 — Definicion de Gramatica
 
 Se disenaron las expresiones regulares y la gramatica libre de contexto del
