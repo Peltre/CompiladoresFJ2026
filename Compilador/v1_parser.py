@@ -17,6 +17,7 @@ _ids_pendientes = []
 def p_programa(p):
     'programa : PROGRAMA ID PUNTO_COMA vars funcs INICIO cuerpo FIN'
     print("[OK] Programa valido")
+    generador.imprimir()
 
 # Variables 
 def p_vars(p):
@@ -110,8 +111,12 @@ def p_estatuto(p):
 def p_asigna(p):
     'asigna : ID ASIGNA expresion PUNTO_COMA'
     nombre = p[1]
-    if not directorio.variable_existe(nombre):
+    info = directorio.buscar_variable(nombre)
+    if info is None:
         print(f"[ERROR SEMANTICO] Variable '{nombre}' no declarada (linea {p.lineno(1)})")
+        return
+    # Generar cuadruplo de asignacion
+    generador.generar_asignacion(info['direccion'])
 
 # Impresion
 def p_imprime(p):
