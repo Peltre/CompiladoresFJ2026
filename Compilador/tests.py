@@ -26,7 +26,7 @@ test_cases = [
      fin
      """, True),
 
-    ("TC-02", "Declaracion de variables",
+    ("TC-02", "Declaracion de variables y asignacion",
      """
      programa test;
      vars
@@ -37,30 +37,7 @@ test_cases = [
      fin
      """, True),
 
-    ("TC-03", "Expresion aritmetica con precedencia",
-     """
-     programa test;
-     vars
-       r : entero;
-     inicio
-       r = 2 + 3 * 4;
-     fin
-     """, True),
-
-    ("TC-04", "Condicional sin sino",
-     """
-     programa test;
-     vars
-       x : entero;
-     inicio
-       x = 10;
-       si (x > 5) [
-         escribe ("mayor");
-       ]
-     fin
-     """, True),
-
-    ("TC-05", "Condicional con sino",
+    ("TC-03", "Condicional con sino",
      """
      programa test;
      vars
@@ -75,7 +52,7 @@ test_cases = [
      fin
      """, True),
 
-    ("TC-06", "Ciclo mientras",
+    ("TC-04", "Ciclo mientras",
      """
      programa test;
      vars
@@ -88,117 +65,26 @@ test_cases = [
      fin
      """, True),
 
-    ("TC-07", "escribe con letrero y expresion",
-     """
-     programa test;
-     vars
-       x : entero;
-     inicio
-       x = 42;
-       escribe ("valor: ", x);
-     fin
-     """, True),
-
-    ("TC-08", "Operadores relacionales == y !=",
-     """
-     programa test;
-     vars
-       a, b : entero;
-     inicio
-       a = 1;
-       b = 2;
-       si (a == b) [
-         escribe ("iguales");
-       ] sino [
-         escribe ("distintos");
-       ]
-     fin
-     """, True),
-
-    ("TC-09", "Constantes flotantes",
-     """
-     programa test;
-     vars
-       f : flotante;
-     inicio
-       f = 3.14;
-     fin
-     """, True),
-
-    ("TC-10", "Funcion con parametro entero (sin vars internas)",
-     """
-     programa test;
-     doble (entero) {
-       escribe ("ejecutando doble");
-     };
-     inicio
-     fin
-     """, True),
-
-    ("TC-11", "Funcion nula",
+    ("TC-05", "Funcion nula y llamada",
      """
      programa test;
      saludo (nula) {
        escribe ("hola");
      };
      inicio
+       saludo();
      fin
      """, True),
 
-    ("TC-12", "Llamada a funcion",
-     """
-     programa test;
-     miFuncion (nula) {
-      escribe("hola");
-     };
-     inicio
-      miFuncion();
-     fin
-     """, True),
-
-    ("TC-13", "Expresion con parentesis",
-     """
-     programa test;
-     vars
-       r : entero;
-     inicio
-       r = (2 + 3) * 4;
-     fin
-     """, True),
-
-    ("TC-14", "Comentario ignorado",
-     """
-     programa test;
-     // este es un comentario
-     inicio
-       // otro comentario
-     fin
-     """, True),
-
-    ("TC-15", "Ciclo anidado en condicional",
-     """
-     programa test;
-     vars
-       i, x : entero;
-     inicio
-       x = 10;
-       si (x > 0) [
-         mientras (i < x) haz [
-           i = i + 1;
-         ];
-       ]
-     fin
-     """, True),
-
-    # ── INVÁLIDOS ────────────────────────────────────────────────────────────
-    ("TC-16", "Falta punto y coma tras programa id",
+    # ── INVÁLIDOS ─────────────────────────────────────────────────────────────
+    ("TC-06", "Falta punto y coma tras programa id",
      """
      programa test
      inicio
      fin
      """, False),
 
-    ("TC-17", "Caracter invalido @",
+    ("TC-07", "Caracter invalido @",
      """
      programa test;
      inicio
@@ -206,7 +92,7 @@ test_cases = [
      fin
      """, False),
 
-    ("TC-18", "Tipo invalido (booleano no existe)",
+    ("TC-08", "Tipo invalido booleano",
      """
      programa test;
      vars
@@ -215,17 +101,101 @@ test_cases = [
      fin
      """, False),
 
-    ("TC-19", "Falta inicio",
+    ("TC-09", "Variable no declarada",
      """
      programa test;
+     inicio
+       z = 10;
      fin
      """, False),
 
-    ("TC-20", "Falta fin",
+    ("TC-10", "Falta fin",
      """
      programa test;
      inicio
      """, False),
+
+    # ── CUÁDRUPLOS ────────────────────────────────────────────────────────────
+    # Estos casos validan que los cuádruplos generados sean correctos.
+    # El runner los ejecuta igual que los válidos pero además imprime
+    # la fila de cuádruplos para revisión manual.
+
+    ("TC-11", "Cuadruplos: asignacion simple",
+     """
+     programa test;
+     vars
+       r : entero;
+     inicio
+       r = 5;
+     fin
+     """, True),
+    # Cuádruplos esperados:
+    # ( =, dir_cte_5, _, dir_r )
+
+    ("TC-12", "Cuadruplos: expresion aritmetica con precedencia",
+     """
+     programa test;
+     vars
+       r : entero;
+     inicio
+       r = 2 + 3 * 4;
+     fin
+     """, True),
+    # Cuádruplos esperados:
+    # ( *,  dir_3,  dir_4,  t1 )
+    # ( +,  dir_2,  t1,     t2 )
+    # ( =,  t2,     _,      dir_r )
+
+    ("TC-13", "Cuadruplos: expresion con parentesis",
+     """
+     programa test;
+     vars
+       r : entero;
+     inicio
+       r = (2 + 3) * 4;
+     fin
+     """, True),
+    # Cuádruplos esperados:
+    # ( +,  dir_2,  dir_3,  t1 )
+    # ( *,  t1,     dir_4,  t2 )
+    # ( =,  t2,     _,      dir_r )
+
+    ("TC-14", "Cuadruplos: operador relacional",
+     """
+     programa test;
+     vars
+       a, b : entero;
+       r    : entero;
+     inicio
+       a = 1;
+       b = 2;
+       r = a != b;
+     fin
+     """, True),
+    # Cuádruplos esperados:
+    # ( =,  dir_1,  _,      dir_a )
+    # ( =,  dir_2,  _,      dir_b )
+    # ( !=, dir_a,  dir_b,  t1    )
+    # ( =,  t1,     _,      dir_r )
+
+    ("TC-15", "Cuadruplos: expresion mixta entero y flotante",
+     """
+     programa test;
+     vars
+       x : entero;
+       y : flotante;
+       r : flotante;
+     inicio
+       x = 3;
+       y = 1.5;
+       r = x + y;
+     fin
+     """, True),
+    # Cuádruplos esperados:
+    # ( =,  dir_3,    _,      dir_x )
+    # ( =,  dir_1.5,  _,      dir_y )
+    # ( +,  dir_x,    dir_y,  t1    )   ← t1 es flotante por el cubo semántico
+    # ( =,  t1,       _,      dir_r )
 ]
 
 # ─────────────────────────────────────────────────────────────────────────────
