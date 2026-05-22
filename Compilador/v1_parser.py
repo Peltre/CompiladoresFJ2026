@@ -169,6 +169,39 @@ def p_termino(p):
     # Al terminar un termino, resolver * y / pendientes
     generador.resolver_pendientes({'*','/'}, tipo_resultado)
 
+def p_suma_op(p):
+    'suma_op : SUMA'
+    # Semantic action: meter + a la pila de operadores
+    generador.push_operador('+', tipo_resultado)
+
+def p_resta_op(p):
+    'resta_op : RESTA'
+    generador.push_operador('-', tipo_resultado)
+
+def p_mult_op(p):
+    'mult_op : MULT'
+    generador.push_operador('*', tipo_resultado)
+
+def p_div_op(p):
+    'div_op : DIV'
+    generador.push_operador('/', tipo_resultado)
+
+def p_mayor_op(p):
+    'mayor_op : MAYOR'
+    generador.push_operador('>', tipo_resultado)
+
+def p_menor_op(p):
+    'menor_op : MENOR'
+    generador.push_operador('<', tipo_resultado)
+
+def p_igual_op(p):
+    'igual_op : IGUAL'
+    generador.push_operador('==', tipo_resultado)
+
+def p_diferente_op(p):
+    'diferente_op : DIFERENTE'
+    generador.push_operador('!=', tipo_resultado)
+
 def p_factor(p):
     '''factor : PAREN_IZQ expresion PAREN_DER
               | SUMA cte
