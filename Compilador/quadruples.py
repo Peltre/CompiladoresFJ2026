@@ -80,4 +80,25 @@ class GeneradorCuadruplos:
         while self.pila_operadores and self.pila_operadores[-1] in operadores_validos:
             self.generar_operacion(cubo_semantico)
 
+    def push_operando(self, direccion, tipo):
+        # Mete un operando a la pila (var ya declarada)
+        self.pila_operandos.append(direccion)
+        self.pila_tipos.append(tipo)
+
+    def push_constante(self, valor, tipo):
+        # Mete una constante a la pila, pero primero le asgigna una direccion virtual
+        direccion = self.memory_manager.asignar_constante(valor, tipo)
+        self.pila_operandos.append(direccion)
+        self.pila_tipos.append(tipo)
+
+    def imprimir(self):
+        print("\n" + "=" * 55)
+        print("  CUÁDRUPLOS GENERADOS")
+        print("=" * 55)
+        print(f"  {'#':<5} {'OP':<6} {'OP1':<8} {'OP2':<8} {'RES':<8}")
+        print("-" * 55)
+        for i, (op, op1, op2, res) in enumerate(self.cuadruplos):
+            print(f"  {i:<5} {str(op):<6} {str(op1):<8} {str(op2):<8} {str(res):<8}")
+        print("=" * 55)
+
             
