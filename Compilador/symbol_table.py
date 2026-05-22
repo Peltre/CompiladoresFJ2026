@@ -11,15 +11,15 @@ class TablaVariables:
         self.variables = {}
 
     # Detectar si la variable ya existe, si no, guardarla
-    def agregar(self, nombre, tipo):
+    def agregar(self, nombre, tipo, direccion):
         if nombre in self.variables:
             raise ErrorSemantico(f"Variable '{nombre}' ya fue declarada en el scope")
-        self.variables[nombre] = {'tipo': tipo}
+        self.variables[nombre] = {'tipo': tipo, 'direccion' : direccion}
     
     # Retornar el tipo de variable o none si no existe
     def buscar(self, nombre):
         if nombre in self.variables:
-            return self.variables[nombre]['tipo']
+            return self.variables[nombre]
         return None
 
 # Diccionario que guarda todas las funciones del programa, y dentro de cada func, guarda su
@@ -57,9 +57,9 @@ class DirectorioFunciones:
     def existe_funcion(self, nombre):
         return nombre in self.funciones
     
-    def agregar_var(self, nombre, tipo):
+    def agregar_var(self, nombre, tipo, direccion):
         # Agregar variable a la tabla del scope actual
-        self.funciones[self.scope_actual]['variables'].agregar(nombre, tipo)
+        self.funciones[self.scope_actual]['variables'].agregar(nombre, tipo, direccion)
 
     def buscar_variable(self, nombre):
         # Buscar en tanto el scope local como en el global
