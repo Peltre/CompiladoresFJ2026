@@ -6,6 +6,8 @@ sys.path.insert(0, os.path.dirname(__file__))
 
 import v1_parser
 from symbol_table import DirectorioFunciones
+from quadruples import GeneradorCuadruplos
+from memory_manager import ManejoMemoria
 
 from v1_lexer import lexer
 from v1_parser import parser
@@ -244,6 +246,8 @@ def run_tests():
 
         # Resetear el directorio antes de cada test
         v1_parser.directorio = DirectorioFunciones()
+        v1_parser.memoria = ManejoMemoria()
+        v1_parser.generador = GeneradorCuadruplos(v1_parser.memoria)
         v1_parser._ids_pendientes = []
 
         import io, contextlib
