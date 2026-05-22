@@ -12,7 +12,7 @@ LIMITES_MEMORIA = {
     'global': { 'entero': 1999, 'flotante': 3999 },
     'local': { 'entero': 5999, 'flotante': 7999},
     'temporal': { 'entero': 9999, 'flotante': 11999},
-    'constante': { 'entero': 13999, 'flotante': 1599},
+    'constante': { 'entero': 13999, 'flotante': 15999},
 }
 
 # Clase personalizada, para resaltar errores semanticos
@@ -34,7 +34,7 @@ class ManejoMemoria:
         # Tabla de constantes ya registradas para no duplicar direcciones
         self.tabla_constantes = {}
 
-        def asignar(self, scope, tipo):
+    def asignar(self, scope, tipo):
             # Asignar la sig direccion disponible para el scope y tipo de datos
             direccion = self.contadores[scope][tipo]
 
@@ -47,11 +47,11 @@ class ManejoMemoria:
 
             return direccion
         
-        def asignar_temp(self, tipo):
+    def asignar_temp(self, tipo):
             # Atajo para asignar una variable temporal
             return self.asignar('temporal', tipo)
         
-        def asginar_constante(self, valor, tipo):
+    def asignar_constante(self, valor, tipo):
             # Asigna una direccion para una constante, y si ya fue registrada, retorna la misma direccion
             clave = (valor, tipo)
             if clave in self.tabla_constantes:
@@ -62,7 +62,7 @@ class ManejoMemoria:
             self.tabla_constantes[clave] = direccion
             return direccion
         
-        def tipo_direccion(self, direccion):
+    def tipo_direccion(self, direccion):
             # Dada una direccion retornar su scope y tipo
             for scope, tipos in MAPA_MEMORIA.items():
                 for tipo, inicio in tipos.items():
@@ -72,12 +72,12 @@ class ManejoMemoria:
                     
             return None, None
         
-        def reset_local(self):
+    def reset_local(self):
             # liberar direcciones locales al salir de una funcion " } "
             self.contadores['local']['entero'] = 4000
             self.contadores['local']['flotante'] = 6000
 
-        def reset_temporal(self):
+    def reset_temporal(self):
             # liberar direcciones temporales al terminar de procesar una func
             self.contadores['temporal']['entero'] = 8000
             self.contadores['temporal']['flotante'] = 10000
