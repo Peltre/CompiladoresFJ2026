@@ -219,6 +219,7 @@ def run_tests():
         v1_parser.memoria = ManejoMemoria()
         v1_parser.generador = GeneradorCuadruplos(v1_parser.memoria)
         v1_parser._ids_pendientes = []
+        v1_parser.hay_error_semantico = False
 
         import io, contextlib
         buf = io.StringIO()
@@ -228,6 +229,7 @@ def run_tests():
             result = parser.parse(code, lexer=lexer.clone())
 
         output = buf.getvalue()
+        #print(f"  [DEBUG salida]: '{output.strip()}'")
         ok_found    = "[OK]" in output
         err_found = "[ERROR" in output or "[SINTAXIS]" in output or "[LEXICO]" in output
 
