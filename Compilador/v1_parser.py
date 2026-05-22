@@ -41,8 +41,10 @@ def p_lista_vars(p):
 
     for nombre in _ids_pendientes:
         try:
-            # Asignar direccion virtual al registrar variable
-            directorio.agregar_var(nombre, tipo, memoria)
+            # Asignar direccion virtual y pasar memoria al registrar variable
+            scope_mem = 'global' if directorio.scope_actual == 'global' else 'local'
+            direccion = memoria.asignar(scope_mem, tipo)
+            directorio.agregar_var(nombre, tipo, direccion)
         except ErrorSemantico as e:
             print(e)
     _ids_pendientes.clear()
