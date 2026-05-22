@@ -147,25 +147,25 @@ def p_args(p):
 # Expresiones
 def p_expresion(p):
     '''expresion : exp
-                 | exp MAYOR exp
-                 | exp MENOR exp
-                 | exp IGUAL exp
-                 | exp DIFERENTE exp'''
+                 | exp mayor_op exp
+                 | exp menor_op exp
+                 | exp igual_op exp
+                 | exp diferente_op exp'''
     # Al terminar la expresion, resolver operadores relacionales pendientes
     generador.resolver_pendientes({'>','<','==','!='}, tipo_resultado)
     p[0] = p[1]
 
 def p_exp(p):
     '''exp : termino
-           | exp SUMA termino
-           | exp RESTA termino'''
+           | exp suma_op termino
+           | exp resta_op termino'''
     # Al terminar exp, resolver + y - pendientes
     generador.resolver_pendientes({'+','-'}, tipo_resultado)
 
 def p_termino(p):
     '''termino : factor
-               | termino MULT factor
-               | termino DIV factor'''
+               | termino mult_op factor
+               | termino div_op factor'''
     # Al terminar un termino, resolver * y / pendientes
     generador.resolver_pendientes({'*','/'}, tipo_resultado)
 
