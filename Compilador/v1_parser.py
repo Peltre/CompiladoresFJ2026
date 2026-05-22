@@ -10,14 +10,22 @@ directorio = DirectorioFunciones()
 memoria = ManejoMemoria()
 generador = GeneradorCuadruplos(memoria)
 
+# Variable global para controlar errores de semantica
+hay_error_semantico = False
+
 # Lista auxiliar para acumular ids antes de conocer tipo
 _ids_pendientes = []
+
+
 
 # Programa principal
 def p_programa(p):
     'programa : PROGRAMA ID PUNTO_COMA vars funcs INICIO cuerpo FIN'
-    print("[OK] Programa valido")
-    generador.imprimir()
+    if not hay_error_semantico:
+        print("[OK] Programa valido")
+        generador.imprimir()
+    else:
+        print("[ERROR SEMANTICO] El programa contiene errores semanticos")
 
 # Variables 
 def p_vars(p):
@@ -46,6 +54,8 @@ def p_lista_vars(p):
             direccion = memoria.asignar(scope_mem, tipo)
             directorio.agregar_var(nombre, tipo, direccion)
         except ErrorSemantico as e:
+            global hay_error_semantico
+            hay_error_semantico = True
             print(e)
     _ids_pendientes.clear()
     
@@ -75,6 +85,8 @@ def p_func_header_tipo(p):
         directorio.agregar_funcion(nombre, tipo)
         directorio.entrar_funcion(nombre)
     except ErrorSemantico as e:
+        global hay_error_semantico
+        hay_error_semantico = True
         print(e)
 
 def p_func_header_nula(p):
@@ -115,6 +127,8 @@ def p_asigna(p):
     nombre = p[1]
     info = directorio.buscar_variable(nombre)
     if info is None:
+        global hay_error_semantico
+        hay_error_semantico = True
         print(f"[ERROR SEMANTICO] Variable '{nombre}' no declarada (linea {p.lineno(1)})")
         return
     # Generar cuadruplo de asignacion
@@ -144,6 +158,8 @@ def p_llamada(p):
     'llamada : ID PAREN_IZQ args PAREN_DER'
     nombre = p[1]
     if not directorio.existe_funcion(nombre):
+        global hay_error_semantico
+        hay_error_semantico = True
         print(f"[ERROR SEMANTICO] Funcion '{nombre}' no declarada (linea {p.lineno(1)})")
 
 def p_args(p):
@@ -238,6 +254,8 @@ def p_factor_id(p):
     nombre = p[1]
     info = directorio.buscar_variable(nombre)
     if info is None:
+        global hay_error_semantico
+        hay_error_semantico = True
         print(f"[ERROR SEMANTICO] Variable '{nombre}' no declarada")
         return 
     # Meter la direccion virtual del ID a la pila
@@ -265,6 +283,8 @@ def p_empty(p):
 # Error de sintaxis
 def p_error(p):
     if p:
+        global hay_error_semantico
+        hay_error_semantico = True
         print(f"[SINTAXIS] Token inesperado '{p.value}' en linea {p.lineno}")
     else:
         print("[SINTAXIS] Error: fin de archivo inesperado")
