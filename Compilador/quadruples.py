@@ -17,6 +17,10 @@ class GeneradorCuadruplos:
         # Contador para numerar los cuadruplos
         self.contador = 0
 
+        # Pilas para manejar saltos
+        self.pila_saltos = []
+        self.pila_ciclos = []
+
     def agregar_cuadruplo(self, operador, op1, op2, res):
         # Agregar un cuadruplo a la fila, "_" representa un cuadruplo vacio
         cuad = (operador, op1, op2, res)
@@ -101,4 +105,32 @@ class GeneradorCuadruplos:
             print(f"  {i:<5} {str(op):<6} {str(op1):<8} {str(op2):<8} {str(res):<8}")
         print("=" * 55)
 
+    # Metood para retornar el indice del proximo cuadruplo
+    # (se usa para saber a donde apuntar saltos)
+    def contador_actual(self):
+        return len(self.cuadruplos)
+    
+    # Metodo para salta en caso de encontrar falso
+    # Genera GOTOF con destino vacio, y guarda el indice en pila saltos para llenarlo dsps
+    def agregar_salto_falso(self):
+        condicion = self.pila_operandos.pop()
+        self.pila_tipos.pop()
+        indice = self.contador_actual()
+        self.agregar_cuadruplo('GOTOF',condicion,'_',None)
+        self.pila_saltos.append(indice)
+
+    # Metodo para saltar sin condicion (GOTO)
+    # Guarda el indice en pila saltos para llenarlo dsps
+    def agregar_salto_incondicional(self):
+        indice = self.contador_actual()
+        self.agregar_cuadruplo('GOTO','_','_',None)
+        self.pila_saltos.append(indice)
+
+    # Metodo para rellenar el destino pendiente de saltos GOTO y GOTOF
+    # Toma un cuadruplo y le pone el destino correcto, para lo que se reemplaza tupla completa
+    def rellenar_salto(self, indice, destino):
+        op, op1, op2, _ = self.cuadruplos[indice]
+        self.cuadruplos[indice] = (op, op1, op2, destino)
+
+    
             
