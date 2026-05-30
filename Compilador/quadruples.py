@@ -159,3 +159,12 @@ class GeneradorCuadruplos:
     # indice_era es donde empieza la func en la fila de cuadruplos
     def agregar_gosub(self, nombre_func, indice_era):
         self.agregar_cuadruplo('GOSUB', nombre_func, indice_era, '_')
+
+    # Manejo de RETURN
+    # Toma el valor del tope de la pila (resultado), y lo
+    # asigna a una variable global que guarda el retorno de la funcion
+    def agregar_return(self, dir_var_global):
+        valor = self.pila_operandos.pop()
+        self.pila_tipos.pop()
+        self.agregar_cuadruplo('=',valor,'_',dir_var_global)
+        self.agregar_endfunc()
