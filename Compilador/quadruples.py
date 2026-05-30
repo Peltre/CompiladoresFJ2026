@@ -132,5 +132,17 @@ class GeneradorCuadruplos:
         op, op1, op2, _ = self.cuadruplos[indice]
         self.cuadruplos[indice] = (op, op1, op2, destino)
 
-    
+    # Metodo para guardar el inicio de un ciclo
+    # Se llama justo antes de evaluar la condicion del while
+    def guardar_inicio_ciclo(self):
+        self.pila_ciclos.append(self.contador_actual())
+
+    # Metood para cerrar ciclo
+    # Genera el GOTO de regreso al inicio, y rellena el GOTOF pendiente
+    def cerrar_ciclo(self):
+        inicio = self.pila_ciclos.pop()
+        self.agregar_cuadruplo('GOTO','_','_',inicio)
+        fin = self.contador_actual()
+        indice_gotof = self.pila_saltos.pop()
+        self.rellenar_salto(indice_gotof, fin)
             
