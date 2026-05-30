@@ -126,6 +126,8 @@ def p_func_header_nula(p):
         directorio.entrar_funcion(nombre)
         p[0] = nombre # Marca de exito
     except ErrorSemantico as e:
+        global hay_error_semantico
+        hay_error_semantico = True
         print(e)
 
 # Cuerpo completo de una funcion
