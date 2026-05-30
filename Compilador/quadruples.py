@@ -31,7 +31,7 @@ class GeneradorCuadruplos:
     # AGREGAR CUADRUPLOS
     # inserta una tupla a la fila y retorna su indice
     def agregar_cuadruplo(self, operador, op1, op2, res):
-        self.cuadruplos.append(operador, op1, op2, res)
+        self.cuadruplos.append((operador, op1, op2, res))
         self.contador += 1
         return self.contador - 1
     
