@@ -230,7 +230,7 @@ def p_sino_header(p):
 
 # IF con ELSE: rellena el GOTO al terminar el bloque else
 def p_condicion_sino(p):
-    'condicion : si_header CORCHETE_IZQ cuerpo CORCHETE_DER sino_header CORCHETE_IZQ'
+    'condicion : si_header CORCHETE_IZQ cuerpo CORCHETE_DER sino_header CORCHETE_IZQ cuerpo CORCHETE_DER'
     indice_goto = generador.pila_saltos.pop()
     generador.rellenar_salto(indice_goto, generador.contador_actual())
 
