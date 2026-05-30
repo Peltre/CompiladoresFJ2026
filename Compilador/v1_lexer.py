@@ -1,7 +1,11 @@
+# v1_lexer.py | LM: 5/29/2026 | By: Pedro Sotelo
+# Analizador lexico del compilador.
+# Tokeniza el codigo fuente en palabras reservadas, identificadores,
+# constantes, operadores y simbolos de puntuacion.
 import ply.lex as lex
 
-# Palabras reservadas
-
+# PALABRAS RESERVADAS
+# Mapa de string -> nombre de token para detectarlas dentro de t_ID
 reserved = {
     'programa' : 'PROGRAMA',
     'inicio': 'INICIO',
@@ -18,7 +22,8 @@ reserved = {
     'regresa' : 'REGRESA',
 }
 
-# Lista de tokens
+# LISTA DE TOKENS
+# Todos los tokens que el lexer puede producir
 tokens = [
     'ID', 'CTE_ENT', 'CTE_FLOT', 'CADENA',
     'ASIGNA', 'IGUAL', 'DIFERENTE',
@@ -30,8 +35,9 @@ tokens = [
     'CORCHETE_IZQ', 'CORCHETE_DER',
 ] + list(reserved.values())
 
-# Reglas simples 
-
+# REGLAS SIMPLES
+# PLY asigna mayor precedencia a las funciones que a las cadenas,
+# por eso IGUAL y DIFERENTE van primero que ASIGNA
 t_IGUAL = r'=='
 t_DIFERENTE = r'!='
 t_ASIGNA = r'='
@@ -51,39 +57,51 @@ t_LLAVE_DER = r'\}'
 t_CORCHETE_IZQ = r'\['
 t_CORCHETE_DER = r'\]'
 
-# Reglas con funcion
+# REGLAS CON FUNCION
+# El orden importa: CTE_FLOT debe ir antes de CTE_ENT para que PLY
+# no consuma la parte entera de un flotante como token separado
 
+# Constante flotante: digitos, punto, digitos
 def t_CTE_FLOT(t):
     r'[0-9]+\.[0-9]+'
     t.value = float(t.value)
     return t
 
+# Constante entera
 def t_CTE_ENT(t):
     r'[0-9]+'
     t.value = int(t.value)
     return t
 
+# Cadena de texto entre comillas dobles
+# Se eliminan las comillas del valor final
 def t_CADENA(t):
     r'"[^"\n]*"'
     t.value = t.value[1:-1]
     return t
 
+# Identificador o palabra reservada
+# Si el lexema aparece en el mapa reserved, se clasifica como esa palabra,
+# de lo contrario, se clasifica como ID
 def t_ID(t):
     r'[a-zA-Z][a-zA-Z0-9_]*'
     t.type = reserved.get(t.value, 'ID') # revisar si es palabra reservada
     return t
 
-# Ignorados (comentarios y demas)
-
+# IGNORADOS
+# Espacios, tabuladores y saltos de linea se descartan
 t_ignore = ' \t\r\n'
 
+# Comentarios de linea estilo // -> se descartan sin producir token
 def t_COMENTARIO(t):
     r'\/\/[^\n]*'
-    pass #descartar token
+    pass 
 
-# Errores
+# MANEJO DE ERRORES
+# Reporta el caracter invalido y avanza un lugar para continuar el analisis
 def t_error(t):
     print(f"[LEXICO] Caracter invalido '{t.value[0]}' en linea {t.lineno}")
     t.lexer.skip(1)
 
+# Construir el lexer
 lexer = lex.lex()
