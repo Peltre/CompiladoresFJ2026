@@ -96,7 +96,8 @@ def p_func_header_tipo(p):
         generador.agregar_salto_incondicional()
         # Generar ERA y guardar indice
         indice_era = generador.contador_actual()
-        generador.agregar_era(nombre, indice_era)
+        generador.agregar_era(nombre)
+        directorio.guardar_indice_era(nombre, indice_era)
         directorio.entrar_funcion(nombre)
     except ErrorSemantico as e:
         global hay_error_semantico
@@ -111,7 +112,8 @@ def p_func_header_nula(p):
         directorio.agregar_funcion(nombre, 'nula', memoria)
         generador.agregar_salto_incondicional()
         indice_era = generador.contador_actual()
-        generador.agregar_era(nombre, indice_era)
+        generador.agregar_era(nombre)
+        directorio.guardar_indice_era(nombre, indice_era)
         directorio.entrar_funcion(nombre)
     except ErrorSemantico as e:
         print(e)
