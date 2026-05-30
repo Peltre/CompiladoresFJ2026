@@ -3,7 +3,7 @@
 # semanticas que generan cuadruplos durante el analisis sintactico.
 
 import ply.yacc as yacc
-from v1_lexer import tokens
+from v1_lexer import tokens, lexer as base_lexer
 from symbol_table import DirectorioFunciones, ErrorSemantico
 from semantic_cube import tipo_resultado
 from memory_manager import ManejoMemoria
@@ -21,6 +21,8 @@ hay_error_semantico = False
 # Lista auxiliar para acumular IDs antes de conocer tipo en lista_vars
 _ids_pendientes = []
 
+_lexer_activo = None
+
 # ===========================================================================
 # PROGRAMA
 # ===========================================================================
@@ -37,28 +39,36 @@ def p_programa(p):
 # VARIABLES
 # ===========================================================================
 
-def p_vars(p):
-    '''vars : VARS lista_vars
-            | empty'''
-
-# Soporta una o varias lineas de declaracion: ID, ID : tipo ;
+def p_vars_bloque(p):
+    'vars : vars_inicio lista_vars vars_fin'
+ 
+def p_vars_empty(p):
+    'vars : empty'
+ 
+# Accion mid-rule: al ver VARS, cambiar lexer a estado invars
+def p_vars_inicio(p):
+    'vars_inicio : VARS'
+    p.lexer.begin('invars')
+ 
+# Al terminar lista_vars, regresar al estado INITIAL
+def p_vars_fin(p):
+    'vars_fin : empty'
+    p.lexer.begin('INITIAL')
+ 
+# lista_vars usa ID_VAR (no ID), eliminando el conflicto
 def p_lista_vars(p):
-    '''lista_vars : ID mas_ids DOS_PUNTOS tipo PUNTO_COMA
-                  | lista_vars ID mas_ids DOS_PUNTOS tipo PUNTO_COMA'''
-    # La pos del primer ID y del tipo cambia segun alternativa usada
+    '''lista_vars : ID_VAR mas_ids DOS_PUNTOS tipo PUNTO_COMA
+                  | lista_vars ID_VAR mas_ids DOS_PUNTOS tipo PUNTO_COMA'''
     if len(p) == 6:
         primer_id = p[1]
         tipo      = p[4]
     else:
         primer_id = p[2]
         tipo      = p[5]
-    # Incluir el primer ID junto a los acumulados en ids_pendientes
     _ids_pendientes.insert(0, primer_id)
     for nombre in _ids_pendientes:
         try:
-            # Asignar direccion virtual y pasar memoria al registrar variable
             scope_mem = 'global' if directorio.scope_actual == 'global' else 'local'
-            print(f"[DEBUG] registrando '{nombre}' en scope '{directorio.scope_actual}' / mem '{scope_mem}'")
             direccion = memoria.asignar(scope_mem, tipo)
             directorio.agregar_var(nombre, tipo, direccion)
         except ErrorSemantico as e:
@@ -66,23 +76,19 @@ def p_lista_vars(p):
             hay_error_semantico = True
             print(e)
     _ids_pendientes.clear()
-
-# Acumular IDs adicionales separados paor coma en la lista auxiliar
+ 
 def p_mas_ids_multiple(p):
-    'mas_ids : COMA ID mas_ids'
+    'mas_ids : COMA ID_VAR mas_ids'
     _ids_pendientes.append(p[2])
-
+ 
 def p_mas_ids_vacio(p):
     'mas_ids : empty'
-
-# Propaga el tipo hacia arriba para que lista_vars lo reciba     
+ 
 def p_tipo(p):
     '''tipo : ENTERO
             | FLOTANTE'''
-    p[0] = p[1] 
-
-# DECLARACION DE PARAMETROS
-# Soporta: vacio, un param, o multiples separados por coma
+    p[0] = p[1]
+ 
 def p_params_decl(p):
     '''params_decl : ID DOS_PUNTOS tipo
                    | params_decl COMA ID DOS_PUNTOS tipo
@@ -92,16 +98,10 @@ def p_params_decl(p):
 # FUNCIONES
 # ===========================================================================
 
-# Marker que se reduce justo cuando se ve el ID, antes del resto del header
-def p_func_nombre(p):
-    'func_nombre : ID'
-    nombre = p[1]
-    p[0] = nombre
-
 # Header de la funcion con tipo de retorno
 # Registra la funcion, genera ERA y GOTO de salto antes de entrar al cuerpo
 def p_func_header_entero(p):
-    'func_header : ENTERO func_nombre PAREN_IZQ params_decl PAREN_DER'
+    'func_header : ENTERO ID PAREN_IZQ params_decl PAREN_DER'
     nombre = p[2]
     p[0] = None
     try:
@@ -118,7 +118,7 @@ def p_func_header_entero(p):
         print(e)
 
 def p_func_header_flotante(p):
-    'func_header : FLOTANTE func_nombre PAREN_IZQ params_decl PAREN_DER'
+    'func_header : FLOTANTE ID PAREN_IZQ params_decl PAREN_DER'
     nombre = p[2]
     p[0] = None
     try:
@@ -136,7 +136,7 @@ def p_func_header_flotante(p):
 
 # Header de funcion sin retorno
 def p_func_header_nula(p):
-    'func_header : NULA func_nombre PAREN_IZQ params_decl PAREN_DER'
+    'func_header : NULA ID PAREN_IZQ params_decl PAREN_DER'
     nombre = p[2]
     p[0] = None # marca de fallo por default
     try:
@@ -203,6 +203,7 @@ def p_retorna(p):
 
 def p_asigna(p):
     'asigna : ID ASIGNA expresion PUNTO_COMA'
+    print(f"[DEBUG asigna] nombre='{p[1]}', scope={directorio.scope_actual}")
     nombre = p[1]
     info = directorio.buscar_variable(nombre)
     if info is None:
@@ -394,6 +395,7 @@ def p_factor_cte(p):
 # Variable: busca la direccion virtual y la mete a la pila
 def p_factor_id(p):
     'factor : ID'
+    print(f"[DEBUG factor_id] nombre='{p[1]}', scope={directorio.scope_actual}")
     nombre = p[1]
     info = directorio.buscar_variable(nombre)
     if info is None:
