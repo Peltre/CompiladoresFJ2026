@@ -4,10 +4,6 @@
 # constantes, operadores y simbolos de puntuacion.
 import ply.lex as lex
 
-states = (
-    ('invars', 'exclusive'),
-)
-
 # PALABRAS RESERVADAS
 # Mapa de string -> nombre de token para detectarlas dentro de t_ID
 reserved = {
@@ -29,7 +25,7 @@ reserved = {
 # LISTA DE TOKENS
 # Todos los tokens que el lexer puede producir
 tokens = [
-    'ID', 'ID_VAR', 'CTE_ENT', 'CTE_FLOT', 'CADENA',
+    'ID', 'CTE_ENT', 'CTE_FLOT', 'CADENA',
     'ASIGNA', 'IGUAL', 'DIFERENTE',
     'SUMA', 'RESTA', 'MULT', 'DIV',
     'MAYOR', 'MENOR',
@@ -104,72 +100,6 @@ def t_COMENTARIO(t):
 # MANEJO DE ERRORES
 # Reporta el caracter invalido y avanza un lugar para continuar el analisis
 def t_error(t):
-    print(f"[LEXICO] Caracter invalido '{t.value[0]}' en linea {t.lineno}")
-    t.lexer.skip(1)
-
-# INVARS
-# Manejo de declaracion de variable vs asignacion
-t_invars_PUNTO_COMA = r';'
-t_invars_COMA       = r','
-t_invars_DOS_PUNTOS = r':'
-
-def t_invars_ID_VAR(t):
-    r'[a-zA-Z][a-zA-Z0-9_]*'
-    # Mirar hacia adelante en el input para decidir si es declaracion o no
-    # Consumir espacios y ver el sig caracter no espacio
-    pos = t.lexer.lexpos
-    rest = t.lexer.lexdata[pos:]
-    next_char = ''
-    for ch in rest:
-        if ch not in (' ', '\t', '\r', '\n'):
-            next_char = ch
-            break
-
-    if t.value in reserved:
-        # Palabra reservada: siempre cierra invars (excepto entero/flotante)
-        if t.value in ('entero', 'flotante'):
-            t.type = reserved[t.value]
-        else:
-            t.lexer.begin('INITIAL')
-            t.type = reserved[t.value]
-        return t
-    
-    # Si el siguiente caracter significativo es '=' o '(' o operadores,
-    # es inicio de cuerpo, no declaracion de variable
-    if next_char in ('=', '(', '+', '-', '*', '/'):
-        t.lexer.begin('INITIAL')
-        t.type = 'ID'  # es un ID normal (para asigna o llamada)
-        return t
-
-    # Si es ':' o ',' es declaracion de variable
-        t.type = 'ID_VAR'
-    return t
- 
-def t_invars_LLAVE_IZQ(t):
-    r'\{'
-    t.lexer.begin('INITIAL'); return t
-def t_invars_LLAVE_DER(t):
-    r'\}'
-    t.lexer.begin('INITIAL'); return t
-def t_invars_CORCHETE_IZQ(t):
-    r'\['
-    t.lexer.begin('INITIAL'); return t
-def t_invars_CORCHETE_DER(t):
-    r'\]'
-    t.lexer.begin('INITIAL'); return t
-def t_invars_PAREN_IZQ(t):
-    r'\('
-    t.lexer.begin('INITIAL'); return t
-def t_invars_ASIGNA(t):
-    r'='
-    t.lexer.begin('INITIAL'); return t
-
-t_invars_ignore = ' \t\r\n'
-def t_invars_COMENTARIO(t):
-    r'\/\/[^\n]*'
-    pass
-
-def t_invars_error(t):
     print(f"[LEXICO] Caracter invalido '{t.value[0]}' en linea {t.lineno}")
     t.lexer.skip(1)
 
