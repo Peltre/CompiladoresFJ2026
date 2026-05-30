@@ -84,12 +84,19 @@ def p_tipo(p):
 # FUNCIONES
 # ===========================================================================
 
+# Marker que se reduce justo cuando se ve el ID, antes del resto del header
+def p_func_nombre(p):
+    'func_nombre : ID'
+    nombre = p[1]
+    p[0] = nombre
+
 # Header de la funcion con tipo de retorno
 # Registra la funcion, genera ERA y GOTO de salto antes de entrar al cuerpo
 def p_func_header_tipo(p):
-    'func_header : ID PAREN_IZQ tipo PAREN_DER'
+    'func_header : func_nombre PAREN_IZQ tipo PAREN_DER'
     nombre = p[1]
     tipo = p[3]
+    p[0] = None # marca de fallo por default
     try:
         directorio.agregar_funcion(nombre, tipo, memoria)
         # Generar GOTO para saltar la func al ejecutar
@@ -99,6 +106,7 @@ def p_func_header_tipo(p):
         generador.agregar_era(nombre)
         directorio.guardar_indice_era(nombre, indice_era)
         directorio.entrar_funcion(nombre)
+        p[0] = nombre # Marca de exito
     except ErrorSemantico as e:
         global hay_error_semantico
         hay_error_semantico = True
@@ -106,8 +114,9 @@ def p_func_header_tipo(p):
 
 # Header de funcion sin retorno
 def p_func_header_nula(p):
-    'func_header : ID PAREN_IZQ NULA PAREN_DER'
+    'func_header : func_nombre PAREN_IZQ NULA PAREN_DER'
     nombre = p[1]
+    p[0] = None # marca de fallo por default
     try:
         directorio.agregar_funcion(nombre, 'nula', memoria)
         generador.agregar_salto_incondicional()
@@ -115,6 +124,7 @@ def p_func_header_nula(p):
         generador.agregar_era(nombre)
         directorio.guardar_indice_era(nombre, indice_era)
         directorio.entrar_funcion(nombre)
+        p[0] = nombre # Marca de exito
     except ErrorSemantico as e:
         print(e)
 
@@ -123,8 +133,10 @@ def p_func_header_nula(p):
 def p_funcs_func(p):
     'funcs : funcs func_header LLAVE_IZQ vars cuerpo LLAVE_DER PUNTO_COMA'
     generador.agregar_endfunc()
-    indice_goto = generador.pila_saltos.pop()
-    generador.rellenar_salto(indice_goto, generador.contador_actual())
+    # Solo hacer pop si el header se registro correctamente
+    if p[2] is not None:
+        indice_goto = generador.pila_saltos.pop()
+        generador.rellenar_salto(indice_goto, generador.contador_actual())
     directorio.salir_funcion()
 
 def p_funcs_empty(p):
@@ -237,7 +249,7 @@ def p_mientras_cond(p):
 
 # Cierra el ciclo: genera GOTO al inicio y rellena el GOTOF
 def p_ciclo(p):
-    'ciclo : mientras_cond PAREN_IZQ expresion HAZ CORCHETE_IZQ cuerpo CORCHETE_DER PUNTO_COMA'
+    'ciclo : mientras_cond HAZ CORCHETE_IZQ cuerpo CORCHETE_DER PUNTO_COMA'
     generador.cerrar_ciclo()
 
 # ===========================================================================
@@ -345,7 +357,7 @@ def p_factor_signo_neg(p):
     dir_menos1 = memoria.asignar_constante(-1, 'entero')
     op = generador.pila_operandos.pop()
     tip = generador.pila_tipos.pop()
-    dir_temp = memoria.asignar_temporal(tip)
+    dir_temp = memoria.asignar_temp(tip)
     generador.agregar_cuadruplo('*', dir_menos1, op, dir_temp)
     generador.pila_operandos.append(dir_temp)
     generador.pila_tipos.append(tip)
