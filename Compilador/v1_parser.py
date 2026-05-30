@@ -132,7 +132,7 @@ def p_retorna(p):
         return
     # En caso de que no sea nula, generar cuadruplos de return
     generador.agregar_return(info['direccion'])
-        
+
 # Asignación
 def p_asigna(p):
     'asigna : ID ASIGNA expresion PUNTO_COMA'
@@ -156,10 +156,38 @@ def p_imp_lista(p):
                  | imp_lista COMA expresion
                  | imp_lista COMA CADENA'''
 
-# Condición 
-def p_condicion(p):
-    '''condicion : SI PAREN_IZQ expresion PAREN_DER CORCHETE_IZQ cuerpo CORCHETE_DER
-                 | SI PAREN_IZQ expresion PAREN_DER CORCHETE_IZQ cuerpo CORCHETE_DER SINO CORCHETE_IZQ cuerpo CORCHETE_DER'''
+# Condicionales
+def p_si_header(p):
+    'si_header : SI PAREN_IZQ expresion PAREN_DER'
+    # La condicion ya esta en la pila, genera GOTOF con destino pendiente
+    generador.agregar_salto_falso()
+
+# if SOLO (no else)
+def p_condicion_simple(p):
+    'condicion : si_header CORCHETE_IZQ cuerpo CORCHETE_DER'
+    # Rellenar el GOTOF con el indice actual (despues del cuerpo)
+    indice_gotof = generador.pila_saltos.pop()
+    generador.rellenar_salto(indice_gotof, generador.contador_actual())
+
+# ELSE header
+def p_sino_header(p):
+    'sino_header : SINO'
+    # Antes de entrar al else, generar GOTO para saltar el bloque else si era vd
+    generador.agregar_salto_incondicional()
+    # Rellenar el GOTOF del if (que apunta aqui)
+    # el GOTO recienb generado queda en pila saltos [-1]
+    # el GOTOF original queda en pila saltos [-2]
+    indice_goto = generador.pila_saltos.pop()
+    indice_gotof = generador.pila_saltos.pop()
+    generador.rellenar_salto(indice_gotof, generador.contador_actual())
+    generador.pila_saltos.append(indice_goto) # Devolver el GOTO para rellenarlo al final
+
+# ELSE body
+def p_condicion_sino(p):
+    'condicion : si_header CORCHETE_IZQ cuerpo CORCHETE_DER sino_header CORCHETE_IZQ'
+    # Rellenar el GOTO del if con el indice actual (despues del else)
+    indice_goto = generador.pila_saltos.pop()
+    generador.rellenar_salto(indice_goto, generador.contador_actual())
 
 # Ciclo
 def p_ciclo(p):
