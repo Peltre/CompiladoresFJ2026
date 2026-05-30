@@ -1,3 +1,7 @@
+# v1_parser.py | LM: 5/29/2026 | By: Pedro Sotelo
+# Parser del compilador. Define la gramatica del lenguaje y las acciones
+# semanticas que generan cuadruplos durante el analisis sintactico.
+
 import ply.yacc as yacc
 from v1_lexer import tokens
 from symbol_table import DirectorioFunciones, ErrorSemantico
@@ -5,20 +9,22 @@ from semantic_cube import tipo_resultado
 from memory_manager import ManejoMemoria
 from quadruples import GeneradorCuadruplos
 
-# Definir estructuras globales
+# ESTRUCTURAS GLOBALES
+# Se inicializan una sola vez y son compartidas por todas las reglas
 directorio = DirectorioFunciones()
 memoria = ManejoMemoria()
 generador = GeneradorCuadruplos(memoria)
 
-# Variable global para controlar errores de semantica
+# Bandera global para acumular errores sin detener el analisis
 hay_error_semantico = False
 
-# Lista auxiliar para acumular ids antes de conocer tipo
+# Lista auxiliar para acumular IDs antes de conocer tipo en lista_vars
 _ids_pendientes = []
 
+# ===========================================================================
+# PROGRAMA
+# ===========================================================================
 
-
-# Programa principal
 def p_programa(p):
     'programa : PROGRAMA ID PUNTO_COMA vars funcs INICIO cuerpo FIN'
     if not hay_error_semantico:
@@ -27,26 +33,27 @@ def p_programa(p):
     else:
         print("[ERROR SEMANTICO] El programa contiene errores semanticos")
 
-# Variables 
+# ===========================================================================
+# VARIABLES
+# ===========================================================================
+
 def p_vars(p):
     '''vars : VARS lista_vars
             | empty'''
-    
+
+# Soporta una o varias lineas de declaracion: ID, ID : tipo ;
 def p_lista_vars(p):
     '''lista_vars : ID mas_ids DOS_PUNTOS tipo PUNTO_COMA
                   | lista_vars ID mas_ids DOS_PUNTOS tipo PUNTO_COMA'''
-    
-    # Guardar correctamente el tipo dependinendo de la posicion
+    # La pos del primer ID y del tipo cambia segun alternativa usada
     if len(p) == 6:
         primer_id = p[1]
         tipo      = p[4]
     else:
         primer_id = p[2]
         tipo      = p[5]
-
-    # Agregar a ids pendientes
+    # Incluir el primer ID junto a los acumulados en ids_pendientes
     _ids_pendientes.insert(0, primer_id)
-
     for nombre in _ids_pendientes:
         try:
             # Asignar direccion virtual y pasar memoria al registrar variable
@@ -58,25 +65,27 @@ def p_lista_vars(p):
             hay_error_semantico = True
             print(e)
     _ids_pendientes.clear()
-    
+
+# Acumular IDs adicionales separados paor coma en la lista auxiliar
 def p_mas_ids_multiple(p):
     'mas_ids : COMA ID mas_ids'
-    # Acumular el id encontrado
     _ids_pendientes.append(p[2])
 
 def p_mas_ids_vacio(p):
     'mas_ids : empty'
-            
-    
+
+# Propaga el tipo hacia arriba para que lista_vars lo reciba     
 def p_tipo(p):
     '''tipo : ENTERO
             | FLOTANTE'''
-    p[0] = p[1] # propagar el tipo hacia arriba para que lista vars lo vea
+    p[0] = p[1] 
     
-# Funciones
-# Separadas en 2 reglas, header y el cuerpo completo, esto para poder realizar acciones antes
-# de ejecutar el cuerpo
+# ===========================================================================
+# FUNCIONES
+# ===========================================================================
 
+# Header de la funcion con tipo de retorno
+# Registra la funcion, genera ERA y GOTO de salto antes de entrar al cuerpo
 def p_func_header_tipo(p):
     'func_header : ID PAREN_IZQ tipo PAREN_DER'
     nombre = p[1]
@@ -94,6 +103,7 @@ def p_func_header_tipo(p):
         hay_error_semantico = True
         print(e)
 
+# Header de funcion sin retorno
 def p_func_header_nula(p):
     'func_header : ID PAREN_IZQ NULA PAREN_DER'
     nombre = p[1]
@@ -106,11 +116,11 @@ def p_func_header_nula(p):
     except ErrorSemantico as e:
         print(e)
 
+# Cuerpo completo de una funcion
+# Al cerrar genera ENDFUNC y rellena el GOTO que la saltaba
 def p_funcs_func(p):
     'funcs : funcs func_header LLAVE_IZQ vars cuerpo LLAVE_DER PUNTO_COMA'
-    # Generar ENDFUNC al cerrar funcion
     generador.agregar_endfunc()
-    # Rellenar el GOTO que saltaba la func
     indice_goto = generador.pila_saltos.pop()
     generador.rellenar_salto(indice_goto, generador.contador_actual())
     directorio.salir_funcion()
@@ -119,14 +129,15 @@ def p_funcs_empty(p):
     'funcs : empty'
     pass
 
-# Cuerpo
+# ===========================================================================
+# CUERPO Y ESTATUTOS
+# ===========================================================================
+
 def p_cuerpo(p):
     '''cuerpo : estatuto
               | cuerpo estatuto
               | empty'''
               
-
-# Estatuto
 def p_estatuto(p):
     '''estatuto : asigna
                 | condicion
@@ -135,9 +146,10 @@ def p_estatuto(p):
                 | llamada PUNTO_COMA
                 | retorna'''
     
+# RETURN
+# Busca la variable global que guarda el retorno y genera el cuadruplo 
 def p_retorna(p):
     'retorna : REGRESA expresion PUNTO_COMA'
-    # Buscar la variable global que guarda el retorno de la func actual
     nombre_func = directorio.scope_actual
     info = directorio.buscar_variable(nombre_func)
     if info is None:
@@ -146,7 +158,10 @@ def p_retorna(p):
     # En caso de que no sea nula, generar cuadruplos de return
     generador.agregar_return(info['direccion'])
 
-# Asignación
+# ===========================================================================
+# ASIGNACION
+# ===========================================================================
+
 def p_asigna(p):
     'asigna : ID ASIGNA expresion PUNTO_COMA'
     nombre = p[1]
@@ -159,7 +174,10 @@ def p_asigna(p):
     # Generar cuadruplo de asignacion
     generador.generar_asignacion(info['direccion'])
 
-# Impresion
+# ===========================================================================
+# IMPRESION
+# ===========================================================================
+
 def p_imprime(p):
     'imprime : ESCRIBE PAREN_IZQ imp_lista PAREN_DER PUNTO_COMA'
 
@@ -169,56 +187,61 @@ def p_imp_lista(p):
                  | imp_lista COMA expresion
                  | imp_lista COMA CADENA'''
 
-# Condicionales
+# ===========================================================================
+# CONDICIONALES
+# ===========================================================================
+
+# IF header: evalua la condicion y genera GOTOF con destino pendiente
 def p_si_header(p):
     'si_header : SI PAREN_IZQ expresion PAREN_DER'
-    # La condicion ya esta en la pila, genera GOTOF con destino pendiente
     generador.agregar_salto_falso()
 
-# if SOLO (no else)
+# IF sin ELSE: rellena el GOTOF al terminar el cuerpo
 def p_condicion_simple(p):
     'condicion : si_header CORCHETE_IZQ cuerpo CORCHETE_DER'
-    # Rellenar el GOTOF con el indice actual (despues del cuerpo)
     indice_gotof = generador.pila_saltos.pop()
     generador.rellenar_salto(indice_gotof, generador.contador_actual())
 
-# ELSE header
+# ELSE header: genera GOTO para saltar el bloque si la condicion es true,
+# Luego rellena el GOTOF del IF para que apunte aqui
 def p_sino_header(p):
     'sino_header : SINO'
-    # Antes de entrar al else, generar GOTO para saltar el bloque else si era vd
     generador.agregar_salto_incondicional()
-    # Rellenar el GOTOF del if (que apunta aqui)
-    # el GOTO recienb generado queda en pila saltos [-1]
-    # el GOTOF original queda en pila saltos [-2]
-    indice_goto = generador.pila_saltos.pop()
-    indice_gotof = generador.pila_saltos.pop()
+    indice_goto = generador.pila_saltos.pop() # GOTO recien generado
+    indice_gotof = generador.pila_saltos.pop() # GOTOF del IF
     generador.rellenar_salto(indice_gotof, generador.contador_actual())
     generador.pila_saltos.append(indice_goto) # Devolver el GOTO para rellenarlo al final
 
-# ELSE body
+# IF con ELSE: rellena el GOTO al terminar el bloque else
 def p_condicion_sino(p):
     'condicion : si_header CORCHETE_IZQ cuerpo CORCHETE_DER sino_header CORCHETE_IZQ'
-    # Rellenar el GOTO del if con el indice actual (despues del else)
     indice_goto = generador.pila_saltos.pop()
     generador.rellenar_salto(indice_goto, generador.contador_actual())
 
+
+# ===========================================================================
 # CICLO WHILE
+# ===========================================================================
+
+# Guarda el indice de inicio ANTES de evaluar la condicion
 def p_mientras_header(p):
-    # Guardar el indice actual como inicio del ciclo
-    # se llama antes de evaluar la condicion
+    'mientras_header : MIENTRAS'
     generador.guardar_inicio_ciclo()
 
+# Evalua la condicion y genera GOTOF pendiente
 def p_mientras_cond(p):
     'mientas_cond : mientras_header PAREN_IZQ expresion PAREN_DER'
-    # la condicion ya esta evaluada, generar GOTOF
     generador.agregar_salto_falso()
 
+# Cierra el ciclo: genera GOTO al inicio y rellena el GOTOF
 def p_ciclo(p):
     'ciclo : mientras_cond PAREN_IZQ expresion HAZ CORCHETE_IZQ cuerpo CORCHETE_DER PUNTO_COMA'
-    # Generar GOTO de regreso y rellenar GOTOF pendiente
     generador.cerrar_ciclo()
 
-# Llamada
+# ===========================================================================
+# LLAMADA A FUNCION
+# ===========================================================================
+
 def p_llamada(p):
     'llamada : ID PAREN_IZQ args PAREN_DER'
     nombre = p[1]
@@ -227,7 +250,6 @@ def p_llamada(p):
         hay_error_semantico = True
         print(f"[ERROR SEMANTICO] Funcion '{nombre}' no declarada (linea {p.lineno(1)})")
         return
-    
     # generar GOSUB
     indice_era = directorio.obtener_indice_era(nombre)
     generador.agregar_gosub(nombre, indice_era)
@@ -236,18 +258,22 @@ def p_args(p):
     '''args : expresion
             | args COMA expresion
             | empty'''
-    
-# Expresiones
+
+# ===========================================================================
+# EXPRESIONES
+# ===========================================================================
+
+# Nivel 3: operadores relacionales
 def p_expresion(p):
     '''expresion : exp
                  | exp mayor_op exp
                  | exp menor_op exp
                  | exp igual_op exp
                  | exp diferente_op exp'''
-    # Al terminar la expresion, resolver operadores relacionales pendientes
     generador.resolver_pendientes({'>','<','==','!='}, tipo_resultado)
     p[0] = p[1]
 
+# Nivel 2: suma y resta
 def p_exp(p):
     '''exp : termino
            | exp suma_op termino
@@ -255,6 +281,7 @@ def p_exp(p):
     # Al terminar exp, resolver + y - pendientes
     generador.resolver_pendientes({'+','-'}, tipo_resultado)
 
+# Nivel 1: multiplicacion y division
 def p_termino(p):
     '''termino : factor
                | termino mult_op factor
@@ -262,9 +289,9 @@ def p_termino(p):
     # Al terminar un termino, resolver * y / pendientes
     generador.resolver_pendientes({'*','/'}, tipo_resultado)
 
+# OPERADORES (cada uno mete un operador a la pila antes de parsear el siguiente operando)
 def p_suma_op(p):
     'suma_op : SUMA'
-    # Semantic action: meter + a la pila de operadores
     generador.push_operador('+', tipo_resultado)
 
 def p_resta_op(p):
@@ -295,15 +322,21 @@ def p_diferente_op(p):
     'diferente_op : DIFERENTE'
     generador.push_operador('!=', tipo_resultado)
 
+# ===========================================================================
+# FACTORES
+# ===========================================================================
+
+# Parentesis: agrupan sin generar cuadruplos
 def p_factor_paren(p):
     'factor : PAREN_IZQ expresion PAREN_DER'
-    # los parentesis no generan cuadruplos, solo agrupan
     pass
 
+# Signo positivo: no cambia nada
 def p_factor_signo_pos(p):
     'factor : SUMA cte'
-    pass # signo positivo no cambia nada
+    pass 
 
+# Signo negativo: multiplica la constante por -1
 def p_factor_signo_neg(p):
     'factor : RESTA cte'
     # Generar cuadruplo de negacion
@@ -319,6 +352,7 @@ def p_factor_cte(p):
     'factor : cte'
     pass # cte ya metio el operando a la pila
 
+# Variable: busca la direccion virtual y la mete a la pila
 def p_factor_id(p):
     'factor : ID'
     nombre = p[1]
@@ -328,12 +362,12 @@ def p_factor_id(p):
         hay_error_semantico = True
         print(f"[ERROR SEMANTICO] Variable '{nombre}' no declarada")
         return 
-    # Meter la direccion virtual del ID a la pila
     generador.push_operando(info['direccion'], info['tipo'])
 
+# CONSTANTES
+# Asignan direccion virtual y meten el valor a la pila de operandos
 def p_cte_ent(p):
     'cte : CTE_ENT'
-    # Asignar direccion a la constante y meter a la pila
     direccion = memoria.asignar_constante(p[1], 'entero')
     generador.push_operando(direccion, 'entero')
     p[0] = p[1]
@@ -344,6 +378,9 @@ def p_cte_flot(p):
     generador.push_operando(direccion, 'flotante')
     p[0] = p[1]
 
+# ===========================================================================
+# UTILIDADES
+# ===========================================================================
 
 # Epsilon (vació)
 def p_empty(p):
@@ -359,4 +396,5 @@ def p_error(p):
     else:
         print("[SINTAXIS] Error: fin de archivo inesperado")
 
+# Construir el parser
 parser = yacc.yacc()
