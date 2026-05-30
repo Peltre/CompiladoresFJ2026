@@ -226,6 +226,11 @@ def p_llamada(p):
         global hay_error_semantico
         hay_error_semantico = True
         print(f"[ERROR SEMANTICO] Funcion '{nombre}' no declarada (linea {p.lineno(1)})")
+        return
+    
+    # generar GOSUB
+    indice_era = directorio.obtener_indice_era(nombre)
+    generador.agregar_gosub(nombre, indice_era)
 
 def p_args(p):
     '''args : expresion
