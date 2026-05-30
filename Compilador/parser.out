@@ -4,137 +4,159 @@ Grammar
 
 Rule 0     S' -> programa
 Rule 1     programa -> PROGRAMA ID PUNTO_COMA vars funcs INICIO cuerpo FIN
-Rule 2     vars -> VARS lista_vars
+Rule 2     vars -> vars_inicio lista_vars vars_fin
 Rule 3     vars -> empty
-Rule 4     lista_vars -> ID mas_ids DOS_PUNTOS tipo PUNTO_COMA
-Rule 5     lista_vars -> lista_vars ID mas_ids DOS_PUNTOS tipo PUNTO_COMA
-Rule 6     mas_ids -> COMA ID mas_ids
-Rule 7     mas_ids -> empty
-Rule 8     tipo -> ENTERO
-Rule 9     tipo -> FLOTANTE
-Rule 10    func_header -> ID PAREN_IZQ tipo PAREN_DER
-Rule 11    func_header -> ID PAREN_IZQ NULA PAREN_DER
-Rule 12    funcs -> funcs func_header LLAVE_IZQ vars cuerpo LLAVE_DER PUNTO_COMA
-Rule 13    funcs -> empty
-Rule 14    cuerpo -> estatuto
-Rule 15    cuerpo -> cuerpo estatuto
-Rule 16    cuerpo -> empty
-Rule 17    estatuto -> asigna
-Rule 18    estatuto -> condicion
-Rule 19    estatuto -> ciclo
-Rule 20    estatuto -> imprime
-Rule 21    estatuto -> llamada PUNTO_COMA
-Rule 22    asigna -> ID ASIGNA expresion PUNTO_COMA
-Rule 23    imprime -> ESCRIBE PAREN_IZQ imp_lista PAREN_DER PUNTO_COMA
-Rule 24    imp_lista -> expresion
-Rule 25    imp_lista -> CADENA
-Rule 26    imp_lista -> imp_lista COMA expresion
-Rule 27    imp_lista -> imp_lista COMA CADENA
-Rule 28    condicion -> SI PAREN_IZQ expresion PAREN_DER CORCHETE_IZQ cuerpo CORCHETE_DER
-Rule 29    condicion -> SI PAREN_IZQ expresion PAREN_DER CORCHETE_IZQ cuerpo CORCHETE_DER SINO CORCHETE_IZQ cuerpo CORCHETE_DER
-Rule 30    ciclo -> MIENTRAS PAREN_IZQ expresion PAREN_DER HAZ CORCHETE_IZQ cuerpo CORCHETE_DER PUNTO_COMA
-Rule 31    llamada -> ID PAREN_IZQ args PAREN_DER
-Rule 32    args -> expresion
-Rule 33    args -> args COMA expresion
-Rule 34    args -> empty
-Rule 35    expresion -> exp
-Rule 36    expresion -> exp mayor_op exp
-Rule 37    expresion -> exp menor_op exp
-Rule 38    expresion -> exp igual_op exp
-Rule 39    expresion -> exp diferente_op exp
-Rule 40    exp -> termino
-Rule 41    exp -> exp suma_op termino
-Rule 42    exp -> exp resta_op termino
-Rule 43    termino -> factor
-Rule 44    termino -> termino mult_op factor
-Rule 45    termino -> termino div_op factor
-Rule 46    suma_op -> SUMA
-Rule 47    resta_op -> RESTA
-Rule 48    mult_op -> MULT
-Rule 49    div_op -> DIV
-Rule 50    mayor_op -> MAYOR
-Rule 51    menor_op -> MENOR
-Rule 52    igual_op -> IGUAL
-Rule 53    diferente_op -> DIFERENTE
-Rule 54    factor -> PAREN_IZQ expresion PAREN_DER
-Rule 55    factor -> SUMA cte
-Rule 56    factor -> RESTA cte
-Rule 57    factor -> cte
-Rule 58    factor -> ID
-Rule 59    cte -> CTE_ENT
-Rule 60    cte -> CTE_FLOT
-Rule 61    empty -> <empty>
+Rule 4     vars_inicio -> VARS
+Rule 5     vars_fin -> empty
+Rule 6     lista_vars -> ID_VAR mas_ids DOS_PUNTOS tipo PUNTO_COMA
+Rule 7     lista_vars -> lista_vars ID_VAR mas_ids DOS_PUNTOS tipo PUNTO_COMA
+Rule 8     mas_ids -> COMA ID_VAR mas_ids
+Rule 9     mas_ids -> empty
+Rule 10    tipo -> ENTERO
+Rule 11    tipo -> FLOTANTE
+Rule 12    params_decl -> ID DOS_PUNTOS tipo
+Rule 13    params_decl -> params_decl COMA ID DOS_PUNTOS tipo
+Rule 14    params_decl -> empty
+Rule 15    func_header -> ENTERO ID PAREN_IZQ params_decl PAREN_DER
+Rule 16    func_header -> FLOTANTE ID PAREN_IZQ params_decl PAREN_DER
+Rule 17    func_header -> NULA ID PAREN_IZQ params_decl PAREN_DER
+Rule 18    funcs -> funcs func_header LLAVE_IZQ vars cuerpo LLAVE_DER PUNTO_COMA
+Rule 19    funcs -> empty
+Rule 20    cuerpo -> estatuto
+Rule 21    cuerpo -> cuerpo estatuto
+Rule 22    cuerpo -> empty
+Rule 23    estatuto -> asigna
+Rule 24    estatuto -> condicion
+Rule 25    estatuto -> ciclo
+Rule 26    estatuto -> imprime
+Rule 27    estatuto -> llamada PUNTO_COMA
+Rule 28    estatuto -> retorna
+Rule 29    retorna -> REGRESA expresion PUNTO_COMA
+Rule 30    asigna -> ID ASIGNA expresion PUNTO_COMA
+Rule 31    imprime -> ESCRIBE PAREN_IZQ imp_lista PAREN_DER PUNTO_COMA
+Rule 32    imp_lista -> expresion
+Rule 33    imp_lista -> CADENA
+Rule 34    imp_lista -> imp_lista COMA expresion
+Rule 35    imp_lista -> imp_lista COMA CADENA
+Rule 36    si_header -> SI PAREN_IZQ expresion PAREN_DER
+Rule 37    condicion -> si_header CORCHETE_IZQ cuerpo CORCHETE_DER
+Rule 38    sino_header -> SINO
+Rule 39    condicion -> si_header CORCHETE_IZQ cuerpo CORCHETE_DER sino_header CORCHETE_IZQ cuerpo CORCHETE_DER
+Rule 40    mientras_header -> MIENTRAS
+Rule 41    mientras_cond -> mientras_header PAREN_IZQ expresion PAREN_DER
+Rule 42    ciclo -> mientras_cond HAZ CORCHETE_IZQ cuerpo CORCHETE_DER PUNTO_COMA
+Rule 43    llamada -> ID PAREN_IZQ args PAREN_DER
+Rule 44    args -> expresion
+Rule 45    args -> args COMA expresion
+Rule 46    args -> empty
+Rule 47    expresion -> exp
+Rule 48    expresion -> exp mayor_op exp
+Rule 49    expresion -> exp menor_op exp
+Rule 50    expresion -> exp igual_op exp
+Rule 51    expresion -> exp diferente_op exp
+Rule 52    exp -> termino
+Rule 53    exp -> exp suma_op termino
+Rule 54    exp -> exp resta_op termino
+Rule 55    termino -> factor
+Rule 56    termino -> termino mult_op factor
+Rule 57    termino -> termino div_op factor
+Rule 58    suma_op -> SUMA
+Rule 59    resta_op -> RESTA
+Rule 60    mult_op -> MULT
+Rule 61    div_op -> DIV
+Rule 62    mayor_op -> MAYOR
+Rule 63    menor_op -> MENOR
+Rule 64    igual_op -> IGUAL
+Rule 65    diferente_op -> DIFERENTE
+Rule 66    factor -> PAREN_IZQ expresion PAREN_DER
+Rule 67    factor -> SUMA cte
+Rule 68    factor -> RESTA cte
+Rule 69    factor -> cte
+Rule 70    factor -> ID
+Rule 71    cte -> CTE_ENT
+Rule 72    cte -> CTE_FLOT
+Rule 73    empty -> <empty>
 
 Terminals, with rules where they appear
 
-ASIGNA               : 22
-CADENA               : 25 27
-COMA                 : 6 26 27 33
-CORCHETE_DER         : 28 29 29 30
-CORCHETE_IZQ         : 28 29 29 30
-CTE_ENT              : 59
-CTE_FLOT             : 60
-DIFERENTE            : 53
-DIV                  : 49
-DOS_PUNTOS           : 4 5
-ENTERO               : 8
-ESCRIBE              : 23
+ASIGNA               : 30
+CADENA               : 33 35
+COMA                 : 8 13 34 35 45
+CORCHETE_DER         : 37 39 39 42
+CORCHETE_IZQ         : 37 39 39 42
+CTE_ENT              : 71
+CTE_FLOT             : 72
+DIFERENTE            : 65
+DIV                  : 61
+DOS_PUNTOS           : 6 7 12 13
+ENTERO               : 10 15
+ESCRIBE              : 31
 FIN                  : 1
-FLOTANTE             : 9
-HAZ                  : 30
-ID                   : 1 4 5 6 10 11 22 31 58
-IGUAL                : 52
+FLOTANTE             : 11 16
+HAZ                  : 42
+ID                   : 1 12 13 15 16 17 30 43 70
+ID_VAR               : 6 7 8
+IGUAL                : 64
 INICIO               : 1
-LLAVE_DER            : 12
-LLAVE_IZQ            : 12
-MAYOR                : 50
-MENOR                : 51
-MIENTRAS             : 30
-MULT                 : 48
-NULA                 : 11
-PAREN_DER            : 10 11 23 28 29 30 31 54
-PAREN_IZQ            : 10 11 23 28 29 30 31 54
+LLAVE_DER            : 18
+LLAVE_IZQ            : 18
+MAYOR                : 62
+MENOR                : 63
+MIENTRAS             : 40
+MULT                 : 60
+NULA                 : 17
+PAREN_DER            : 15 16 17 31 36 41 43 66
+PAREN_IZQ            : 15 16 17 31 36 41 43 66
 PROGRAMA             : 1
-PUNTO_COMA           : 1 4 5 12 21 22 23 30
-RESTA                : 47 56
-SI                   : 28 29
-SINO                 : 29
-SUMA                 : 46 55
-VARS                 : 2
+PUNTO_COMA           : 1 6 7 18 27 29 30 31 42
+REGRESA              : 29
+RESTA                : 59 68
+SI                   : 36
+SINO                 : 38
+SUMA                 : 58 67
+VARS                 : 4
 error                : 
 
 Nonterminals, with rules where they appear
 
-args                 : 31 33
-asigna               : 17
-ciclo                : 19
-condicion            : 18
-cte                  : 55 56 57
-cuerpo               : 1 12 15 28 29 29 30
-diferente_op         : 39
-div_op               : 45
-empty                : 3 7 13 16 34
-estatuto             : 14 15
-exp                  : 35 36 36 37 37 38 38 39 39 41 42
-expresion            : 22 24 26 28 29 30 32 33 54
-factor               : 43 44 45
-func_header          : 12
-funcs                : 1 12
-igual_op             : 38
-imp_lista            : 23 26 27
-imprime              : 20
-lista_vars           : 2 5
-llamada              : 21
-mas_ids              : 4 5 6
-mayor_op             : 36
-menor_op             : 37
-mult_op              : 44
+args                 : 43 45
+asigna               : 23
+ciclo                : 25
+condicion            : 24
+cte                  : 67 68 69
+cuerpo               : 1 18 21 37 39 39 42
+diferente_op         : 51
+div_op               : 57
+empty                : 3 5 9 14 19 22 46
+estatuto             : 20 21
+exp                  : 47 48 48 49 49 50 50 51 51 53 54
+expresion            : 29 30 32 34 36 41 44 45 66
+factor               : 55 56 57
+func_header          : 18
+funcs                : 1 18
+igual_op             : 50
+imp_lista            : 31 34 35
+imprime              : 26
+lista_vars           : 2 7
+llamada              : 27
+mas_ids              : 6 7 8
+mayor_op             : 48
+menor_op             : 49
+mientras_cond        : 42
+mientras_header      : 41
+mult_op              : 56
+params_decl          : 13 15 16 17
 programa             : 0
-resta_op             : 42
-suma_op              : 41
-termino              : 40 41 42 44 45
-tipo                 : 4 5 10
-vars                 : 1 12
+resta_op             : 54
+retorna              : 28
+si_header            : 37 39
+sino_header          : 39
+suma_op              : 53
+termino              : 52 53 54 56 57
+tipo                 : 6 7 12 13
+vars                 : 1 18
+vars_fin             : 2
+vars_inicio          : 2
 
 Parsing method: LALR
 
@@ -170,2041 +192,2495 @@ state 3
 state 4
 
     (1) programa -> PROGRAMA ID PUNTO_COMA . vars funcs INICIO cuerpo FIN
-    (2) vars -> . VARS lista_vars
+    (2) vars -> . vars_inicio lista_vars vars_fin
     (3) vars -> . empty
-    (61) empty -> .
+    (4) vars_inicio -> . VARS
+    (73) empty -> .
 
-    VARS            shift and go to state 6
-    INICIO          reduce using rule 61 (empty -> .)
-    ID              reduce using rule 61 (empty -> .)
+    VARS            shift and go to state 8
+    INICIO          reduce using rule 73 (empty -> .)
+    ENTERO          reduce using rule 73 (empty -> .)
+    FLOTANTE        reduce using rule 73 (empty -> .)
+    NULA            reduce using rule 73 (empty -> .)
 
     vars                           shift and go to state 5
+    vars_inicio                    shift and go to state 6
     empty                          shift and go to state 7
 
 state 5
 
     (1) programa -> PROGRAMA ID PUNTO_COMA vars . funcs INICIO cuerpo FIN
-    (12) funcs -> . funcs func_header LLAVE_IZQ vars cuerpo LLAVE_DER PUNTO_COMA
-    (13) funcs -> . empty
-    (61) empty -> .
+    (18) funcs -> . funcs func_header LLAVE_IZQ vars cuerpo LLAVE_DER PUNTO_COMA
+    (19) funcs -> . empty
+    (73) empty -> .
 
-    INICIO          reduce using rule 61 (empty -> .)
-    ID              reduce using rule 61 (empty -> .)
+    INICIO          reduce using rule 73 (empty -> .)
+    ENTERO          reduce using rule 73 (empty -> .)
+    FLOTANTE        reduce using rule 73 (empty -> .)
+    NULA            reduce using rule 73 (empty -> .)
 
-    funcs                          shift and go to state 8
-    empty                          shift and go to state 9
+    funcs                          shift and go to state 9
+    empty                          shift and go to state 10
 
 state 6
 
-    (2) vars -> VARS . lista_vars
-    (4) lista_vars -> . ID mas_ids DOS_PUNTOS tipo PUNTO_COMA
-    (5) lista_vars -> . lista_vars ID mas_ids DOS_PUNTOS tipo PUNTO_COMA
+    (2) vars -> vars_inicio . lista_vars vars_fin
+    (6) lista_vars -> . ID_VAR mas_ids DOS_PUNTOS tipo PUNTO_COMA
+    (7) lista_vars -> . lista_vars ID_VAR mas_ids DOS_PUNTOS tipo PUNTO_COMA
 
-    ID              shift and go to state 11
+    ID_VAR          shift and go to state 12
 
-    lista_vars                     shift and go to state 10
+    lista_vars                     shift and go to state 11
 
 state 7
 
     (3) vars -> empty .
 
     INICIO          reduce using rule 3 (vars -> empty .)
+    ENTERO          reduce using rule 3 (vars -> empty .)
+    FLOTANTE        reduce using rule 3 (vars -> empty .)
+    NULA            reduce using rule 3 (vars -> empty .)
     ID              reduce using rule 3 (vars -> empty .)
+    ESCRIBE         reduce using rule 3 (vars -> empty .)
+    REGRESA         reduce using rule 3 (vars -> empty .)
     SI              reduce using rule 3 (vars -> empty .)
     MIENTRAS        reduce using rule 3 (vars -> empty .)
-    ESCRIBE         reduce using rule 3 (vars -> empty .)
     LLAVE_DER       reduce using rule 3 (vars -> empty .)
 
 
 state 8
 
-    (1) programa -> PROGRAMA ID PUNTO_COMA vars funcs . INICIO cuerpo FIN
-    (12) funcs -> funcs . func_header LLAVE_IZQ vars cuerpo LLAVE_DER PUNTO_COMA
-    (10) func_header -> . ID PAREN_IZQ tipo PAREN_DER
-    (11) func_header -> . ID PAREN_IZQ NULA PAREN_DER
+    (4) vars_inicio -> VARS .
 
-    INICIO          shift and go to state 13
-    ID              shift and go to state 12
+    ID_VAR          reduce using rule 4 (vars_inicio -> VARS .)
 
-    func_header                    shift and go to state 14
 
 state 9
 
-    (13) funcs -> empty .
+    (1) programa -> PROGRAMA ID PUNTO_COMA vars funcs . INICIO cuerpo FIN
+    (18) funcs -> funcs . func_header LLAVE_IZQ vars cuerpo LLAVE_DER PUNTO_COMA
+    (15) func_header -> . ENTERO ID PAREN_IZQ params_decl PAREN_DER
+    (16) func_header -> . FLOTANTE ID PAREN_IZQ params_decl PAREN_DER
+    (17) func_header -> . NULA ID PAREN_IZQ params_decl PAREN_DER
 
-    INICIO          reduce using rule 13 (funcs -> empty .)
-    ID              reduce using rule 13 (funcs -> empty .)
+    INICIO          shift and go to state 13
+    ENTERO          shift and go to state 15
+    FLOTANTE        shift and go to state 16
+    NULA            shift and go to state 17
 
+    func_header                    shift and go to state 14
 
 state 10
 
-    (2) vars -> VARS lista_vars .
-    (5) lista_vars -> lista_vars . ID mas_ids DOS_PUNTOS tipo PUNTO_COMA
+    (19) funcs -> empty .
 
-  ! shift/reduce conflict for ID resolved as shift
-    INICIO          reduce using rule 2 (vars -> VARS lista_vars .)
-    SI              reduce using rule 2 (vars -> VARS lista_vars .)
-    MIENTRAS        reduce using rule 2 (vars -> VARS lista_vars .)
-    ESCRIBE         reduce using rule 2 (vars -> VARS lista_vars .)
-    LLAVE_DER       reduce using rule 2 (vars -> VARS lista_vars .)
-    ID              shift and go to state 15
-
-  ! ID              [ reduce using rule 2 (vars -> VARS lista_vars .) ]
+    INICIO          reduce using rule 19 (funcs -> empty .)
+    ENTERO          reduce using rule 19 (funcs -> empty .)
+    FLOTANTE        reduce using rule 19 (funcs -> empty .)
+    NULA            reduce using rule 19 (funcs -> empty .)
 
 
 state 11
 
-    (4) lista_vars -> ID . mas_ids DOS_PUNTOS tipo PUNTO_COMA
-    (6) mas_ids -> . COMA ID mas_ids
-    (7) mas_ids -> . empty
-    (61) empty -> .
+    (2) vars -> vars_inicio lista_vars . vars_fin
+    (7) lista_vars -> lista_vars . ID_VAR mas_ids DOS_PUNTOS tipo PUNTO_COMA
+    (5) vars_fin -> . empty
+    (73) empty -> .
 
-    COMA            shift and go to state 17
-    DOS_PUNTOS      reduce using rule 61 (empty -> .)
+    ID_VAR          shift and go to state 19
+    INICIO          reduce using rule 73 (empty -> .)
+    ENTERO          reduce using rule 73 (empty -> .)
+    FLOTANTE        reduce using rule 73 (empty -> .)
+    NULA            reduce using rule 73 (empty -> .)
+    ID              reduce using rule 73 (empty -> .)
+    ESCRIBE         reduce using rule 73 (empty -> .)
+    REGRESA         reduce using rule 73 (empty -> .)
+    SI              reduce using rule 73 (empty -> .)
+    MIENTRAS        reduce using rule 73 (empty -> .)
+    LLAVE_DER       reduce using rule 73 (empty -> .)
 
-    mas_ids                        shift and go to state 16
-    empty                          shift and go to state 18
+    vars_fin                       shift and go to state 18
+    empty                          shift and go to state 20
 
 state 12
 
-    (10) func_header -> ID . PAREN_IZQ tipo PAREN_DER
-    (11) func_header -> ID . PAREN_IZQ NULA PAREN_DER
+    (6) lista_vars -> ID_VAR . mas_ids DOS_PUNTOS tipo PUNTO_COMA
+    (8) mas_ids -> . COMA ID_VAR mas_ids
+    (9) mas_ids -> . empty
+    (73) empty -> .
 
-    PAREN_IZQ       shift and go to state 19
+    COMA            shift and go to state 22
+    DOS_PUNTOS      reduce using rule 73 (empty -> .)
 
+    mas_ids                        shift and go to state 21
+    empty                          shift and go to state 23
 
 state 13
 
     (1) programa -> PROGRAMA ID PUNTO_COMA vars funcs INICIO . cuerpo FIN
-    (14) cuerpo -> . estatuto
-    (15) cuerpo -> . cuerpo estatuto
-    (16) cuerpo -> . empty
-    (17) estatuto -> . asigna
-    (18) estatuto -> . condicion
-    (19) estatuto -> . ciclo
-    (20) estatuto -> . imprime
-    (21) estatuto -> . llamada PUNTO_COMA
-    (61) empty -> .
-    (22) asigna -> . ID ASIGNA expresion PUNTO_COMA
-    (28) condicion -> . SI PAREN_IZQ expresion PAREN_DER CORCHETE_IZQ cuerpo CORCHETE_DER
-    (29) condicion -> . SI PAREN_IZQ expresion PAREN_DER CORCHETE_IZQ cuerpo CORCHETE_DER SINO CORCHETE_IZQ cuerpo CORCHETE_DER
-    (30) ciclo -> . MIENTRAS PAREN_IZQ expresion PAREN_DER HAZ CORCHETE_IZQ cuerpo CORCHETE_DER PUNTO_COMA
-    (23) imprime -> . ESCRIBE PAREN_IZQ imp_lista PAREN_DER PUNTO_COMA
-    (31) llamada -> . ID PAREN_IZQ args PAREN_DER
+    (20) cuerpo -> . estatuto
+    (21) cuerpo -> . cuerpo estatuto
+    (22) cuerpo -> . empty
+    (23) estatuto -> . asigna
+    (24) estatuto -> . condicion
+    (25) estatuto -> . ciclo
+    (26) estatuto -> . imprime
+    (27) estatuto -> . llamada PUNTO_COMA
+    (28) estatuto -> . retorna
+    (73) empty -> .
+    (30) asigna -> . ID ASIGNA expresion PUNTO_COMA
+    (37) condicion -> . si_header CORCHETE_IZQ cuerpo CORCHETE_DER
+    (39) condicion -> . si_header CORCHETE_IZQ cuerpo CORCHETE_DER sino_header CORCHETE_IZQ cuerpo CORCHETE_DER
+    (42) ciclo -> . mientras_cond HAZ CORCHETE_IZQ cuerpo CORCHETE_DER PUNTO_COMA
+    (31) imprime -> . ESCRIBE PAREN_IZQ imp_lista PAREN_DER PUNTO_COMA
+    (43) llamada -> . ID PAREN_IZQ args PAREN_DER
+    (29) retorna -> . REGRESA expresion PUNTO_COMA
+    (36) si_header -> . SI PAREN_IZQ expresion PAREN_DER
+    (41) mientras_cond -> . mientras_header PAREN_IZQ expresion PAREN_DER
+    (40) mientras_header -> . MIENTRAS
 
   ! shift/reduce conflict for ID resolved as shift
+  ! shift/reduce conflict for ESCRIBE resolved as shift
+  ! shift/reduce conflict for REGRESA resolved as shift
   ! shift/reduce conflict for SI resolved as shift
   ! shift/reduce conflict for MIENTRAS resolved as shift
-  ! shift/reduce conflict for ESCRIBE resolved as shift
-    FIN             reduce using rule 61 (empty -> .)
-    ID              shift and go to state 20
-    SI              shift and go to state 29
-    MIENTRAS        shift and go to state 30
-    ESCRIBE         shift and go to state 31
+    FIN             reduce using rule 73 (empty -> .)
+    ID              shift and go to state 24
+    ESCRIBE         shift and go to state 36
+    REGRESA         shift and go to state 37
+    SI              shift and go to state 38
+    MIENTRAS        shift and go to state 40
 
-  ! ID              [ reduce using rule 61 (empty -> .) ]
-  ! SI              [ reduce using rule 61 (empty -> .) ]
-  ! MIENTRAS        [ reduce using rule 61 (empty -> .) ]
-  ! ESCRIBE         [ reduce using rule 61 (empty -> .) ]
+  ! ID              [ reduce using rule 73 (empty -> .) ]
+  ! ESCRIBE         [ reduce using rule 73 (empty -> .) ]
+  ! REGRESA         [ reduce using rule 73 (empty -> .) ]
+  ! SI              [ reduce using rule 73 (empty -> .) ]
+  ! MIENTRAS        [ reduce using rule 73 (empty -> .) ]
 
-    cuerpo                         shift and go to state 21
-    estatuto                       shift and go to state 22
-    empty                          shift and go to state 23
-    asigna                         shift and go to state 24
-    condicion                      shift and go to state 25
-    ciclo                          shift and go to state 26
-    imprime                        shift and go to state 27
-    llamada                        shift and go to state 28
+    cuerpo                         shift and go to state 25
+    estatuto                       shift and go to state 26
+    empty                          shift and go to state 27
+    asigna                         shift and go to state 28
+    condicion                      shift and go to state 29
+    ciclo                          shift and go to state 30
+    imprime                        shift and go to state 31
+    llamada                        shift and go to state 32
+    retorna                        shift and go to state 33
+    si_header                      shift and go to state 34
+    mientras_cond                  shift and go to state 35
+    mientras_header                shift and go to state 39
 
 state 14
 
-    (12) funcs -> funcs func_header . LLAVE_IZQ vars cuerpo LLAVE_DER PUNTO_COMA
+    (18) funcs -> funcs func_header . LLAVE_IZQ vars cuerpo LLAVE_DER PUNTO_COMA
 
-    LLAVE_IZQ       shift and go to state 32
+    LLAVE_IZQ       shift and go to state 41
 
 
 state 15
 
-    (5) lista_vars -> lista_vars ID . mas_ids DOS_PUNTOS tipo PUNTO_COMA
-    (6) mas_ids -> . COMA ID mas_ids
-    (7) mas_ids -> . empty
-    (61) empty -> .
+    (15) func_header -> ENTERO . ID PAREN_IZQ params_decl PAREN_DER
 
-    COMA            shift and go to state 17
-    DOS_PUNTOS      reduce using rule 61 (empty -> .)
+    ID              shift and go to state 42
 
-    mas_ids                        shift and go to state 33
-    empty                          shift and go to state 18
 
 state 16
 
-    (4) lista_vars -> ID mas_ids . DOS_PUNTOS tipo PUNTO_COMA
+    (16) func_header -> FLOTANTE . ID PAREN_IZQ params_decl PAREN_DER
 
-    DOS_PUNTOS      shift and go to state 34
+    ID              shift and go to state 43
 
 
 state 17
 
-    (6) mas_ids -> COMA . ID mas_ids
+    (17) func_header -> NULA . ID PAREN_IZQ params_decl PAREN_DER
 
-    ID              shift and go to state 35
+    ID              shift and go to state 44
 
 
 state 18
 
-    (7) mas_ids -> empty .
+    (2) vars -> vars_inicio lista_vars vars_fin .
 
-    DOS_PUNTOS      reduce using rule 7 (mas_ids -> empty .)
+    INICIO          reduce using rule 2 (vars -> vars_inicio lista_vars vars_fin .)
+    ENTERO          reduce using rule 2 (vars -> vars_inicio lista_vars vars_fin .)
+    FLOTANTE        reduce using rule 2 (vars -> vars_inicio lista_vars vars_fin .)
+    NULA            reduce using rule 2 (vars -> vars_inicio lista_vars vars_fin .)
+    ID              reduce using rule 2 (vars -> vars_inicio lista_vars vars_fin .)
+    ESCRIBE         reduce using rule 2 (vars -> vars_inicio lista_vars vars_fin .)
+    REGRESA         reduce using rule 2 (vars -> vars_inicio lista_vars vars_fin .)
+    SI              reduce using rule 2 (vars -> vars_inicio lista_vars vars_fin .)
+    MIENTRAS        reduce using rule 2 (vars -> vars_inicio lista_vars vars_fin .)
+    LLAVE_DER       reduce using rule 2 (vars -> vars_inicio lista_vars vars_fin .)
 
 
 state 19
 
-    (10) func_header -> ID PAREN_IZQ . tipo PAREN_DER
-    (11) func_header -> ID PAREN_IZQ . NULA PAREN_DER
-    (8) tipo -> . ENTERO
-    (9) tipo -> . FLOTANTE
+    (7) lista_vars -> lista_vars ID_VAR . mas_ids DOS_PUNTOS tipo PUNTO_COMA
+    (8) mas_ids -> . COMA ID_VAR mas_ids
+    (9) mas_ids -> . empty
+    (73) empty -> .
 
-    NULA            shift and go to state 37
-    ENTERO          shift and go to state 38
-    FLOTANTE        shift and go to state 39
+    COMA            shift and go to state 22
+    DOS_PUNTOS      reduce using rule 73 (empty -> .)
 
-    tipo                           shift and go to state 36
+    mas_ids                        shift and go to state 45
+    empty                          shift and go to state 23
 
 state 20
 
-    (22) asigna -> ID . ASIGNA expresion PUNTO_COMA
-    (31) llamada -> ID . PAREN_IZQ args PAREN_DER
+    (5) vars_fin -> empty .
 
-    ASIGNA          shift and go to state 40
-    PAREN_IZQ       shift and go to state 41
+    INICIO          reduce using rule 5 (vars_fin -> empty .)
+    ENTERO          reduce using rule 5 (vars_fin -> empty .)
+    FLOTANTE        reduce using rule 5 (vars_fin -> empty .)
+    NULA            reduce using rule 5 (vars_fin -> empty .)
+    ID              reduce using rule 5 (vars_fin -> empty .)
+    ESCRIBE         reduce using rule 5 (vars_fin -> empty .)
+    REGRESA         reduce using rule 5 (vars_fin -> empty .)
+    SI              reduce using rule 5 (vars_fin -> empty .)
+    MIENTRAS        reduce using rule 5 (vars_fin -> empty .)
+    LLAVE_DER       reduce using rule 5 (vars_fin -> empty .)
 
 
 state 21
 
-    (1) programa -> PROGRAMA ID PUNTO_COMA vars funcs INICIO cuerpo . FIN
-    (15) cuerpo -> cuerpo . estatuto
-    (17) estatuto -> . asigna
-    (18) estatuto -> . condicion
-    (19) estatuto -> . ciclo
-    (20) estatuto -> . imprime
-    (21) estatuto -> . llamada PUNTO_COMA
-    (22) asigna -> . ID ASIGNA expresion PUNTO_COMA
-    (28) condicion -> . SI PAREN_IZQ expresion PAREN_DER CORCHETE_IZQ cuerpo CORCHETE_DER
-    (29) condicion -> . SI PAREN_IZQ expresion PAREN_DER CORCHETE_IZQ cuerpo CORCHETE_DER SINO CORCHETE_IZQ cuerpo CORCHETE_DER
-    (30) ciclo -> . MIENTRAS PAREN_IZQ expresion PAREN_DER HAZ CORCHETE_IZQ cuerpo CORCHETE_DER PUNTO_COMA
-    (23) imprime -> . ESCRIBE PAREN_IZQ imp_lista PAREN_DER PUNTO_COMA
-    (31) llamada -> . ID PAREN_IZQ args PAREN_DER
+    (6) lista_vars -> ID_VAR mas_ids . DOS_PUNTOS tipo PUNTO_COMA
 
-    FIN             shift and go to state 42
-    ID              shift and go to state 20
-    SI              shift and go to state 29
-    MIENTRAS        shift and go to state 30
-    ESCRIBE         shift and go to state 31
+    DOS_PUNTOS      shift and go to state 46
 
-    estatuto                       shift and go to state 43
-    asigna                         shift and go to state 24
-    condicion                      shift and go to state 25
-    ciclo                          shift and go to state 26
-    imprime                        shift and go to state 27
-    llamada                        shift and go to state 28
 
 state 22
 
-    (14) cuerpo -> estatuto .
+    (8) mas_ids -> COMA . ID_VAR mas_ids
 
-    FIN             reduce using rule 14 (cuerpo -> estatuto .)
-    ID              reduce using rule 14 (cuerpo -> estatuto .)
-    SI              reduce using rule 14 (cuerpo -> estatuto .)
-    MIENTRAS        reduce using rule 14 (cuerpo -> estatuto .)
-    ESCRIBE         reduce using rule 14 (cuerpo -> estatuto .)
-    LLAVE_DER       reduce using rule 14 (cuerpo -> estatuto .)
-    CORCHETE_DER    reduce using rule 14 (cuerpo -> estatuto .)
+    ID_VAR          shift and go to state 47
 
 
 state 23
 
-    (16) cuerpo -> empty .
+    (9) mas_ids -> empty .
 
-    FIN             reduce using rule 16 (cuerpo -> empty .)
-    ID              reduce using rule 16 (cuerpo -> empty .)
-    SI              reduce using rule 16 (cuerpo -> empty .)
-    MIENTRAS        reduce using rule 16 (cuerpo -> empty .)
-    ESCRIBE         reduce using rule 16 (cuerpo -> empty .)
-    LLAVE_DER       reduce using rule 16 (cuerpo -> empty .)
-    CORCHETE_DER    reduce using rule 16 (cuerpo -> empty .)
+    DOS_PUNTOS      reduce using rule 9 (mas_ids -> empty .)
 
 
 state 24
 
-    (17) estatuto -> asigna .
+    (30) asigna -> ID . ASIGNA expresion PUNTO_COMA
+    (43) llamada -> ID . PAREN_IZQ args PAREN_DER
 
-    FIN             reduce using rule 17 (estatuto -> asigna .)
-    ID              reduce using rule 17 (estatuto -> asigna .)
-    SI              reduce using rule 17 (estatuto -> asigna .)
-    MIENTRAS        reduce using rule 17 (estatuto -> asigna .)
-    ESCRIBE         reduce using rule 17 (estatuto -> asigna .)
-    LLAVE_DER       reduce using rule 17 (estatuto -> asigna .)
-    CORCHETE_DER    reduce using rule 17 (estatuto -> asigna .)
+    ASIGNA          shift and go to state 48
+    PAREN_IZQ       shift and go to state 49
 
 
 state 25
 
-    (18) estatuto -> condicion .
+    (1) programa -> PROGRAMA ID PUNTO_COMA vars funcs INICIO cuerpo . FIN
+    (21) cuerpo -> cuerpo . estatuto
+    (23) estatuto -> . asigna
+    (24) estatuto -> . condicion
+    (25) estatuto -> . ciclo
+    (26) estatuto -> . imprime
+    (27) estatuto -> . llamada PUNTO_COMA
+    (28) estatuto -> . retorna
+    (30) asigna -> . ID ASIGNA expresion PUNTO_COMA
+    (37) condicion -> . si_header CORCHETE_IZQ cuerpo CORCHETE_DER
+    (39) condicion -> . si_header CORCHETE_IZQ cuerpo CORCHETE_DER sino_header CORCHETE_IZQ cuerpo CORCHETE_DER
+    (42) ciclo -> . mientras_cond HAZ CORCHETE_IZQ cuerpo CORCHETE_DER PUNTO_COMA
+    (31) imprime -> . ESCRIBE PAREN_IZQ imp_lista PAREN_DER PUNTO_COMA
+    (43) llamada -> . ID PAREN_IZQ args PAREN_DER
+    (29) retorna -> . REGRESA expresion PUNTO_COMA
+    (36) si_header -> . SI PAREN_IZQ expresion PAREN_DER
+    (41) mientras_cond -> . mientras_header PAREN_IZQ expresion PAREN_DER
+    (40) mientras_header -> . MIENTRAS
 
-    FIN             reduce using rule 18 (estatuto -> condicion .)
-    ID              reduce using rule 18 (estatuto -> condicion .)
-    SI              reduce using rule 18 (estatuto -> condicion .)
-    MIENTRAS        reduce using rule 18 (estatuto -> condicion .)
-    ESCRIBE         reduce using rule 18 (estatuto -> condicion .)
-    LLAVE_DER       reduce using rule 18 (estatuto -> condicion .)
-    CORCHETE_DER    reduce using rule 18 (estatuto -> condicion .)
+    FIN             shift and go to state 50
+    ID              shift and go to state 24
+    ESCRIBE         shift and go to state 36
+    REGRESA         shift and go to state 37
+    SI              shift and go to state 38
+    MIENTRAS        shift and go to state 40
 
+    estatuto                       shift and go to state 51
+    asigna                         shift and go to state 28
+    condicion                      shift and go to state 29
+    ciclo                          shift and go to state 30
+    imprime                        shift and go to state 31
+    llamada                        shift and go to state 32
+    retorna                        shift and go to state 33
+    si_header                      shift and go to state 34
+    mientras_cond                  shift and go to state 35
+    mientras_header                shift and go to state 39
 
 state 26
 
-    (19) estatuto -> ciclo .
+    (20) cuerpo -> estatuto .
 
-    FIN             reduce using rule 19 (estatuto -> ciclo .)
-    ID              reduce using rule 19 (estatuto -> ciclo .)
-    SI              reduce using rule 19 (estatuto -> ciclo .)
-    MIENTRAS        reduce using rule 19 (estatuto -> ciclo .)
-    ESCRIBE         reduce using rule 19 (estatuto -> ciclo .)
-    LLAVE_DER       reduce using rule 19 (estatuto -> ciclo .)
-    CORCHETE_DER    reduce using rule 19 (estatuto -> ciclo .)
+    FIN             reduce using rule 20 (cuerpo -> estatuto .)
+    ID              reduce using rule 20 (cuerpo -> estatuto .)
+    ESCRIBE         reduce using rule 20 (cuerpo -> estatuto .)
+    REGRESA         reduce using rule 20 (cuerpo -> estatuto .)
+    SI              reduce using rule 20 (cuerpo -> estatuto .)
+    MIENTRAS        reduce using rule 20 (cuerpo -> estatuto .)
+    CORCHETE_DER    reduce using rule 20 (cuerpo -> estatuto .)
+    LLAVE_DER       reduce using rule 20 (cuerpo -> estatuto .)
 
 
 state 27
 
-    (20) estatuto -> imprime .
+    (22) cuerpo -> empty .
 
-    FIN             reduce using rule 20 (estatuto -> imprime .)
-    ID              reduce using rule 20 (estatuto -> imprime .)
-    SI              reduce using rule 20 (estatuto -> imprime .)
-    MIENTRAS        reduce using rule 20 (estatuto -> imprime .)
-    ESCRIBE         reduce using rule 20 (estatuto -> imprime .)
-    LLAVE_DER       reduce using rule 20 (estatuto -> imprime .)
-    CORCHETE_DER    reduce using rule 20 (estatuto -> imprime .)
+    FIN             reduce using rule 22 (cuerpo -> empty .)
+    ID              reduce using rule 22 (cuerpo -> empty .)
+    ESCRIBE         reduce using rule 22 (cuerpo -> empty .)
+    REGRESA         reduce using rule 22 (cuerpo -> empty .)
+    SI              reduce using rule 22 (cuerpo -> empty .)
+    MIENTRAS        reduce using rule 22 (cuerpo -> empty .)
+    CORCHETE_DER    reduce using rule 22 (cuerpo -> empty .)
+    LLAVE_DER       reduce using rule 22 (cuerpo -> empty .)
 
 
 state 28
 
-    (21) estatuto -> llamada . PUNTO_COMA
+    (23) estatuto -> asigna .
 
-    PUNTO_COMA      shift and go to state 44
+    FIN             reduce using rule 23 (estatuto -> asigna .)
+    ID              reduce using rule 23 (estatuto -> asigna .)
+    ESCRIBE         reduce using rule 23 (estatuto -> asigna .)
+    REGRESA         reduce using rule 23 (estatuto -> asigna .)
+    SI              reduce using rule 23 (estatuto -> asigna .)
+    MIENTRAS        reduce using rule 23 (estatuto -> asigna .)
+    CORCHETE_DER    reduce using rule 23 (estatuto -> asigna .)
+    LLAVE_DER       reduce using rule 23 (estatuto -> asigna .)
 
 
 state 29
 
-    (28) condicion -> SI . PAREN_IZQ expresion PAREN_DER CORCHETE_IZQ cuerpo CORCHETE_DER
-    (29) condicion -> SI . PAREN_IZQ expresion PAREN_DER CORCHETE_IZQ cuerpo CORCHETE_DER SINO CORCHETE_IZQ cuerpo CORCHETE_DER
+    (24) estatuto -> condicion .
 
-    PAREN_IZQ       shift and go to state 45
+    FIN             reduce using rule 24 (estatuto -> condicion .)
+    ID              reduce using rule 24 (estatuto -> condicion .)
+    ESCRIBE         reduce using rule 24 (estatuto -> condicion .)
+    REGRESA         reduce using rule 24 (estatuto -> condicion .)
+    SI              reduce using rule 24 (estatuto -> condicion .)
+    MIENTRAS        reduce using rule 24 (estatuto -> condicion .)
+    CORCHETE_DER    reduce using rule 24 (estatuto -> condicion .)
+    LLAVE_DER       reduce using rule 24 (estatuto -> condicion .)
 
 
 state 30
 
-    (30) ciclo -> MIENTRAS . PAREN_IZQ expresion PAREN_DER HAZ CORCHETE_IZQ cuerpo CORCHETE_DER PUNTO_COMA
+    (25) estatuto -> ciclo .
 
-    PAREN_IZQ       shift and go to state 46
+    FIN             reduce using rule 25 (estatuto -> ciclo .)
+    ID              reduce using rule 25 (estatuto -> ciclo .)
+    ESCRIBE         reduce using rule 25 (estatuto -> ciclo .)
+    REGRESA         reduce using rule 25 (estatuto -> ciclo .)
+    SI              reduce using rule 25 (estatuto -> ciclo .)
+    MIENTRAS        reduce using rule 25 (estatuto -> ciclo .)
+    CORCHETE_DER    reduce using rule 25 (estatuto -> ciclo .)
+    LLAVE_DER       reduce using rule 25 (estatuto -> ciclo .)
 
 
 state 31
 
-    (23) imprime -> ESCRIBE . PAREN_IZQ imp_lista PAREN_DER PUNTO_COMA
+    (26) estatuto -> imprime .
 
-    PAREN_IZQ       shift and go to state 47
+    FIN             reduce using rule 26 (estatuto -> imprime .)
+    ID              reduce using rule 26 (estatuto -> imprime .)
+    ESCRIBE         reduce using rule 26 (estatuto -> imprime .)
+    REGRESA         reduce using rule 26 (estatuto -> imprime .)
+    SI              reduce using rule 26 (estatuto -> imprime .)
+    MIENTRAS        reduce using rule 26 (estatuto -> imprime .)
+    CORCHETE_DER    reduce using rule 26 (estatuto -> imprime .)
+    LLAVE_DER       reduce using rule 26 (estatuto -> imprime .)
 
 
 state 32
 
-    (12) funcs -> funcs func_header LLAVE_IZQ . vars cuerpo LLAVE_DER PUNTO_COMA
-    (2) vars -> . VARS lista_vars
-    (3) vars -> . empty
-    (61) empty -> .
+    (27) estatuto -> llamada . PUNTO_COMA
 
-    VARS            shift and go to state 6
-    ID              reduce using rule 61 (empty -> .)
-    SI              reduce using rule 61 (empty -> .)
-    MIENTRAS        reduce using rule 61 (empty -> .)
-    ESCRIBE         reduce using rule 61 (empty -> .)
-    LLAVE_DER       reduce using rule 61 (empty -> .)
+    PUNTO_COMA      shift and go to state 52
 
-    vars                           shift and go to state 48
-    empty                          shift and go to state 7
 
 state 33
 
-    (5) lista_vars -> lista_vars ID mas_ids . DOS_PUNTOS tipo PUNTO_COMA
+    (28) estatuto -> retorna .
 
-    DOS_PUNTOS      shift and go to state 49
+    FIN             reduce using rule 28 (estatuto -> retorna .)
+    ID              reduce using rule 28 (estatuto -> retorna .)
+    ESCRIBE         reduce using rule 28 (estatuto -> retorna .)
+    REGRESA         reduce using rule 28 (estatuto -> retorna .)
+    SI              reduce using rule 28 (estatuto -> retorna .)
+    MIENTRAS        reduce using rule 28 (estatuto -> retorna .)
+    CORCHETE_DER    reduce using rule 28 (estatuto -> retorna .)
+    LLAVE_DER       reduce using rule 28 (estatuto -> retorna .)
 
 
 state 34
 
-    (4) lista_vars -> ID mas_ids DOS_PUNTOS . tipo PUNTO_COMA
-    (8) tipo -> . ENTERO
-    (9) tipo -> . FLOTANTE
+    (37) condicion -> si_header . CORCHETE_IZQ cuerpo CORCHETE_DER
+    (39) condicion -> si_header . CORCHETE_IZQ cuerpo CORCHETE_DER sino_header CORCHETE_IZQ cuerpo CORCHETE_DER
 
-    ENTERO          shift and go to state 38
-    FLOTANTE        shift and go to state 39
+    CORCHETE_IZQ    shift and go to state 53
 
-    tipo                           shift and go to state 50
 
 state 35
 
-    (6) mas_ids -> COMA ID . mas_ids
-    (6) mas_ids -> . COMA ID mas_ids
-    (7) mas_ids -> . empty
-    (61) empty -> .
+    (42) ciclo -> mientras_cond . HAZ CORCHETE_IZQ cuerpo CORCHETE_DER PUNTO_COMA
 
-    COMA            shift and go to state 17
-    DOS_PUNTOS      reduce using rule 61 (empty -> .)
+    HAZ             shift and go to state 54
 
-    mas_ids                        shift and go to state 51
-    empty                          shift and go to state 18
 
 state 36
 
-    (10) func_header -> ID PAREN_IZQ tipo . PAREN_DER
+    (31) imprime -> ESCRIBE . PAREN_IZQ imp_lista PAREN_DER PUNTO_COMA
 
-    PAREN_DER       shift and go to state 52
+    PAREN_IZQ       shift and go to state 55
 
 
 state 37
 
-    (11) func_header -> ID PAREN_IZQ NULA . PAREN_DER
+    (29) retorna -> REGRESA . expresion PUNTO_COMA
+    (47) expresion -> . exp
+    (48) expresion -> . exp mayor_op exp
+    (49) expresion -> . exp menor_op exp
+    (50) expresion -> . exp igual_op exp
+    (51) expresion -> . exp diferente_op exp
+    (52) exp -> . termino
+    (53) exp -> . exp suma_op termino
+    (54) exp -> . exp resta_op termino
+    (55) termino -> . factor
+    (56) termino -> . termino mult_op factor
+    (57) termino -> . termino div_op factor
+    (66) factor -> . PAREN_IZQ expresion PAREN_DER
+    (67) factor -> . SUMA cte
+    (68) factor -> . RESTA cte
+    (69) factor -> . cte
+    (70) factor -> . ID
+    (71) cte -> . CTE_ENT
+    (72) cte -> . CTE_FLOT
 
-    PAREN_DER       shift and go to state 53
+    PAREN_IZQ       shift and go to state 60
+    SUMA            shift and go to state 61
+    RESTA           shift and go to state 63
+    ID              shift and go to state 64
+    CTE_ENT         shift and go to state 65
+    CTE_FLOT        shift and go to state 66
 
+    expresion                      shift and go to state 56
+    exp                            shift and go to state 57
+    termino                        shift and go to state 58
+    factor                         shift and go to state 59
+    cte                            shift and go to state 62
 
 state 38
 
-    (8) tipo -> ENTERO .
+    (36) si_header -> SI . PAREN_IZQ expresion PAREN_DER
 
-    PAREN_DER       reduce using rule 8 (tipo -> ENTERO .)
-    PUNTO_COMA      reduce using rule 8 (tipo -> ENTERO .)
+    PAREN_IZQ       shift and go to state 67
 
 
 state 39
 
-    (9) tipo -> FLOTANTE .
+    (41) mientras_cond -> mientras_header . PAREN_IZQ expresion PAREN_DER
 
-    PAREN_DER       reduce using rule 9 (tipo -> FLOTANTE .)
-    PUNTO_COMA      reduce using rule 9 (tipo -> FLOTANTE .)
+    PAREN_IZQ       shift and go to state 68
 
 
 state 40
 
-    (22) asigna -> ID ASIGNA . expresion PUNTO_COMA
-    (35) expresion -> . exp
-    (36) expresion -> . exp mayor_op exp
-    (37) expresion -> . exp menor_op exp
-    (38) expresion -> . exp igual_op exp
-    (39) expresion -> . exp diferente_op exp
-    (40) exp -> . termino
-    (41) exp -> . exp suma_op termino
-    (42) exp -> . exp resta_op termino
-    (43) termino -> . factor
-    (44) termino -> . termino mult_op factor
-    (45) termino -> . termino div_op factor
-    (54) factor -> . PAREN_IZQ expresion PAREN_DER
-    (55) factor -> . SUMA cte
-    (56) factor -> . RESTA cte
-    (57) factor -> . cte
-    (58) factor -> . ID
-    (59) cte -> . CTE_ENT
-    (60) cte -> . CTE_FLOT
+    (40) mientras_header -> MIENTRAS .
 
-    PAREN_IZQ       shift and go to state 59
-    SUMA            shift and go to state 60
-    RESTA           shift and go to state 62
-    ID              shift and go to state 54
-    CTE_ENT         shift and go to state 63
-    CTE_FLOT        shift and go to state 64
+    PAREN_IZQ       reduce using rule 40 (mientras_header -> MIENTRAS .)
 
-    expresion                      shift and go to state 55
-    exp                            shift and go to state 56
-    termino                        shift and go to state 57
-    factor                         shift and go to state 58
-    cte                            shift and go to state 61
 
 state 41
 
-    (31) llamada -> ID PAREN_IZQ . args PAREN_DER
-    (32) args -> . expresion
-    (33) args -> . args COMA expresion
-    (34) args -> . empty
-    (35) expresion -> . exp
-    (36) expresion -> . exp mayor_op exp
-    (37) expresion -> . exp menor_op exp
-    (38) expresion -> . exp igual_op exp
-    (39) expresion -> . exp diferente_op exp
-    (61) empty -> .
-    (40) exp -> . termino
-    (41) exp -> . exp suma_op termino
-    (42) exp -> . exp resta_op termino
-    (43) termino -> . factor
-    (44) termino -> . termino mult_op factor
-    (45) termino -> . termino div_op factor
-    (54) factor -> . PAREN_IZQ expresion PAREN_DER
-    (55) factor -> . SUMA cte
-    (56) factor -> . RESTA cte
-    (57) factor -> . cte
-    (58) factor -> . ID
-    (59) cte -> . CTE_ENT
-    (60) cte -> . CTE_FLOT
+    (18) funcs -> funcs func_header LLAVE_IZQ . vars cuerpo LLAVE_DER PUNTO_COMA
+    (2) vars -> . vars_inicio lista_vars vars_fin
+    (3) vars -> . empty
+    (4) vars_inicio -> . VARS
+    (73) empty -> .
 
-    PAREN_DER       reduce using rule 61 (empty -> .)
-    COMA            reduce using rule 61 (empty -> .)
-    PAREN_IZQ       shift and go to state 59
-    SUMA            shift and go to state 60
-    RESTA           shift and go to state 62
-    ID              shift and go to state 54
-    CTE_ENT         shift and go to state 63
-    CTE_FLOT        shift and go to state 64
+    VARS            shift and go to state 8
+    ID              reduce using rule 73 (empty -> .)
+    ESCRIBE         reduce using rule 73 (empty -> .)
+    REGRESA         reduce using rule 73 (empty -> .)
+    SI              reduce using rule 73 (empty -> .)
+    MIENTRAS        reduce using rule 73 (empty -> .)
+    LLAVE_DER       reduce using rule 73 (empty -> .)
 
-    args                           shift and go to state 65
-    expresion                      shift and go to state 66
-    empty                          shift and go to state 67
-    exp                            shift and go to state 56
-    termino                        shift and go to state 57
-    factor                         shift and go to state 58
-    cte                            shift and go to state 61
+    vars                           shift and go to state 69
+    vars_inicio                    shift and go to state 6
+    empty                          shift and go to state 7
 
 state 42
+
+    (15) func_header -> ENTERO ID . PAREN_IZQ params_decl PAREN_DER
+
+    PAREN_IZQ       shift and go to state 70
+
+
+state 43
+
+    (16) func_header -> FLOTANTE ID . PAREN_IZQ params_decl PAREN_DER
+
+    PAREN_IZQ       shift and go to state 71
+
+
+state 44
+
+    (17) func_header -> NULA ID . PAREN_IZQ params_decl PAREN_DER
+
+    PAREN_IZQ       shift and go to state 72
+
+
+state 45
+
+    (7) lista_vars -> lista_vars ID_VAR mas_ids . DOS_PUNTOS tipo PUNTO_COMA
+
+    DOS_PUNTOS      shift and go to state 73
+
+
+state 46
+
+    (6) lista_vars -> ID_VAR mas_ids DOS_PUNTOS . tipo PUNTO_COMA
+    (10) tipo -> . ENTERO
+    (11) tipo -> . FLOTANTE
+
+    ENTERO          shift and go to state 75
+    FLOTANTE        shift and go to state 76
+
+    tipo                           shift and go to state 74
+
+state 47
+
+    (8) mas_ids -> COMA ID_VAR . mas_ids
+    (8) mas_ids -> . COMA ID_VAR mas_ids
+    (9) mas_ids -> . empty
+    (73) empty -> .
+
+    COMA            shift and go to state 22
+    DOS_PUNTOS      reduce using rule 73 (empty -> .)
+
+    mas_ids                        shift and go to state 77
+    empty                          shift and go to state 23
+
+state 48
+
+    (30) asigna -> ID ASIGNA . expresion PUNTO_COMA
+    (47) expresion -> . exp
+    (48) expresion -> . exp mayor_op exp
+    (49) expresion -> . exp menor_op exp
+    (50) expresion -> . exp igual_op exp
+    (51) expresion -> . exp diferente_op exp
+    (52) exp -> . termino
+    (53) exp -> . exp suma_op termino
+    (54) exp -> . exp resta_op termino
+    (55) termino -> . factor
+    (56) termino -> . termino mult_op factor
+    (57) termino -> . termino div_op factor
+    (66) factor -> . PAREN_IZQ expresion PAREN_DER
+    (67) factor -> . SUMA cte
+    (68) factor -> . RESTA cte
+    (69) factor -> . cte
+    (70) factor -> . ID
+    (71) cte -> . CTE_ENT
+    (72) cte -> . CTE_FLOT
+
+    PAREN_IZQ       shift and go to state 60
+    SUMA            shift and go to state 61
+    RESTA           shift and go to state 63
+    ID              shift and go to state 64
+    CTE_ENT         shift and go to state 65
+    CTE_FLOT        shift and go to state 66
+
+    expresion                      shift and go to state 78
+    exp                            shift and go to state 57
+    termino                        shift and go to state 58
+    factor                         shift and go to state 59
+    cte                            shift and go to state 62
+
+state 49
+
+    (43) llamada -> ID PAREN_IZQ . args PAREN_DER
+    (44) args -> . expresion
+    (45) args -> . args COMA expresion
+    (46) args -> . empty
+    (47) expresion -> . exp
+    (48) expresion -> . exp mayor_op exp
+    (49) expresion -> . exp menor_op exp
+    (50) expresion -> . exp igual_op exp
+    (51) expresion -> . exp diferente_op exp
+    (73) empty -> .
+    (52) exp -> . termino
+    (53) exp -> . exp suma_op termino
+    (54) exp -> . exp resta_op termino
+    (55) termino -> . factor
+    (56) termino -> . termino mult_op factor
+    (57) termino -> . termino div_op factor
+    (66) factor -> . PAREN_IZQ expresion PAREN_DER
+    (67) factor -> . SUMA cte
+    (68) factor -> . RESTA cte
+    (69) factor -> . cte
+    (70) factor -> . ID
+    (71) cte -> . CTE_ENT
+    (72) cte -> . CTE_FLOT
+
+    PAREN_DER       reduce using rule 73 (empty -> .)
+    COMA            reduce using rule 73 (empty -> .)
+    PAREN_IZQ       shift and go to state 60
+    SUMA            shift and go to state 61
+    RESTA           shift and go to state 63
+    ID              shift and go to state 64
+    CTE_ENT         shift and go to state 65
+    CTE_FLOT        shift and go to state 66
+
+    args                           shift and go to state 79
+    expresion                      shift and go to state 80
+    empty                          shift and go to state 81
+    exp                            shift and go to state 57
+    termino                        shift and go to state 58
+    factor                         shift and go to state 59
+    cte                            shift and go to state 62
+
+state 50
 
     (1) programa -> PROGRAMA ID PUNTO_COMA vars funcs INICIO cuerpo FIN .
 
     $end            reduce using rule 1 (programa -> PROGRAMA ID PUNTO_COMA vars funcs INICIO cuerpo FIN .)
 
 
-state 43
-
-    (15) cuerpo -> cuerpo estatuto .
-
-    FIN             reduce using rule 15 (cuerpo -> cuerpo estatuto .)
-    ID              reduce using rule 15 (cuerpo -> cuerpo estatuto .)
-    SI              reduce using rule 15 (cuerpo -> cuerpo estatuto .)
-    MIENTRAS        reduce using rule 15 (cuerpo -> cuerpo estatuto .)
-    ESCRIBE         reduce using rule 15 (cuerpo -> cuerpo estatuto .)
-    LLAVE_DER       reduce using rule 15 (cuerpo -> cuerpo estatuto .)
-    CORCHETE_DER    reduce using rule 15 (cuerpo -> cuerpo estatuto .)
-
-
-state 44
-
-    (21) estatuto -> llamada PUNTO_COMA .
-
-    FIN             reduce using rule 21 (estatuto -> llamada PUNTO_COMA .)
-    ID              reduce using rule 21 (estatuto -> llamada PUNTO_COMA .)
-    SI              reduce using rule 21 (estatuto -> llamada PUNTO_COMA .)
-    MIENTRAS        reduce using rule 21 (estatuto -> llamada PUNTO_COMA .)
-    ESCRIBE         reduce using rule 21 (estatuto -> llamada PUNTO_COMA .)
-    LLAVE_DER       reduce using rule 21 (estatuto -> llamada PUNTO_COMA .)
-    CORCHETE_DER    reduce using rule 21 (estatuto -> llamada PUNTO_COMA .)
-
-
-state 45
-
-    (28) condicion -> SI PAREN_IZQ . expresion PAREN_DER CORCHETE_IZQ cuerpo CORCHETE_DER
-    (29) condicion -> SI PAREN_IZQ . expresion PAREN_DER CORCHETE_IZQ cuerpo CORCHETE_DER SINO CORCHETE_IZQ cuerpo CORCHETE_DER
-    (35) expresion -> . exp
-    (36) expresion -> . exp mayor_op exp
-    (37) expresion -> . exp menor_op exp
-    (38) expresion -> . exp igual_op exp
-    (39) expresion -> . exp diferente_op exp
-    (40) exp -> . termino
-    (41) exp -> . exp suma_op termino
-    (42) exp -> . exp resta_op termino
-    (43) termino -> . factor
-    (44) termino -> . termino mult_op factor
-    (45) termino -> . termino div_op factor
-    (54) factor -> . PAREN_IZQ expresion PAREN_DER
-    (55) factor -> . SUMA cte
-    (56) factor -> . RESTA cte
-    (57) factor -> . cte
-    (58) factor -> . ID
-    (59) cte -> . CTE_ENT
-    (60) cte -> . CTE_FLOT
-
-    PAREN_IZQ       shift and go to state 59
-    SUMA            shift and go to state 60
-    RESTA           shift and go to state 62
-    ID              shift and go to state 54
-    CTE_ENT         shift and go to state 63
-    CTE_FLOT        shift and go to state 64
-
-    expresion                      shift and go to state 68
-    exp                            shift and go to state 56
-    termino                        shift and go to state 57
-    factor                         shift and go to state 58
-    cte                            shift and go to state 61
-
-state 46
-
-    (30) ciclo -> MIENTRAS PAREN_IZQ . expresion PAREN_DER HAZ CORCHETE_IZQ cuerpo CORCHETE_DER PUNTO_COMA
-    (35) expresion -> . exp
-    (36) expresion -> . exp mayor_op exp
-    (37) expresion -> . exp menor_op exp
-    (38) expresion -> . exp igual_op exp
-    (39) expresion -> . exp diferente_op exp
-    (40) exp -> . termino
-    (41) exp -> . exp suma_op termino
-    (42) exp -> . exp resta_op termino
-    (43) termino -> . factor
-    (44) termino -> . termino mult_op factor
-    (45) termino -> . termino div_op factor
-    (54) factor -> . PAREN_IZQ expresion PAREN_DER
-    (55) factor -> . SUMA cte
-    (56) factor -> . RESTA cte
-    (57) factor -> . cte
-    (58) factor -> . ID
-    (59) cte -> . CTE_ENT
-    (60) cte -> . CTE_FLOT
-
-    PAREN_IZQ       shift and go to state 59
-    SUMA            shift and go to state 60
-    RESTA           shift and go to state 62
-    ID              shift and go to state 54
-    CTE_ENT         shift and go to state 63
-    CTE_FLOT        shift and go to state 64
-
-    expresion                      shift and go to state 69
-    exp                            shift and go to state 56
-    termino                        shift and go to state 57
-    factor                         shift and go to state 58
-    cte                            shift and go to state 61
-
-state 47
-
-    (23) imprime -> ESCRIBE PAREN_IZQ . imp_lista PAREN_DER PUNTO_COMA
-    (24) imp_lista -> . expresion
-    (25) imp_lista -> . CADENA
-    (26) imp_lista -> . imp_lista COMA expresion
-    (27) imp_lista -> . imp_lista COMA CADENA
-    (35) expresion -> . exp
-    (36) expresion -> . exp mayor_op exp
-    (37) expresion -> . exp menor_op exp
-    (38) expresion -> . exp igual_op exp
-    (39) expresion -> . exp diferente_op exp
-    (40) exp -> . termino
-    (41) exp -> . exp suma_op termino
-    (42) exp -> . exp resta_op termino
-    (43) termino -> . factor
-    (44) termino -> . termino mult_op factor
-    (45) termino -> . termino div_op factor
-    (54) factor -> . PAREN_IZQ expresion PAREN_DER
-    (55) factor -> . SUMA cte
-    (56) factor -> . RESTA cte
-    (57) factor -> . cte
-    (58) factor -> . ID
-    (59) cte -> . CTE_ENT
-    (60) cte -> . CTE_FLOT
-
-    CADENA          shift and go to state 72
-    PAREN_IZQ       shift and go to state 59
-    SUMA            shift and go to state 60
-    RESTA           shift and go to state 62
-    ID              shift and go to state 54
-    CTE_ENT         shift and go to state 63
-    CTE_FLOT        shift and go to state 64
-
-    imp_lista                      shift and go to state 70
-    expresion                      shift and go to state 71
-    exp                            shift and go to state 56
-    termino                        shift and go to state 57
-    factor                         shift and go to state 58
-    cte                            shift and go to state 61
-
-state 48
-
-    (12) funcs -> funcs func_header LLAVE_IZQ vars . cuerpo LLAVE_DER PUNTO_COMA
-    (14) cuerpo -> . estatuto
-    (15) cuerpo -> . cuerpo estatuto
-    (16) cuerpo -> . empty
-    (17) estatuto -> . asigna
-    (18) estatuto -> . condicion
-    (19) estatuto -> . ciclo
-    (20) estatuto -> . imprime
-    (21) estatuto -> . llamada PUNTO_COMA
-    (61) empty -> .
-    (22) asigna -> . ID ASIGNA expresion PUNTO_COMA
-    (28) condicion -> . SI PAREN_IZQ expresion PAREN_DER CORCHETE_IZQ cuerpo CORCHETE_DER
-    (29) condicion -> . SI PAREN_IZQ expresion PAREN_DER CORCHETE_IZQ cuerpo CORCHETE_DER SINO CORCHETE_IZQ cuerpo CORCHETE_DER
-    (30) ciclo -> . MIENTRAS PAREN_IZQ expresion PAREN_DER HAZ CORCHETE_IZQ cuerpo CORCHETE_DER PUNTO_COMA
-    (23) imprime -> . ESCRIBE PAREN_IZQ imp_lista PAREN_DER PUNTO_COMA
-    (31) llamada -> . ID PAREN_IZQ args PAREN_DER
-
-  ! shift/reduce conflict for ID resolved as shift
-  ! shift/reduce conflict for SI resolved as shift
-  ! shift/reduce conflict for MIENTRAS resolved as shift
-  ! shift/reduce conflict for ESCRIBE resolved as shift
-    LLAVE_DER       reduce using rule 61 (empty -> .)
-    ID              shift and go to state 20
-    SI              shift and go to state 29
-    MIENTRAS        shift and go to state 30
-    ESCRIBE         shift and go to state 31
-
-  ! ID              [ reduce using rule 61 (empty -> .) ]
-  ! SI              [ reduce using rule 61 (empty -> .) ]
-  ! MIENTRAS        [ reduce using rule 61 (empty -> .) ]
-  ! ESCRIBE         [ reduce using rule 61 (empty -> .) ]
-
-    cuerpo                         shift and go to state 73
-    estatuto                       shift and go to state 22
-    empty                          shift and go to state 23
-    asigna                         shift and go to state 24
-    condicion                      shift and go to state 25
-    ciclo                          shift and go to state 26
-    imprime                        shift and go to state 27
-    llamada                        shift and go to state 28
-
-state 49
-
-    (5) lista_vars -> lista_vars ID mas_ids DOS_PUNTOS . tipo PUNTO_COMA
-    (8) tipo -> . ENTERO
-    (9) tipo -> . FLOTANTE
-
-    ENTERO          shift and go to state 38
-    FLOTANTE        shift and go to state 39
-
-    tipo                           shift and go to state 74
-
-state 50
-
-    (4) lista_vars -> ID mas_ids DOS_PUNTOS tipo . PUNTO_COMA
-
-    PUNTO_COMA      shift and go to state 75
-
-
 state 51
 
-    (6) mas_ids -> COMA ID mas_ids .
+    (21) cuerpo -> cuerpo estatuto .
 
-    DOS_PUNTOS      reduce using rule 6 (mas_ids -> COMA ID mas_ids .)
+    FIN             reduce using rule 21 (cuerpo -> cuerpo estatuto .)
+    ID              reduce using rule 21 (cuerpo -> cuerpo estatuto .)
+    ESCRIBE         reduce using rule 21 (cuerpo -> cuerpo estatuto .)
+    REGRESA         reduce using rule 21 (cuerpo -> cuerpo estatuto .)
+    SI              reduce using rule 21 (cuerpo -> cuerpo estatuto .)
+    MIENTRAS        reduce using rule 21 (cuerpo -> cuerpo estatuto .)
+    CORCHETE_DER    reduce using rule 21 (cuerpo -> cuerpo estatuto .)
+    LLAVE_DER       reduce using rule 21 (cuerpo -> cuerpo estatuto .)
 
 
 state 52
 
-    (10) func_header -> ID PAREN_IZQ tipo PAREN_DER .
+    (27) estatuto -> llamada PUNTO_COMA .
 
-    LLAVE_IZQ       reduce using rule 10 (func_header -> ID PAREN_IZQ tipo PAREN_DER .)
+    FIN             reduce using rule 27 (estatuto -> llamada PUNTO_COMA .)
+    ID              reduce using rule 27 (estatuto -> llamada PUNTO_COMA .)
+    ESCRIBE         reduce using rule 27 (estatuto -> llamada PUNTO_COMA .)
+    REGRESA         reduce using rule 27 (estatuto -> llamada PUNTO_COMA .)
+    SI              reduce using rule 27 (estatuto -> llamada PUNTO_COMA .)
+    MIENTRAS        reduce using rule 27 (estatuto -> llamada PUNTO_COMA .)
+    CORCHETE_DER    reduce using rule 27 (estatuto -> llamada PUNTO_COMA .)
+    LLAVE_DER       reduce using rule 27 (estatuto -> llamada PUNTO_COMA .)
 
 
 state 53
 
-    (11) func_header -> ID PAREN_IZQ NULA PAREN_DER .
+    (37) condicion -> si_header CORCHETE_IZQ . cuerpo CORCHETE_DER
+    (39) condicion -> si_header CORCHETE_IZQ . cuerpo CORCHETE_DER sino_header CORCHETE_IZQ cuerpo CORCHETE_DER
+    (20) cuerpo -> . estatuto
+    (21) cuerpo -> . cuerpo estatuto
+    (22) cuerpo -> . empty
+    (23) estatuto -> . asigna
+    (24) estatuto -> . condicion
+    (25) estatuto -> . ciclo
+    (26) estatuto -> . imprime
+    (27) estatuto -> . llamada PUNTO_COMA
+    (28) estatuto -> . retorna
+    (73) empty -> .
+    (30) asigna -> . ID ASIGNA expresion PUNTO_COMA
+    (37) condicion -> . si_header CORCHETE_IZQ cuerpo CORCHETE_DER
+    (39) condicion -> . si_header CORCHETE_IZQ cuerpo CORCHETE_DER sino_header CORCHETE_IZQ cuerpo CORCHETE_DER
+    (42) ciclo -> . mientras_cond HAZ CORCHETE_IZQ cuerpo CORCHETE_DER PUNTO_COMA
+    (31) imprime -> . ESCRIBE PAREN_IZQ imp_lista PAREN_DER PUNTO_COMA
+    (43) llamada -> . ID PAREN_IZQ args PAREN_DER
+    (29) retorna -> . REGRESA expresion PUNTO_COMA
+    (36) si_header -> . SI PAREN_IZQ expresion PAREN_DER
+    (41) mientras_cond -> . mientras_header PAREN_IZQ expresion PAREN_DER
+    (40) mientras_header -> . MIENTRAS
 
-    LLAVE_IZQ       reduce using rule 11 (func_header -> ID PAREN_IZQ NULA PAREN_DER .)
+  ! shift/reduce conflict for ID resolved as shift
+  ! shift/reduce conflict for ESCRIBE resolved as shift
+  ! shift/reduce conflict for REGRESA resolved as shift
+  ! shift/reduce conflict for SI resolved as shift
+  ! shift/reduce conflict for MIENTRAS resolved as shift
+    CORCHETE_DER    reduce using rule 73 (empty -> .)
+    ID              shift and go to state 24
+    ESCRIBE         shift and go to state 36
+    REGRESA         shift and go to state 37
+    SI              shift and go to state 38
+    MIENTRAS        shift and go to state 40
 
+  ! ID              [ reduce using rule 73 (empty -> .) ]
+  ! ESCRIBE         [ reduce using rule 73 (empty -> .) ]
+  ! REGRESA         [ reduce using rule 73 (empty -> .) ]
+  ! SI              [ reduce using rule 73 (empty -> .) ]
+  ! MIENTRAS        [ reduce using rule 73 (empty -> .) ]
+
+    si_header                      shift and go to state 34
+    cuerpo                         shift and go to state 82
+    estatuto                       shift and go to state 26
+    empty                          shift and go to state 27
+    asigna                         shift and go to state 28
+    condicion                      shift and go to state 29
+    ciclo                          shift and go to state 30
+    imprime                        shift and go to state 31
+    llamada                        shift and go to state 32
+    retorna                        shift and go to state 33
+    mientras_cond                  shift and go to state 35
+    mientras_header                shift and go to state 39
 
 state 54
 
-    (58) factor -> ID .
+    (42) ciclo -> mientras_cond HAZ . CORCHETE_IZQ cuerpo CORCHETE_DER PUNTO_COMA
 
-    MULT            reduce using rule 58 (factor -> ID .)
-    DIV             reduce using rule 58 (factor -> ID .)
-    MAYOR           reduce using rule 58 (factor -> ID .)
-    MENOR           reduce using rule 58 (factor -> ID .)
-    IGUAL           reduce using rule 58 (factor -> ID .)
-    DIFERENTE       reduce using rule 58 (factor -> ID .)
-    SUMA            reduce using rule 58 (factor -> ID .)
-    RESTA           reduce using rule 58 (factor -> ID .)
-    PUNTO_COMA      reduce using rule 58 (factor -> ID .)
-    PAREN_DER       reduce using rule 58 (factor -> ID .)
-    COMA            reduce using rule 58 (factor -> ID .)
+    CORCHETE_IZQ    shift and go to state 83
 
 
 state 55
 
-    (22) asigna -> ID ASIGNA expresion . PUNTO_COMA
+    (31) imprime -> ESCRIBE PAREN_IZQ . imp_lista PAREN_DER PUNTO_COMA
+    (32) imp_lista -> . expresion
+    (33) imp_lista -> . CADENA
+    (34) imp_lista -> . imp_lista COMA expresion
+    (35) imp_lista -> . imp_lista COMA CADENA
+    (47) expresion -> . exp
+    (48) expresion -> . exp mayor_op exp
+    (49) expresion -> . exp menor_op exp
+    (50) expresion -> . exp igual_op exp
+    (51) expresion -> . exp diferente_op exp
+    (52) exp -> . termino
+    (53) exp -> . exp suma_op termino
+    (54) exp -> . exp resta_op termino
+    (55) termino -> . factor
+    (56) termino -> . termino mult_op factor
+    (57) termino -> . termino div_op factor
+    (66) factor -> . PAREN_IZQ expresion PAREN_DER
+    (67) factor -> . SUMA cte
+    (68) factor -> . RESTA cte
+    (69) factor -> . cte
+    (70) factor -> . ID
+    (71) cte -> . CTE_ENT
+    (72) cte -> . CTE_FLOT
 
-    PUNTO_COMA      shift and go to state 76
+    CADENA          shift and go to state 86
+    PAREN_IZQ       shift and go to state 60
+    SUMA            shift and go to state 61
+    RESTA           shift and go to state 63
+    ID              shift and go to state 64
+    CTE_ENT         shift and go to state 65
+    CTE_FLOT        shift and go to state 66
 
+    imp_lista                      shift and go to state 84
+    expresion                      shift and go to state 85
+    exp                            shift and go to state 57
+    termino                        shift and go to state 58
+    factor                         shift and go to state 59
+    cte                            shift and go to state 62
 
 state 56
 
-    (35) expresion -> exp .
-    (36) expresion -> exp . mayor_op exp
-    (37) expresion -> exp . menor_op exp
-    (38) expresion -> exp . igual_op exp
-    (39) expresion -> exp . diferente_op exp
-    (41) exp -> exp . suma_op termino
-    (42) exp -> exp . resta_op termino
-    (50) mayor_op -> . MAYOR
-    (51) menor_op -> . MENOR
-    (52) igual_op -> . IGUAL
-    (53) diferente_op -> . DIFERENTE
-    (46) suma_op -> . SUMA
-    (47) resta_op -> . RESTA
+    (29) retorna -> REGRESA expresion . PUNTO_COMA
 
-    PUNTO_COMA      reduce using rule 35 (expresion -> exp .)
-    PAREN_DER       reduce using rule 35 (expresion -> exp .)
-    COMA            reduce using rule 35 (expresion -> exp .)
-    MAYOR           shift and go to state 83
-    MENOR           shift and go to state 84
-    IGUAL           shift and go to state 85
-    DIFERENTE       shift and go to state 86
-    SUMA            shift and go to state 87
-    RESTA           shift and go to state 88
+    PUNTO_COMA      shift and go to state 87
 
-    mayor_op                       shift and go to state 77
-    menor_op                       shift and go to state 78
-    igual_op                       shift and go to state 79
-    diferente_op                   shift and go to state 80
-    suma_op                        shift and go to state 81
-    resta_op                       shift and go to state 82
 
 state 57
 
-    (40) exp -> termino .
-    (44) termino -> termino . mult_op factor
-    (45) termino -> termino . div_op factor
-    (48) mult_op -> . MULT
-    (49) div_op -> . DIV
+    (47) expresion -> exp .
+    (48) expresion -> exp . mayor_op exp
+    (49) expresion -> exp . menor_op exp
+    (50) expresion -> exp . igual_op exp
+    (51) expresion -> exp . diferente_op exp
+    (53) exp -> exp . suma_op termino
+    (54) exp -> exp . resta_op termino
+    (62) mayor_op -> . MAYOR
+    (63) menor_op -> . MENOR
+    (64) igual_op -> . IGUAL
+    (65) diferente_op -> . DIFERENTE
+    (58) suma_op -> . SUMA
+    (59) resta_op -> . RESTA
 
-    MAYOR           reduce using rule 40 (exp -> termino .)
-    MENOR           reduce using rule 40 (exp -> termino .)
-    IGUAL           reduce using rule 40 (exp -> termino .)
-    DIFERENTE       reduce using rule 40 (exp -> termino .)
-    SUMA            reduce using rule 40 (exp -> termino .)
-    RESTA           reduce using rule 40 (exp -> termino .)
-    PUNTO_COMA      reduce using rule 40 (exp -> termino .)
-    PAREN_DER       reduce using rule 40 (exp -> termino .)
-    COMA            reduce using rule 40 (exp -> termino .)
-    MULT            shift and go to state 91
-    DIV             shift and go to state 92
+    PUNTO_COMA      reduce using rule 47 (expresion -> exp .)
+    PAREN_DER       reduce using rule 47 (expresion -> exp .)
+    COMA            reduce using rule 47 (expresion -> exp .)
+    MAYOR           shift and go to state 94
+    MENOR           shift and go to state 95
+    IGUAL           shift and go to state 96
+    DIFERENTE       shift and go to state 97
+    SUMA            shift and go to state 98
+    RESTA           shift and go to state 99
 
-    mult_op                        shift and go to state 89
-    div_op                         shift and go to state 90
+    mayor_op                       shift and go to state 88
+    menor_op                       shift and go to state 89
+    igual_op                       shift and go to state 90
+    diferente_op                   shift and go to state 91
+    suma_op                        shift and go to state 92
+    resta_op                       shift and go to state 93
 
 state 58
 
-    (43) termino -> factor .
+    (52) exp -> termino .
+    (56) termino -> termino . mult_op factor
+    (57) termino -> termino . div_op factor
+    (60) mult_op -> . MULT
+    (61) div_op -> . DIV
 
-    MULT            reduce using rule 43 (termino -> factor .)
-    DIV             reduce using rule 43 (termino -> factor .)
-    MAYOR           reduce using rule 43 (termino -> factor .)
-    MENOR           reduce using rule 43 (termino -> factor .)
-    IGUAL           reduce using rule 43 (termino -> factor .)
-    DIFERENTE       reduce using rule 43 (termino -> factor .)
-    SUMA            reduce using rule 43 (termino -> factor .)
-    RESTA           reduce using rule 43 (termino -> factor .)
-    PUNTO_COMA      reduce using rule 43 (termino -> factor .)
-    PAREN_DER       reduce using rule 43 (termino -> factor .)
-    COMA            reduce using rule 43 (termino -> factor .)
+    MAYOR           reduce using rule 52 (exp -> termino .)
+    MENOR           reduce using rule 52 (exp -> termino .)
+    IGUAL           reduce using rule 52 (exp -> termino .)
+    DIFERENTE       reduce using rule 52 (exp -> termino .)
+    SUMA            reduce using rule 52 (exp -> termino .)
+    RESTA           reduce using rule 52 (exp -> termino .)
+    PUNTO_COMA      reduce using rule 52 (exp -> termino .)
+    PAREN_DER       reduce using rule 52 (exp -> termino .)
+    COMA            reduce using rule 52 (exp -> termino .)
+    MULT            shift and go to state 102
+    DIV             shift and go to state 103
 
+    mult_op                        shift and go to state 100
+    div_op                         shift and go to state 101
 
 state 59
 
-    (54) factor -> PAREN_IZQ . expresion PAREN_DER
-    (35) expresion -> . exp
-    (36) expresion -> . exp mayor_op exp
-    (37) expresion -> . exp menor_op exp
-    (38) expresion -> . exp igual_op exp
-    (39) expresion -> . exp diferente_op exp
-    (40) exp -> . termino
-    (41) exp -> . exp suma_op termino
-    (42) exp -> . exp resta_op termino
-    (43) termino -> . factor
-    (44) termino -> . termino mult_op factor
-    (45) termino -> . termino div_op factor
-    (54) factor -> . PAREN_IZQ expresion PAREN_DER
-    (55) factor -> . SUMA cte
-    (56) factor -> . RESTA cte
-    (57) factor -> . cte
-    (58) factor -> . ID
-    (59) cte -> . CTE_ENT
-    (60) cte -> . CTE_FLOT
+    (55) termino -> factor .
 
-    PAREN_IZQ       shift and go to state 59
-    SUMA            shift and go to state 60
-    RESTA           shift and go to state 62
-    ID              shift and go to state 54
-    CTE_ENT         shift and go to state 63
-    CTE_FLOT        shift and go to state 64
+    MULT            reduce using rule 55 (termino -> factor .)
+    DIV             reduce using rule 55 (termino -> factor .)
+    MAYOR           reduce using rule 55 (termino -> factor .)
+    MENOR           reduce using rule 55 (termino -> factor .)
+    IGUAL           reduce using rule 55 (termino -> factor .)
+    DIFERENTE       reduce using rule 55 (termino -> factor .)
+    SUMA            reduce using rule 55 (termino -> factor .)
+    RESTA           reduce using rule 55 (termino -> factor .)
+    PUNTO_COMA      reduce using rule 55 (termino -> factor .)
+    PAREN_DER       reduce using rule 55 (termino -> factor .)
+    COMA            reduce using rule 55 (termino -> factor .)
 
-    expresion                      shift and go to state 93
-    exp                            shift and go to state 56
-    termino                        shift and go to state 57
-    factor                         shift and go to state 58
-    cte                            shift and go to state 61
 
 state 60
 
-    (55) factor -> SUMA . cte
-    (59) cte -> . CTE_ENT
-    (60) cte -> . CTE_FLOT
+    (66) factor -> PAREN_IZQ . expresion PAREN_DER
+    (47) expresion -> . exp
+    (48) expresion -> . exp mayor_op exp
+    (49) expresion -> . exp menor_op exp
+    (50) expresion -> . exp igual_op exp
+    (51) expresion -> . exp diferente_op exp
+    (52) exp -> . termino
+    (53) exp -> . exp suma_op termino
+    (54) exp -> . exp resta_op termino
+    (55) termino -> . factor
+    (56) termino -> . termino mult_op factor
+    (57) termino -> . termino div_op factor
+    (66) factor -> . PAREN_IZQ expresion PAREN_DER
+    (67) factor -> . SUMA cte
+    (68) factor -> . RESTA cte
+    (69) factor -> . cte
+    (70) factor -> . ID
+    (71) cte -> . CTE_ENT
+    (72) cte -> . CTE_FLOT
 
-    CTE_ENT         shift and go to state 63
-    CTE_FLOT        shift and go to state 64
+    PAREN_IZQ       shift and go to state 60
+    SUMA            shift and go to state 61
+    RESTA           shift and go to state 63
+    ID              shift and go to state 64
+    CTE_ENT         shift and go to state 65
+    CTE_FLOT        shift and go to state 66
 
-    cte                            shift and go to state 94
+    expresion                      shift and go to state 104
+    exp                            shift and go to state 57
+    termino                        shift and go to state 58
+    factor                         shift and go to state 59
+    cte                            shift and go to state 62
 
 state 61
 
-    (57) factor -> cte .
+    (67) factor -> SUMA . cte
+    (71) cte -> . CTE_ENT
+    (72) cte -> . CTE_FLOT
 
-    MULT            reduce using rule 57 (factor -> cte .)
-    DIV             reduce using rule 57 (factor -> cte .)
-    MAYOR           reduce using rule 57 (factor -> cte .)
-    MENOR           reduce using rule 57 (factor -> cte .)
-    IGUAL           reduce using rule 57 (factor -> cte .)
-    DIFERENTE       reduce using rule 57 (factor -> cte .)
-    SUMA            reduce using rule 57 (factor -> cte .)
-    RESTA           reduce using rule 57 (factor -> cte .)
-    PUNTO_COMA      reduce using rule 57 (factor -> cte .)
-    PAREN_DER       reduce using rule 57 (factor -> cte .)
-    COMA            reduce using rule 57 (factor -> cte .)
+    CTE_ENT         shift and go to state 65
+    CTE_FLOT        shift and go to state 66
 
+    cte                            shift and go to state 105
 
 state 62
 
-    (56) factor -> RESTA . cte
-    (59) cte -> . CTE_ENT
-    (60) cte -> . CTE_FLOT
+    (69) factor -> cte .
 
-    CTE_ENT         shift and go to state 63
-    CTE_FLOT        shift and go to state 64
+    MULT            reduce using rule 69 (factor -> cte .)
+    DIV             reduce using rule 69 (factor -> cte .)
+    MAYOR           reduce using rule 69 (factor -> cte .)
+    MENOR           reduce using rule 69 (factor -> cte .)
+    IGUAL           reduce using rule 69 (factor -> cte .)
+    DIFERENTE       reduce using rule 69 (factor -> cte .)
+    SUMA            reduce using rule 69 (factor -> cte .)
+    RESTA           reduce using rule 69 (factor -> cte .)
+    PUNTO_COMA      reduce using rule 69 (factor -> cte .)
+    PAREN_DER       reduce using rule 69 (factor -> cte .)
+    COMA            reduce using rule 69 (factor -> cte .)
 
-    cte                            shift and go to state 95
 
 state 63
 
-    (59) cte -> CTE_ENT .
+    (68) factor -> RESTA . cte
+    (71) cte -> . CTE_ENT
+    (72) cte -> . CTE_FLOT
 
-    MULT            reduce using rule 59 (cte -> CTE_ENT .)
-    DIV             reduce using rule 59 (cte -> CTE_ENT .)
-    MAYOR           reduce using rule 59 (cte -> CTE_ENT .)
-    MENOR           reduce using rule 59 (cte -> CTE_ENT .)
-    IGUAL           reduce using rule 59 (cte -> CTE_ENT .)
-    DIFERENTE       reduce using rule 59 (cte -> CTE_ENT .)
-    SUMA            reduce using rule 59 (cte -> CTE_ENT .)
-    RESTA           reduce using rule 59 (cte -> CTE_ENT .)
-    PUNTO_COMA      reduce using rule 59 (cte -> CTE_ENT .)
-    PAREN_DER       reduce using rule 59 (cte -> CTE_ENT .)
-    COMA            reduce using rule 59 (cte -> CTE_ENT .)
+    CTE_ENT         shift and go to state 65
+    CTE_FLOT        shift and go to state 66
 
+    cte                            shift and go to state 106
 
 state 64
 
-    (60) cte -> CTE_FLOT .
+    (70) factor -> ID .
 
-    MULT            reduce using rule 60 (cte -> CTE_FLOT .)
-    DIV             reduce using rule 60 (cte -> CTE_FLOT .)
-    MAYOR           reduce using rule 60 (cte -> CTE_FLOT .)
-    MENOR           reduce using rule 60 (cte -> CTE_FLOT .)
-    IGUAL           reduce using rule 60 (cte -> CTE_FLOT .)
-    DIFERENTE       reduce using rule 60 (cte -> CTE_FLOT .)
-    SUMA            reduce using rule 60 (cte -> CTE_FLOT .)
-    RESTA           reduce using rule 60 (cte -> CTE_FLOT .)
-    PUNTO_COMA      reduce using rule 60 (cte -> CTE_FLOT .)
-    PAREN_DER       reduce using rule 60 (cte -> CTE_FLOT .)
-    COMA            reduce using rule 60 (cte -> CTE_FLOT .)
+    MULT            reduce using rule 70 (factor -> ID .)
+    DIV             reduce using rule 70 (factor -> ID .)
+    MAYOR           reduce using rule 70 (factor -> ID .)
+    MENOR           reduce using rule 70 (factor -> ID .)
+    IGUAL           reduce using rule 70 (factor -> ID .)
+    DIFERENTE       reduce using rule 70 (factor -> ID .)
+    SUMA            reduce using rule 70 (factor -> ID .)
+    RESTA           reduce using rule 70 (factor -> ID .)
+    PUNTO_COMA      reduce using rule 70 (factor -> ID .)
+    PAREN_DER       reduce using rule 70 (factor -> ID .)
+    COMA            reduce using rule 70 (factor -> ID .)
 
 
 state 65
 
-    (31) llamada -> ID PAREN_IZQ args . PAREN_DER
-    (33) args -> args . COMA expresion
+    (71) cte -> CTE_ENT .
 
-    PAREN_DER       shift and go to state 96
-    COMA            shift and go to state 97
+    MULT            reduce using rule 71 (cte -> CTE_ENT .)
+    DIV             reduce using rule 71 (cte -> CTE_ENT .)
+    MAYOR           reduce using rule 71 (cte -> CTE_ENT .)
+    MENOR           reduce using rule 71 (cte -> CTE_ENT .)
+    IGUAL           reduce using rule 71 (cte -> CTE_ENT .)
+    DIFERENTE       reduce using rule 71 (cte -> CTE_ENT .)
+    SUMA            reduce using rule 71 (cte -> CTE_ENT .)
+    RESTA           reduce using rule 71 (cte -> CTE_ENT .)
+    PUNTO_COMA      reduce using rule 71 (cte -> CTE_ENT .)
+    PAREN_DER       reduce using rule 71 (cte -> CTE_ENT .)
+    COMA            reduce using rule 71 (cte -> CTE_ENT .)
 
 
 state 66
 
-    (32) args -> expresion .
+    (72) cte -> CTE_FLOT .
 
-    PAREN_DER       reduce using rule 32 (args -> expresion .)
-    COMA            reduce using rule 32 (args -> expresion .)
+    MULT            reduce using rule 72 (cte -> CTE_FLOT .)
+    DIV             reduce using rule 72 (cte -> CTE_FLOT .)
+    MAYOR           reduce using rule 72 (cte -> CTE_FLOT .)
+    MENOR           reduce using rule 72 (cte -> CTE_FLOT .)
+    IGUAL           reduce using rule 72 (cte -> CTE_FLOT .)
+    DIFERENTE       reduce using rule 72 (cte -> CTE_FLOT .)
+    SUMA            reduce using rule 72 (cte -> CTE_FLOT .)
+    RESTA           reduce using rule 72 (cte -> CTE_FLOT .)
+    PUNTO_COMA      reduce using rule 72 (cte -> CTE_FLOT .)
+    PAREN_DER       reduce using rule 72 (cte -> CTE_FLOT .)
+    COMA            reduce using rule 72 (cte -> CTE_FLOT .)
 
 
 state 67
 
-    (34) args -> empty .
+    (36) si_header -> SI PAREN_IZQ . expresion PAREN_DER
+    (47) expresion -> . exp
+    (48) expresion -> . exp mayor_op exp
+    (49) expresion -> . exp menor_op exp
+    (50) expresion -> . exp igual_op exp
+    (51) expresion -> . exp diferente_op exp
+    (52) exp -> . termino
+    (53) exp -> . exp suma_op termino
+    (54) exp -> . exp resta_op termino
+    (55) termino -> . factor
+    (56) termino -> . termino mult_op factor
+    (57) termino -> . termino div_op factor
+    (66) factor -> . PAREN_IZQ expresion PAREN_DER
+    (67) factor -> . SUMA cte
+    (68) factor -> . RESTA cte
+    (69) factor -> . cte
+    (70) factor -> . ID
+    (71) cte -> . CTE_ENT
+    (72) cte -> . CTE_FLOT
 
-    PAREN_DER       reduce using rule 34 (args -> empty .)
-    COMA            reduce using rule 34 (args -> empty .)
+    PAREN_IZQ       shift and go to state 60
+    SUMA            shift and go to state 61
+    RESTA           shift and go to state 63
+    ID              shift and go to state 64
+    CTE_ENT         shift and go to state 65
+    CTE_FLOT        shift and go to state 66
 
+    expresion                      shift and go to state 107
+    exp                            shift and go to state 57
+    termino                        shift and go to state 58
+    factor                         shift and go to state 59
+    cte                            shift and go to state 62
 
 state 68
 
-    (28) condicion -> SI PAREN_IZQ expresion . PAREN_DER CORCHETE_IZQ cuerpo CORCHETE_DER
-    (29) condicion -> SI PAREN_IZQ expresion . PAREN_DER CORCHETE_IZQ cuerpo CORCHETE_DER SINO CORCHETE_IZQ cuerpo CORCHETE_DER
+    (41) mientras_cond -> mientras_header PAREN_IZQ . expresion PAREN_DER
+    (47) expresion -> . exp
+    (48) expresion -> . exp mayor_op exp
+    (49) expresion -> . exp menor_op exp
+    (50) expresion -> . exp igual_op exp
+    (51) expresion -> . exp diferente_op exp
+    (52) exp -> . termino
+    (53) exp -> . exp suma_op termino
+    (54) exp -> . exp resta_op termino
+    (55) termino -> . factor
+    (56) termino -> . termino mult_op factor
+    (57) termino -> . termino div_op factor
+    (66) factor -> . PAREN_IZQ expresion PAREN_DER
+    (67) factor -> . SUMA cte
+    (68) factor -> . RESTA cte
+    (69) factor -> . cte
+    (70) factor -> . ID
+    (71) cte -> . CTE_ENT
+    (72) cte -> . CTE_FLOT
 
-    PAREN_DER       shift and go to state 98
+    PAREN_IZQ       shift and go to state 60
+    SUMA            shift and go to state 61
+    RESTA           shift and go to state 63
+    ID              shift and go to state 64
+    CTE_ENT         shift and go to state 65
+    CTE_FLOT        shift and go to state 66
 
+    expresion                      shift and go to state 108
+    exp                            shift and go to state 57
+    termino                        shift and go to state 58
+    factor                         shift and go to state 59
+    cte                            shift and go to state 62
 
 state 69
 
-    (30) ciclo -> MIENTRAS PAREN_IZQ expresion . PAREN_DER HAZ CORCHETE_IZQ cuerpo CORCHETE_DER PUNTO_COMA
+    (18) funcs -> funcs func_header LLAVE_IZQ vars . cuerpo LLAVE_DER PUNTO_COMA
+    (20) cuerpo -> . estatuto
+    (21) cuerpo -> . cuerpo estatuto
+    (22) cuerpo -> . empty
+    (23) estatuto -> . asigna
+    (24) estatuto -> . condicion
+    (25) estatuto -> . ciclo
+    (26) estatuto -> . imprime
+    (27) estatuto -> . llamada PUNTO_COMA
+    (28) estatuto -> . retorna
+    (73) empty -> .
+    (30) asigna -> . ID ASIGNA expresion PUNTO_COMA
+    (37) condicion -> . si_header CORCHETE_IZQ cuerpo CORCHETE_DER
+    (39) condicion -> . si_header CORCHETE_IZQ cuerpo CORCHETE_DER sino_header CORCHETE_IZQ cuerpo CORCHETE_DER
+    (42) ciclo -> . mientras_cond HAZ CORCHETE_IZQ cuerpo CORCHETE_DER PUNTO_COMA
+    (31) imprime -> . ESCRIBE PAREN_IZQ imp_lista PAREN_DER PUNTO_COMA
+    (43) llamada -> . ID PAREN_IZQ args PAREN_DER
+    (29) retorna -> . REGRESA expresion PUNTO_COMA
+    (36) si_header -> . SI PAREN_IZQ expresion PAREN_DER
+    (41) mientras_cond -> . mientras_header PAREN_IZQ expresion PAREN_DER
+    (40) mientras_header -> . MIENTRAS
 
-    PAREN_DER       shift and go to state 99
+  ! shift/reduce conflict for ID resolved as shift
+  ! shift/reduce conflict for ESCRIBE resolved as shift
+  ! shift/reduce conflict for REGRESA resolved as shift
+  ! shift/reduce conflict for SI resolved as shift
+  ! shift/reduce conflict for MIENTRAS resolved as shift
+    LLAVE_DER       reduce using rule 73 (empty -> .)
+    ID              shift and go to state 24
+    ESCRIBE         shift and go to state 36
+    REGRESA         shift and go to state 37
+    SI              shift and go to state 38
+    MIENTRAS        shift and go to state 40
 
+  ! ID              [ reduce using rule 73 (empty -> .) ]
+  ! ESCRIBE         [ reduce using rule 73 (empty -> .) ]
+  ! REGRESA         [ reduce using rule 73 (empty -> .) ]
+  ! SI              [ reduce using rule 73 (empty -> .) ]
+  ! MIENTRAS        [ reduce using rule 73 (empty -> .) ]
+
+    cuerpo                         shift and go to state 109
+    estatuto                       shift and go to state 26
+    empty                          shift and go to state 27
+    asigna                         shift and go to state 28
+    condicion                      shift and go to state 29
+    ciclo                          shift and go to state 30
+    imprime                        shift and go to state 31
+    llamada                        shift and go to state 32
+    retorna                        shift and go to state 33
+    si_header                      shift and go to state 34
+    mientras_cond                  shift and go to state 35
+    mientras_header                shift and go to state 39
 
 state 70
 
-    (23) imprime -> ESCRIBE PAREN_IZQ imp_lista . PAREN_DER PUNTO_COMA
-    (26) imp_lista -> imp_lista . COMA expresion
-    (27) imp_lista -> imp_lista . COMA CADENA
+    (15) func_header -> ENTERO ID PAREN_IZQ . params_decl PAREN_DER
+    (12) params_decl -> . ID DOS_PUNTOS tipo
+    (13) params_decl -> . params_decl COMA ID DOS_PUNTOS tipo
+    (14) params_decl -> . empty
+    (73) empty -> .
 
-    PAREN_DER       shift and go to state 100
-    COMA            shift and go to state 101
+    ID              shift and go to state 110
+    PAREN_DER       reduce using rule 73 (empty -> .)
+    COMA            reduce using rule 73 (empty -> .)
 
+    params_decl                    shift and go to state 111
+    empty                          shift and go to state 112
 
 state 71
 
-    (24) imp_lista -> expresion .
+    (16) func_header -> FLOTANTE ID PAREN_IZQ . params_decl PAREN_DER
+    (12) params_decl -> . ID DOS_PUNTOS tipo
+    (13) params_decl -> . params_decl COMA ID DOS_PUNTOS tipo
+    (14) params_decl -> . empty
+    (73) empty -> .
 
-    PAREN_DER       reduce using rule 24 (imp_lista -> expresion .)
-    COMA            reduce using rule 24 (imp_lista -> expresion .)
+    ID              shift and go to state 110
+    PAREN_DER       reduce using rule 73 (empty -> .)
+    COMA            reduce using rule 73 (empty -> .)
 
+    params_decl                    shift and go to state 113
+    empty                          shift and go to state 112
 
 state 72
 
-    (25) imp_lista -> CADENA .
+    (17) func_header -> NULA ID PAREN_IZQ . params_decl PAREN_DER
+    (12) params_decl -> . ID DOS_PUNTOS tipo
+    (13) params_decl -> . params_decl COMA ID DOS_PUNTOS tipo
+    (14) params_decl -> . empty
+    (73) empty -> .
 
-    PAREN_DER       reduce using rule 25 (imp_lista -> CADENA .)
-    COMA            reduce using rule 25 (imp_lista -> CADENA .)
+    ID              shift and go to state 110
+    PAREN_DER       reduce using rule 73 (empty -> .)
+    COMA            reduce using rule 73 (empty -> .)
 
+    params_decl                    shift and go to state 114
+    empty                          shift and go to state 112
 
 state 73
 
-    (12) funcs -> funcs func_header LLAVE_IZQ vars cuerpo . LLAVE_DER PUNTO_COMA
-    (15) cuerpo -> cuerpo . estatuto
-    (17) estatuto -> . asigna
-    (18) estatuto -> . condicion
-    (19) estatuto -> . ciclo
-    (20) estatuto -> . imprime
-    (21) estatuto -> . llamada PUNTO_COMA
-    (22) asigna -> . ID ASIGNA expresion PUNTO_COMA
-    (28) condicion -> . SI PAREN_IZQ expresion PAREN_DER CORCHETE_IZQ cuerpo CORCHETE_DER
-    (29) condicion -> . SI PAREN_IZQ expresion PAREN_DER CORCHETE_IZQ cuerpo CORCHETE_DER SINO CORCHETE_IZQ cuerpo CORCHETE_DER
-    (30) ciclo -> . MIENTRAS PAREN_IZQ expresion PAREN_DER HAZ CORCHETE_IZQ cuerpo CORCHETE_DER PUNTO_COMA
-    (23) imprime -> . ESCRIBE PAREN_IZQ imp_lista PAREN_DER PUNTO_COMA
-    (31) llamada -> . ID PAREN_IZQ args PAREN_DER
+    (7) lista_vars -> lista_vars ID_VAR mas_ids DOS_PUNTOS . tipo PUNTO_COMA
+    (10) tipo -> . ENTERO
+    (11) tipo -> . FLOTANTE
 
-    LLAVE_DER       shift and go to state 102
-    ID              shift and go to state 20
-    SI              shift and go to state 29
-    MIENTRAS        shift and go to state 30
-    ESCRIBE         shift and go to state 31
+    ENTERO          shift and go to state 75
+    FLOTANTE        shift and go to state 76
 
-    estatuto                       shift and go to state 43
-    asigna                         shift and go to state 24
-    condicion                      shift and go to state 25
-    ciclo                          shift and go to state 26
-    imprime                        shift and go to state 27
-    llamada                        shift and go to state 28
+    tipo                           shift and go to state 115
 
 state 74
 
-    (5) lista_vars -> lista_vars ID mas_ids DOS_PUNTOS tipo . PUNTO_COMA
-
-    PUNTO_COMA      shift and go to state 103
-
-
-state 75
-
-    (4) lista_vars -> ID mas_ids DOS_PUNTOS tipo PUNTO_COMA .
-
-    ID              reduce using rule 4 (lista_vars -> ID mas_ids DOS_PUNTOS tipo PUNTO_COMA .)
-    INICIO          reduce using rule 4 (lista_vars -> ID mas_ids DOS_PUNTOS tipo PUNTO_COMA .)
-    SI              reduce using rule 4 (lista_vars -> ID mas_ids DOS_PUNTOS tipo PUNTO_COMA .)
-    MIENTRAS        reduce using rule 4 (lista_vars -> ID mas_ids DOS_PUNTOS tipo PUNTO_COMA .)
-    ESCRIBE         reduce using rule 4 (lista_vars -> ID mas_ids DOS_PUNTOS tipo PUNTO_COMA .)
-    LLAVE_DER       reduce using rule 4 (lista_vars -> ID mas_ids DOS_PUNTOS tipo PUNTO_COMA .)
-
-
-state 76
-
-    (22) asigna -> ID ASIGNA expresion PUNTO_COMA .
-
-    FIN             reduce using rule 22 (asigna -> ID ASIGNA expresion PUNTO_COMA .)
-    ID              reduce using rule 22 (asigna -> ID ASIGNA expresion PUNTO_COMA .)
-    SI              reduce using rule 22 (asigna -> ID ASIGNA expresion PUNTO_COMA .)
-    MIENTRAS        reduce using rule 22 (asigna -> ID ASIGNA expresion PUNTO_COMA .)
-    ESCRIBE         reduce using rule 22 (asigna -> ID ASIGNA expresion PUNTO_COMA .)
-    LLAVE_DER       reduce using rule 22 (asigna -> ID ASIGNA expresion PUNTO_COMA .)
-    CORCHETE_DER    reduce using rule 22 (asigna -> ID ASIGNA expresion PUNTO_COMA .)
-
-
-state 77
-
-    (36) expresion -> exp mayor_op . exp
-    (40) exp -> . termino
-    (41) exp -> . exp suma_op termino
-    (42) exp -> . exp resta_op termino
-    (43) termino -> . factor
-    (44) termino -> . termino mult_op factor
-    (45) termino -> . termino div_op factor
-    (54) factor -> . PAREN_IZQ expresion PAREN_DER
-    (55) factor -> . SUMA cte
-    (56) factor -> . RESTA cte
-    (57) factor -> . cte
-    (58) factor -> . ID
-    (59) cte -> . CTE_ENT
-    (60) cte -> . CTE_FLOT
-
-    PAREN_IZQ       shift and go to state 59
-    SUMA            shift and go to state 60
-    RESTA           shift and go to state 62
-    ID              shift and go to state 54
-    CTE_ENT         shift and go to state 63
-    CTE_FLOT        shift and go to state 64
-
-    exp                            shift and go to state 104
-    termino                        shift and go to state 57
-    factor                         shift and go to state 58
-    cte                            shift and go to state 61
-
-state 78
-
-    (37) expresion -> exp menor_op . exp
-    (40) exp -> . termino
-    (41) exp -> . exp suma_op termino
-    (42) exp -> . exp resta_op termino
-    (43) termino -> . factor
-    (44) termino -> . termino mult_op factor
-    (45) termino -> . termino div_op factor
-    (54) factor -> . PAREN_IZQ expresion PAREN_DER
-    (55) factor -> . SUMA cte
-    (56) factor -> . RESTA cte
-    (57) factor -> . cte
-    (58) factor -> . ID
-    (59) cte -> . CTE_ENT
-    (60) cte -> . CTE_FLOT
-
-    PAREN_IZQ       shift and go to state 59
-    SUMA            shift and go to state 60
-    RESTA           shift and go to state 62
-    ID              shift and go to state 54
-    CTE_ENT         shift and go to state 63
-    CTE_FLOT        shift and go to state 64
-
-    exp                            shift and go to state 105
-    termino                        shift and go to state 57
-    factor                         shift and go to state 58
-    cte                            shift and go to state 61
-
-state 79
-
-    (38) expresion -> exp igual_op . exp
-    (40) exp -> . termino
-    (41) exp -> . exp suma_op termino
-    (42) exp -> . exp resta_op termino
-    (43) termino -> . factor
-    (44) termino -> . termino mult_op factor
-    (45) termino -> . termino div_op factor
-    (54) factor -> . PAREN_IZQ expresion PAREN_DER
-    (55) factor -> . SUMA cte
-    (56) factor -> . RESTA cte
-    (57) factor -> . cte
-    (58) factor -> . ID
-    (59) cte -> . CTE_ENT
-    (60) cte -> . CTE_FLOT
-
-    PAREN_IZQ       shift and go to state 59
-    SUMA            shift and go to state 60
-    RESTA           shift and go to state 62
-    ID              shift and go to state 54
-    CTE_ENT         shift and go to state 63
-    CTE_FLOT        shift and go to state 64
-
-    exp                            shift and go to state 106
-    termino                        shift and go to state 57
-    factor                         shift and go to state 58
-    cte                            shift and go to state 61
-
-state 80
-
-    (39) expresion -> exp diferente_op . exp
-    (40) exp -> . termino
-    (41) exp -> . exp suma_op termino
-    (42) exp -> . exp resta_op termino
-    (43) termino -> . factor
-    (44) termino -> . termino mult_op factor
-    (45) termino -> . termino div_op factor
-    (54) factor -> . PAREN_IZQ expresion PAREN_DER
-    (55) factor -> . SUMA cte
-    (56) factor -> . RESTA cte
-    (57) factor -> . cte
-    (58) factor -> . ID
-    (59) cte -> . CTE_ENT
-    (60) cte -> . CTE_FLOT
-
-    PAREN_IZQ       shift and go to state 59
-    SUMA            shift and go to state 60
-    RESTA           shift and go to state 62
-    ID              shift and go to state 54
-    CTE_ENT         shift and go to state 63
-    CTE_FLOT        shift and go to state 64
-
-    exp                            shift and go to state 107
-    termino                        shift and go to state 57
-    factor                         shift and go to state 58
-    cte                            shift and go to state 61
-
-state 81
-
-    (41) exp -> exp suma_op . termino
-    (43) termino -> . factor
-    (44) termino -> . termino mult_op factor
-    (45) termino -> . termino div_op factor
-    (54) factor -> . PAREN_IZQ expresion PAREN_DER
-    (55) factor -> . SUMA cte
-    (56) factor -> . RESTA cte
-    (57) factor -> . cte
-    (58) factor -> . ID
-    (59) cte -> . CTE_ENT
-    (60) cte -> . CTE_FLOT
-
-    PAREN_IZQ       shift and go to state 59
-    SUMA            shift and go to state 60
-    RESTA           shift and go to state 62
-    ID              shift and go to state 54
-    CTE_ENT         shift and go to state 63
-    CTE_FLOT        shift and go to state 64
-
-    termino                        shift and go to state 108
-    factor                         shift and go to state 58
-    cte                            shift and go to state 61
-
-state 82
-
-    (42) exp -> exp resta_op . termino
-    (43) termino -> . factor
-    (44) termino -> . termino mult_op factor
-    (45) termino -> . termino div_op factor
-    (54) factor -> . PAREN_IZQ expresion PAREN_DER
-    (55) factor -> . SUMA cte
-    (56) factor -> . RESTA cte
-    (57) factor -> . cte
-    (58) factor -> . ID
-    (59) cte -> . CTE_ENT
-    (60) cte -> . CTE_FLOT
-
-    PAREN_IZQ       shift and go to state 59
-    SUMA            shift and go to state 60
-    RESTA           shift and go to state 62
-    ID              shift and go to state 54
-    CTE_ENT         shift and go to state 63
-    CTE_FLOT        shift and go to state 64
-
-    termino                        shift and go to state 109
-    factor                         shift and go to state 58
-    cte                            shift and go to state 61
-
-state 83
-
-    (50) mayor_op -> MAYOR .
-
-    PAREN_IZQ       reduce using rule 50 (mayor_op -> MAYOR .)
-    SUMA            reduce using rule 50 (mayor_op -> MAYOR .)
-    RESTA           reduce using rule 50 (mayor_op -> MAYOR .)
-    ID              reduce using rule 50 (mayor_op -> MAYOR .)
-    CTE_ENT         reduce using rule 50 (mayor_op -> MAYOR .)
-    CTE_FLOT        reduce using rule 50 (mayor_op -> MAYOR .)
-
-
-state 84
-
-    (51) menor_op -> MENOR .
-
-    PAREN_IZQ       reduce using rule 51 (menor_op -> MENOR .)
-    SUMA            reduce using rule 51 (menor_op -> MENOR .)
-    RESTA           reduce using rule 51 (menor_op -> MENOR .)
-    ID              reduce using rule 51 (menor_op -> MENOR .)
-    CTE_ENT         reduce using rule 51 (menor_op -> MENOR .)
-    CTE_FLOT        reduce using rule 51 (menor_op -> MENOR .)
-
-
-state 85
-
-    (52) igual_op -> IGUAL .
-
-    PAREN_IZQ       reduce using rule 52 (igual_op -> IGUAL .)
-    SUMA            reduce using rule 52 (igual_op -> IGUAL .)
-    RESTA           reduce using rule 52 (igual_op -> IGUAL .)
-    ID              reduce using rule 52 (igual_op -> IGUAL .)
-    CTE_ENT         reduce using rule 52 (igual_op -> IGUAL .)
-    CTE_FLOT        reduce using rule 52 (igual_op -> IGUAL .)
-
-
-state 86
-
-    (53) diferente_op -> DIFERENTE .
-
-    PAREN_IZQ       reduce using rule 53 (diferente_op -> DIFERENTE .)
-    SUMA            reduce using rule 53 (diferente_op -> DIFERENTE .)
-    RESTA           reduce using rule 53 (diferente_op -> DIFERENTE .)
-    ID              reduce using rule 53 (diferente_op -> DIFERENTE .)
-    CTE_ENT         reduce using rule 53 (diferente_op -> DIFERENTE .)
-    CTE_FLOT        reduce using rule 53 (diferente_op -> DIFERENTE .)
-
-
-state 87
-
-    (46) suma_op -> SUMA .
-
-    PAREN_IZQ       reduce using rule 46 (suma_op -> SUMA .)
-    SUMA            reduce using rule 46 (suma_op -> SUMA .)
-    RESTA           reduce using rule 46 (suma_op -> SUMA .)
-    ID              reduce using rule 46 (suma_op -> SUMA .)
-    CTE_ENT         reduce using rule 46 (suma_op -> SUMA .)
-    CTE_FLOT        reduce using rule 46 (suma_op -> SUMA .)
-
-
-state 88
-
-    (47) resta_op -> RESTA .
-
-    PAREN_IZQ       reduce using rule 47 (resta_op -> RESTA .)
-    SUMA            reduce using rule 47 (resta_op -> RESTA .)
-    RESTA           reduce using rule 47 (resta_op -> RESTA .)
-    ID              reduce using rule 47 (resta_op -> RESTA .)
-    CTE_ENT         reduce using rule 47 (resta_op -> RESTA .)
-    CTE_FLOT        reduce using rule 47 (resta_op -> RESTA .)
-
-
-state 89
-
-    (44) termino -> termino mult_op . factor
-    (54) factor -> . PAREN_IZQ expresion PAREN_DER
-    (55) factor -> . SUMA cte
-    (56) factor -> . RESTA cte
-    (57) factor -> . cte
-    (58) factor -> . ID
-    (59) cte -> . CTE_ENT
-    (60) cte -> . CTE_FLOT
-
-    PAREN_IZQ       shift and go to state 59
-    SUMA            shift and go to state 60
-    RESTA           shift and go to state 62
-    ID              shift and go to state 54
-    CTE_ENT         shift and go to state 63
-    CTE_FLOT        shift and go to state 64
-
-    factor                         shift and go to state 110
-    cte                            shift and go to state 61
-
-state 90
-
-    (45) termino -> termino div_op . factor
-    (54) factor -> . PAREN_IZQ expresion PAREN_DER
-    (55) factor -> . SUMA cte
-    (56) factor -> . RESTA cte
-    (57) factor -> . cte
-    (58) factor -> . ID
-    (59) cte -> . CTE_ENT
-    (60) cte -> . CTE_FLOT
-
-    PAREN_IZQ       shift and go to state 59
-    SUMA            shift and go to state 60
-    RESTA           shift and go to state 62
-    ID              shift and go to state 54
-    CTE_ENT         shift and go to state 63
-    CTE_FLOT        shift and go to state 64
-
-    factor                         shift and go to state 111
-    cte                            shift and go to state 61
-
-state 91
-
-    (48) mult_op -> MULT .
-
-    PAREN_IZQ       reduce using rule 48 (mult_op -> MULT .)
-    SUMA            reduce using rule 48 (mult_op -> MULT .)
-    RESTA           reduce using rule 48 (mult_op -> MULT .)
-    ID              reduce using rule 48 (mult_op -> MULT .)
-    CTE_ENT         reduce using rule 48 (mult_op -> MULT .)
-    CTE_FLOT        reduce using rule 48 (mult_op -> MULT .)
-
-
-state 92
-
-    (49) div_op -> DIV .
-
-    PAREN_IZQ       reduce using rule 49 (div_op -> DIV .)
-    SUMA            reduce using rule 49 (div_op -> DIV .)
-    RESTA           reduce using rule 49 (div_op -> DIV .)
-    ID              reduce using rule 49 (div_op -> DIV .)
-    CTE_ENT         reduce using rule 49 (div_op -> DIV .)
-    CTE_FLOT        reduce using rule 49 (div_op -> DIV .)
-
-
-state 93
-
-    (54) factor -> PAREN_IZQ expresion . PAREN_DER
-
-    PAREN_DER       shift and go to state 112
-
-
-state 94
-
-    (55) factor -> SUMA cte .
-
-    MULT            reduce using rule 55 (factor -> SUMA cte .)
-    DIV             reduce using rule 55 (factor -> SUMA cte .)
-    MAYOR           reduce using rule 55 (factor -> SUMA cte .)
-    MENOR           reduce using rule 55 (factor -> SUMA cte .)
-    IGUAL           reduce using rule 55 (factor -> SUMA cte .)
-    DIFERENTE       reduce using rule 55 (factor -> SUMA cte .)
-    SUMA            reduce using rule 55 (factor -> SUMA cte .)
-    RESTA           reduce using rule 55 (factor -> SUMA cte .)
-    PUNTO_COMA      reduce using rule 55 (factor -> SUMA cte .)
-    PAREN_DER       reduce using rule 55 (factor -> SUMA cte .)
-    COMA            reduce using rule 55 (factor -> SUMA cte .)
-
-
-state 95
-
-    (56) factor -> RESTA cte .
-
-    MULT            reduce using rule 56 (factor -> RESTA cte .)
-    DIV             reduce using rule 56 (factor -> RESTA cte .)
-    MAYOR           reduce using rule 56 (factor -> RESTA cte .)
-    MENOR           reduce using rule 56 (factor -> RESTA cte .)
-    IGUAL           reduce using rule 56 (factor -> RESTA cte .)
-    DIFERENTE       reduce using rule 56 (factor -> RESTA cte .)
-    SUMA            reduce using rule 56 (factor -> RESTA cte .)
-    RESTA           reduce using rule 56 (factor -> RESTA cte .)
-    PUNTO_COMA      reduce using rule 56 (factor -> RESTA cte .)
-    PAREN_DER       reduce using rule 56 (factor -> RESTA cte .)
-    COMA            reduce using rule 56 (factor -> RESTA cte .)
-
-
-state 96
-
-    (31) llamada -> ID PAREN_IZQ args PAREN_DER .
-
-    PUNTO_COMA      reduce using rule 31 (llamada -> ID PAREN_IZQ args PAREN_DER .)
-
-
-state 97
-
-    (33) args -> args COMA . expresion
-    (35) expresion -> . exp
-    (36) expresion -> . exp mayor_op exp
-    (37) expresion -> . exp menor_op exp
-    (38) expresion -> . exp igual_op exp
-    (39) expresion -> . exp diferente_op exp
-    (40) exp -> . termino
-    (41) exp -> . exp suma_op termino
-    (42) exp -> . exp resta_op termino
-    (43) termino -> . factor
-    (44) termino -> . termino mult_op factor
-    (45) termino -> . termino div_op factor
-    (54) factor -> . PAREN_IZQ expresion PAREN_DER
-    (55) factor -> . SUMA cte
-    (56) factor -> . RESTA cte
-    (57) factor -> . cte
-    (58) factor -> . ID
-    (59) cte -> . CTE_ENT
-    (60) cte -> . CTE_FLOT
-
-    PAREN_IZQ       shift and go to state 59
-    SUMA            shift and go to state 60
-    RESTA           shift and go to state 62
-    ID              shift and go to state 54
-    CTE_ENT         shift and go to state 63
-    CTE_FLOT        shift and go to state 64
-
-    expresion                      shift and go to state 113
-    exp                            shift and go to state 56
-    termino                        shift and go to state 57
-    factor                         shift and go to state 58
-    cte                            shift and go to state 61
-
-state 98
-
-    (28) condicion -> SI PAREN_IZQ expresion PAREN_DER . CORCHETE_IZQ cuerpo CORCHETE_DER
-    (29) condicion -> SI PAREN_IZQ expresion PAREN_DER . CORCHETE_IZQ cuerpo CORCHETE_DER SINO CORCHETE_IZQ cuerpo CORCHETE_DER
-
-    CORCHETE_IZQ    shift and go to state 114
-
-
-state 99
-
-    (30) ciclo -> MIENTRAS PAREN_IZQ expresion PAREN_DER . HAZ CORCHETE_IZQ cuerpo CORCHETE_DER PUNTO_COMA
-
-    HAZ             shift and go to state 115
-
-
-state 100
-
-    (23) imprime -> ESCRIBE PAREN_IZQ imp_lista PAREN_DER . PUNTO_COMA
+    (6) lista_vars -> ID_VAR mas_ids DOS_PUNTOS tipo . PUNTO_COMA
 
     PUNTO_COMA      shift and go to state 116
 
 
+state 75
+
+    (10) tipo -> ENTERO .
+
+    PUNTO_COMA      reduce using rule 10 (tipo -> ENTERO .)
+    PAREN_DER       reduce using rule 10 (tipo -> ENTERO .)
+    COMA            reduce using rule 10 (tipo -> ENTERO .)
+
+
+state 76
+
+    (11) tipo -> FLOTANTE .
+
+    PUNTO_COMA      reduce using rule 11 (tipo -> FLOTANTE .)
+    PAREN_DER       reduce using rule 11 (tipo -> FLOTANTE .)
+    COMA            reduce using rule 11 (tipo -> FLOTANTE .)
+
+
+state 77
+
+    (8) mas_ids -> COMA ID_VAR mas_ids .
+
+    DOS_PUNTOS      reduce using rule 8 (mas_ids -> COMA ID_VAR mas_ids .)
+
+
+state 78
+
+    (30) asigna -> ID ASIGNA expresion . PUNTO_COMA
+
+    PUNTO_COMA      shift and go to state 117
+
+
+state 79
+
+    (43) llamada -> ID PAREN_IZQ args . PAREN_DER
+    (45) args -> args . COMA expresion
+
+    PAREN_DER       shift and go to state 118
+    COMA            shift and go to state 119
+
+
+state 80
+
+    (44) args -> expresion .
+
+    PAREN_DER       reduce using rule 44 (args -> expresion .)
+    COMA            reduce using rule 44 (args -> expresion .)
+
+
+state 81
+
+    (46) args -> empty .
+
+    PAREN_DER       reduce using rule 46 (args -> empty .)
+    COMA            reduce using rule 46 (args -> empty .)
+
+
+state 82
+
+    (37) condicion -> si_header CORCHETE_IZQ cuerpo . CORCHETE_DER
+    (39) condicion -> si_header CORCHETE_IZQ cuerpo . CORCHETE_DER sino_header CORCHETE_IZQ cuerpo CORCHETE_DER
+    (21) cuerpo -> cuerpo . estatuto
+    (23) estatuto -> . asigna
+    (24) estatuto -> . condicion
+    (25) estatuto -> . ciclo
+    (26) estatuto -> . imprime
+    (27) estatuto -> . llamada PUNTO_COMA
+    (28) estatuto -> . retorna
+    (30) asigna -> . ID ASIGNA expresion PUNTO_COMA
+    (37) condicion -> . si_header CORCHETE_IZQ cuerpo CORCHETE_DER
+    (39) condicion -> . si_header CORCHETE_IZQ cuerpo CORCHETE_DER sino_header CORCHETE_IZQ cuerpo CORCHETE_DER
+    (42) ciclo -> . mientras_cond HAZ CORCHETE_IZQ cuerpo CORCHETE_DER PUNTO_COMA
+    (31) imprime -> . ESCRIBE PAREN_IZQ imp_lista PAREN_DER PUNTO_COMA
+    (43) llamada -> . ID PAREN_IZQ args PAREN_DER
+    (29) retorna -> . REGRESA expresion PUNTO_COMA
+    (36) si_header -> . SI PAREN_IZQ expresion PAREN_DER
+    (41) mientras_cond -> . mientras_header PAREN_IZQ expresion PAREN_DER
+    (40) mientras_header -> . MIENTRAS
+
+    CORCHETE_DER    shift and go to state 120
+    ID              shift and go to state 24
+    ESCRIBE         shift and go to state 36
+    REGRESA         shift and go to state 37
+    SI              shift and go to state 38
+    MIENTRAS        shift and go to state 40
+
+    si_header                      shift and go to state 34
+    estatuto                       shift and go to state 51
+    asigna                         shift and go to state 28
+    condicion                      shift and go to state 29
+    ciclo                          shift and go to state 30
+    imprime                        shift and go to state 31
+    llamada                        shift and go to state 32
+    retorna                        shift and go to state 33
+    mientras_cond                  shift and go to state 35
+    mientras_header                shift and go to state 39
+
+state 83
+
+    (42) ciclo -> mientras_cond HAZ CORCHETE_IZQ . cuerpo CORCHETE_DER PUNTO_COMA
+    (20) cuerpo -> . estatuto
+    (21) cuerpo -> . cuerpo estatuto
+    (22) cuerpo -> . empty
+    (23) estatuto -> . asigna
+    (24) estatuto -> . condicion
+    (25) estatuto -> . ciclo
+    (26) estatuto -> . imprime
+    (27) estatuto -> . llamada PUNTO_COMA
+    (28) estatuto -> . retorna
+    (73) empty -> .
+    (30) asigna -> . ID ASIGNA expresion PUNTO_COMA
+    (37) condicion -> . si_header CORCHETE_IZQ cuerpo CORCHETE_DER
+    (39) condicion -> . si_header CORCHETE_IZQ cuerpo CORCHETE_DER sino_header CORCHETE_IZQ cuerpo CORCHETE_DER
+    (42) ciclo -> . mientras_cond HAZ CORCHETE_IZQ cuerpo CORCHETE_DER PUNTO_COMA
+    (31) imprime -> . ESCRIBE PAREN_IZQ imp_lista PAREN_DER PUNTO_COMA
+    (43) llamada -> . ID PAREN_IZQ args PAREN_DER
+    (29) retorna -> . REGRESA expresion PUNTO_COMA
+    (36) si_header -> . SI PAREN_IZQ expresion PAREN_DER
+    (41) mientras_cond -> . mientras_header PAREN_IZQ expresion PAREN_DER
+    (40) mientras_header -> . MIENTRAS
+
+  ! shift/reduce conflict for ID resolved as shift
+  ! shift/reduce conflict for ESCRIBE resolved as shift
+  ! shift/reduce conflict for REGRESA resolved as shift
+  ! shift/reduce conflict for SI resolved as shift
+  ! shift/reduce conflict for MIENTRAS resolved as shift
+    CORCHETE_DER    reduce using rule 73 (empty -> .)
+    ID              shift and go to state 24
+    ESCRIBE         shift and go to state 36
+    REGRESA         shift and go to state 37
+    SI              shift and go to state 38
+    MIENTRAS        shift and go to state 40
+
+  ! ID              [ reduce using rule 73 (empty -> .) ]
+  ! ESCRIBE         [ reduce using rule 73 (empty -> .) ]
+  ! REGRESA         [ reduce using rule 73 (empty -> .) ]
+  ! SI              [ reduce using rule 73 (empty -> .) ]
+  ! MIENTRAS        [ reduce using rule 73 (empty -> .) ]
+
+    mientras_cond                  shift and go to state 35
+    cuerpo                         shift and go to state 121
+    estatuto                       shift and go to state 26
+    empty                          shift and go to state 27
+    asigna                         shift and go to state 28
+    condicion                      shift and go to state 29
+    ciclo                          shift and go to state 30
+    imprime                        shift and go to state 31
+    llamada                        shift and go to state 32
+    retorna                        shift and go to state 33
+    si_header                      shift and go to state 34
+    mientras_header                shift and go to state 39
+
+state 84
+
+    (31) imprime -> ESCRIBE PAREN_IZQ imp_lista . PAREN_DER PUNTO_COMA
+    (34) imp_lista -> imp_lista . COMA expresion
+    (35) imp_lista -> imp_lista . COMA CADENA
+
+    PAREN_DER       shift and go to state 122
+    COMA            shift and go to state 123
+
+
+state 85
+
+    (32) imp_lista -> expresion .
+
+    PAREN_DER       reduce using rule 32 (imp_lista -> expresion .)
+    COMA            reduce using rule 32 (imp_lista -> expresion .)
+
+
+state 86
+
+    (33) imp_lista -> CADENA .
+
+    PAREN_DER       reduce using rule 33 (imp_lista -> CADENA .)
+    COMA            reduce using rule 33 (imp_lista -> CADENA .)
+
+
+state 87
+
+    (29) retorna -> REGRESA expresion PUNTO_COMA .
+
+    FIN             reduce using rule 29 (retorna -> REGRESA expresion PUNTO_COMA .)
+    ID              reduce using rule 29 (retorna -> REGRESA expresion PUNTO_COMA .)
+    ESCRIBE         reduce using rule 29 (retorna -> REGRESA expresion PUNTO_COMA .)
+    REGRESA         reduce using rule 29 (retorna -> REGRESA expresion PUNTO_COMA .)
+    SI              reduce using rule 29 (retorna -> REGRESA expresion PUNTO_COMA .)
+    MIENTRAS        reduce using rule 29 (retorna -> REGRESA expresion PUNTO_COMA .)
+    CORCHETE_DER    reduce using rule 29 (retorna -> REGRESA expresion PUNTO_COMA .)
+    LLAVE_DER       reduce using rule 29 (retorna -> REGRESA expresion PUNTO_COMA .)
+
+
+state 88
+
+    (48) expresion -> exp mayor_op . exp
+    (52) exp -> . termino
+    (53) exp -> . exp suma_op termino
+    (54) exp -> . exp resta_op termino
+    (55) termino -> . factor
+    (56) termino -> . termino mult_op factor
+    (57) termino -> . termino div_op factor
+    (66) factor -> . PAREN_IZQ expresion PAREN_DER
+    (67) factor -> . SUMA cte
+    (68) factor -> . RESTA cte
+    (69) factor -> . cte
+    (70) factor -> . ID
+    (71) cte -> . CTE_ENT
+    (72) cte -> . CTE_FLOT
+
+    PAREN_IZQ       shift and go to state 60
+    SUMA            shift and go to state 61
+    RESTA           shift and go to state 63
+    ID              shift and go to state 64
+    CTE_ENT         shift and go to state 65
+    CTE_FLOT        shift and go to state 66
+
+    exp                            shift and go to state 124
+    termino                        shift and go to state 58
+    factor                         shift and go to state 59
+    cte                            shift and go to state 62
+
+state 89
+
+    (49) expresion -> exp menor_op . exp
+    (52) exp -> . termino
+    (53) exp -> . exp suma_op termino
+    (54) exp -> . exp resta_op termino
+    (55) termino -> . factor
+    (56) termino -> . termino mult_op factor
+    (57) termino -> . termino div_op factor
+    (66) factor -> . PAREN_IZQ expresion PAREN_DER
+    (67) factor -> . SUMA cte
+    (68) factor -> . RESTA cte
+    (69) factor -> . cte
+    (70) factor -> . ID
+    (71) cte -> . CTE_ENT
+    (72) cte -> . CTE_FLOT
+
+    PAREN_IZQ       shift and go to state 60
+    SUMA            shift and go to state 61
+    RESTA           shift and go to state 63
+    ID              shift and go to state 64
+    CTE_ENT         shift and go to state 65
+    CTE_FLOT        shift and go to state 66
+
+    exp                            shift and go to state 125
+    termino                        shift and go to state 58
+    factor                         shift and go to state 59
+    cte                            shift and go to state 62
+
+state 90
+
+    (50) expresion -> exp igual_op . exp
+    (52) exp -> . termino
+    (53) exp -> . exp suma_op termino
+    (54) exp -> . exp resta_op termino
+    (55) termino -> . factor
+    (56) termino -> . termino mult_op factor
+    (57) termino -> . termino div_op factor
+    (66) factor -> . PAREN_IZQ expresion PAREN_DER
+    (67) factor -> . SUMA cte
+    (68) factor -> . RESTA cte
+    (69) factor -> . cte
+    (70) factor -> . ID
+    (71) cte -> . CTE_ENT
+    (72) cte -> . CTE_FLOT
+
+    PAREN_IZQ       shift and go to state 60
+    SUMA            shift and go to state 61
+    RESTA           shift and go to state 63
+    ID              shift and go to state 64
+    CTE_ENT         shift and go to state 65
+    CTE_FLOT        shift and go to state 66
+
+    exp                            shift and go to state 126
+    termino                        shift and go to state 58
+    factor                         shift and go to state 59
+    cte                            shift and go to state 62
+
+state 91
+
+    (51) expresion -> exp diferente_op . exp
+    (52) exp -> . termino
+    (53) exp -> . exp suma_op termino
+    (54) exp -> . exp resta_op termino
+    (55) termino -> . factor
+    (56) termino -> . termino mult_op factor
+    (57) termino -> . termino div_op factor
+    (66) factor -> . PAREN_IZQ expresion PAREN_DER
+    (67) factor -> . SUMA cte
+    (68) factor -> . RESTA cte
+    (69) factor -> . cte
+    (70) factor -> . ID
+    (71) cte -> . CTE_ENT
+    (72) cte -> . CTE_FLOT
+
+    PAREN_IZQ       shift and go to state 60
+    SUMA            shift and go to state 61
+    RESTA           shift and go to state 63
+    ID              shift and go to state 64
+    CTE_ENT         shift and go to state 65
+    CTE_FLOT        shift and go to state 66
+
+    exp                            shift and go to state 127
+    termino                        shift and go to state 58
+    factor                         shift and go to state 59
+    cte                            shift and go to state 62
+
+state 92
+
+    (53) exp -> exp suma_op . termino
+    (55) termino -> . factor
+    (56) termino -> . termino mult_op factor
+    (57) termino -> . termino div_op factor
+    (66) factor -> . PAREN_IZQ expresion PAREN_DER
+    (67) factor -> . SUMA cte
+    (68) factor -> . RESTA cte
+    (69) factor -> . cte
+    (70) factor -> . ID
+    (71) cte -> . CTE_ENT
+    (72) cte -> . CTE_FLOT
+
+    PAREN_IZQ       shift and go to state 60
+    SUMA            shift and go to state 61
+    RESTA           shift and go to state 63
+    ID              shift and go to state 64
+    CTE_ENT         shift and go to state 65
+    CTE_FLOT        shift and go to state 66
+
+    termino                        shift and go to state 128
+    factor                         shift and go to state 59
+    cte                            shift and go to state 62
+
+state 93
+
+    (54) exp -> exp resta_op . termino
+    (55) termino -> . factor
+    (56) termino -> . termino mult_op factor
+    (57) termino -> . termino div_op factor
+    (66) factor -> . PAREN_IZQ expresion PAREN_DER
+    (67) factor -> . SUMA cte
+    (68) factor -> . RESTA cte
+    (69) factor -> . cte
+    (70) factor -> . ID
+    (71) cte -> . CTE_ENT
+    (72) cte -> . CTE_FLOT
+
+    PAREN_IZQ       shift and go to state 60
+    SUMA            shift and go to state 61
+    RESTA           shift and go to state 63
+    ID              shift and go to state 64
+    CTE_ENT         shift and go to state 65
+    CTE_FLOT        shift and go to state 66
+
+    termino                        shift and go to state 129
+    factor                         shift and go to state 59
+    cte                            shift and go to state 62
+
+state 94
+
+    (62) mayor_op -> MAYOR .
+
+    PAREN_IZQ       reduce using rule 62 (mayor_op -> MAYOR .)
+    SUMA            reduce using rule 62 (mayor_op -> MAYOR .)
+    RESTA           reduce using rule 62 (mayor_op -> MAYOR .)
+    ID              reduce using rule 62 (mayor_op -> MAYOR .)
+    CTE_ENT         reduce using rule 62 (mayor_op -> MAYOR .)
+    CTE_FLOT        reduce using rule 62 (mayor_op -> MAYOR .)
+
+
+state 95
+
+    (63) menor_op -> MENOR .
+
+    PAREN_IZQ       reduce using rule 63 (menor_op -> MENOR .)
+    SUMA            reduce using rule 63 (menor_op -> MENOR .)
+    RESTA           reduce using rule 63 (menor_op -> MENOR .)
+    ID              reduce using rule 63 (menor_op -> MENOR .)
+    CTE_ENT         reduce using rule 63 (menor_op -> MENOR .)
+    CTE_FLOT        reduce using rule 63 (menor_op -> MENOR .)
+
+
+state 96
+
+    (64) igual_op -> IGUAL .
+
+    PAREN_IZQ       reduce using rule 64 (igual_op -> IGUAL .)
+    SUMA            reduce using rule 64 (igual_op -> IGUAL .)
+    RESTA           reduce using rule 64 (igual_op -> IGUAL .)
+    ID              reduce using rule 64 (igual_op -> IGUAL .)
+    CTE_ENT         reduce using rule 64 (igual_op -> IGUAL .)
+    CTE_FLOT        reduce using rule 64 (igual_op -> IGUAL .)
+
+
+state 97
+
+    (65) diferente_op -> DIFERENTE .
+
+    PAREN_IZQ       reduce using rule 65 (diferente_op -> DIFERENTE .)
+    SUMA            reduce using rule 65 (diferente_op -> DIFERENTE .)
+    RESTA           reduce using rule 65 (diferente_op -> DIFERENTE .)
+    ID              reduce using rule 65 (diferente_op -> DIFERENTE .)
+    CTE_ENT         reduce using rule 65 (diferente_op -> DIFERENTE .)
+    CTE_FLOT        reduce using rule 65 (diferente_op -> DIFERENTE .)
+
+
+state 98
+
+    (58) suma_op -> SUMA .
+
+    PAREN_IZQ       reduce using rule 58 (suma_op -> SUMA .)
+    SUMA            reduce using rule 58 (suma_op -> SUMA .)
+    RESTA           reduce using rule 58 (suma_op -> SUMA .)
+    ID              reduce using rule 58 (suma_op -> SUMA .)
+    CTE_ENT         reduce using rule 58 (suma_op -> SUMA .)
+    CTE_FLOT        reduce using rule 58 (suma_op -> SUMA .)
+
+
+state 99
+
+    (59) resta_op -> RESTA .
+
+    PAREN_IZQ       reduce using rule 59 (resta_op -> RESTA .)
+    SUMA            reduce using rule 59 (resta_op -> RESTA .)
+    RESTA           reduce using rule 59 (resta_op -> RESTA .)
+    ID              reduce using rule 59 (resta_op -> RESTA .)
+    CTE_ENT         reduce using rule 59 (resta_op -> RESTA .)
+    CTE_FLOT        reduce using rule 59 (resta_op -> RESTA .)
+
+
+state 100
+
+    (56) termino -> termino mult_op . factor
+    (66) factor -> . PAREN_IZQ expresion PAREN_DER
+    (67) factor -> . SUMA cte
+    (68) factor -> . RESTA cte
+    (69) factor -> . cte
+    (70) factor -> . ID
+    (71) cte -> . CTE_ENT
+    (72) cte -> . CTE_FLOT
+
+    PAREN_IZQ       shift and go to state 60
+    SUMA            shift and go to state 61
+    RESTA           shift and go to state 63
+    ID              shift and go to state 64
+    CTE_ENT         shift and go to state 65
+    CTE_FLOT        shift and go to state 66
+
+    factor                         shift and go to state 130
+    cte                            shift and go to state 62
+
 state 101
 
-    (26) imp_lista -> imp_lista COMA . expresion
-    (27) imp_lista -> imp_lista COMA . CADENA
-    (35) expresion -> . exp
-    (36) expresion -> . exp mayor_op exp
-    (37) expresion -> . exp menor_op exp
-    (38) expresion -> . exp igual_op exp
-    (39) expresion -> . exp diferente_op exp
-    (40) exp -> . termino
-    (41) exp -> . exp suma_op termino
-    (42) exp -> . exp resta_op termino
-    (43) termino -> . factor
-    (44) termino -> . termino mult_op factor
-    (45) termino -> . termino div_op factor
-    (54) factor -> . PAREN_IZQ expresion PAREN_DER
-    (55) factor -> . SUMA cte
-    (56) factor -> . RESTA cte
-    (57) factor -> . cte
-    (58) factor -> . ID
-    (59) cte -> . CTE_ENT
-    (60) cte -> . CTE_FLOT
+    (57) termino -> termino div_op . factor
+    (66) factor -> . PAREN_IZQ expresion PAREN_DER
+    (67) factor -> . SUMA cte
+    (68) factor -> . RESTA cte
+    (69) factor -> . cte
+    (70) factor -> . ID
+    (71) cte -> . CTE_ENT
+    (72) cte -> . CTE_FLOT
 
-    CADENA          shift and go to state 118
-    PAREN_IZQ       shift and go to state 59
-    SUMA            shift and go to state 60
-    RESTA           shift and go to state 62
-    ID              shift and go to state 54
-    CTE_ENT         shift and go to state 63
-    CTE_FLOT        shift and go to state 64
+    PAREN_IZQ       shift and go to state 60
+    SUMA            shift and go to state 61
+    RESTA           shift and go to state 63
+    ID              shift and go to state 64
+    CTE_ENT         shift and go to state 65
+    CTE_FLOT        shift and go to state 66
 
-    expresion                      shift and go to state 117
-    exp                            shift and go to state 56
-    termino                        shift and go to state 57
-    factor                         shift and go to state 58
-    cte                            shift and go to state 61
+    factor                         shift and go to state 131
+    cte                            shift and go to state 62
 
 state 102
 
-    (12) funcs -> funcs func_header LLAVE_IZQ vars cuerpo LLAVE_DER . PUNTO_COMA
+    (60) mult_op -> MULT .
 
-    PUNTO_COMA      shift and go to state 119
+    PAREN_IZQ       reduce using rule 60 (mult_op -> MULT .)
+    SUMA            reduce using rule 60 (mult_op -> MULT .)
+    RESTA           reduce using rule 60 (mult_op -> MULT .)
+    ID              reduce using rule 60 (mult_op -> MULT .)
+    CTE_ENT         reduce using rule 60 (mult_op -> MULT .)
+    CTE_FLOT        reduce using rule 60 (mult_op -> MULT .)
 
 
 state 103
 
-    (5) lista_vars -> lista_vars ID mas_ids DOS_PUNTOS tipo PUNTO_COMA .
+    (61) div_op -> DIV .
 
-    ID              reduce using rule 5 (lista_vars -> lista_vars ID mas_ids DOS_PUNTOS tipo PUNTO_COMA .)
-    INICIO          reduce using rule 5 (lista_vars -> lista_vars ID mas_ids DOS_PUNTOS tipo PUNTO_COMA .)
-    SI              reduce using rule 5 (lista_vars -> lista_vars ID mas_ids DOS_PUNTOS tipo PUNTO_COMA .)
-    MIENTRAS        reduce using rule 5 (lista_vars -> lista_vars ID mas_ids DOS_PUNTOS tipo PUNTO_COMA .)
-    ESCRIBE         reduce using rule 5 (lista_vars -> lista_vars ID mas_ids DOS_PUNTOS tipo PUNTO_COMA .)
-    LLAVE_DER       reduce using rule 5 (lista_vars -> lista_vars ID mas_ids DOS_PUNTOS tipo PUNTO_COMA .)
+    PAREN_IZQ       reduce using rule 61 (div_op -> DIV .)
+    SUMA            reduce using rule 61 (div_op -> DIV .)
+    RESTA           reduce using rule 61 (div_op -> DIV .)
+    ID              reduce using rule 61 (div_op -> DIV .)
+    CTE_ENT         reduce using rule 61 (div_op -> DIV .)
+    CTE_FLOT        reduce using rule 61 (div_op -> DIV .)
 
 
 state 104
 
-    (36) expresion -> exp mayor_op exp .
-    (41) exp -> exp . suma_op termino
-    (42) exp -> exp . resta_op termino
-    (46) suma_op -> . SUMA
-    (47) resta_op -> . RESTA
+    (66) factor -> PAREN_IZQ expresion . PAREN_DER
 
-    PUNTO_COMA      reduce using rule 36 (expresion -> exp mayor_op exp .)
-    PAREN_DER       reduce using rule 36 (expresion -> exp mayor_op exp .)
-    COMA            reduce using rule 36 (expresion -> exp mayor_op exp .)
-    SUMA            shift and go to state 87
-    RESTA           shift and go to state 88
+    PAREN_DER       shift and go to state 132
 
-    suma_op                        shift and go to state 81
-    resta_op                       shift and go to state 82
 
 state 105
 
-    (37) expresion -> exp menor_op exp .
-    (41) exp -> exp . suma_op termino
-    (42) exp -> exp . resta_op termino
-    (46) suma_op -> . SUMA
-    (47) resta_op -> . RESTA
+    (67) factor -> SUMA cte .
 
-    PUNTO_COMA      reduce using rule 37 (expresion -> exp menor_op exp .)
-    PAREN_DER       reduce using rule 37 (expresion -> exp menor_op exp .)
-    COMA            reduce using rule 37 (expresion -> exp menor_op exp .)
-    SUMA            shift and go to state 87
-    RESTA           shift and go to state 88
+    MULT            reduce using rule 67 (factor -> SUMA cte .)
+    DIV             reduce using rule 67 (factor -> SUMA cte .)
+    MAYOR           reduce using rule 67 (factor -> SUMA cte .)
+    MENOR           reduce using rule 67 (factor -> SUMA cte .)
+    IGUAL           reduce using rule 67 (factor -> SUMA cte .)
+    DIFERENTE       reduce using rule 67 (factor -> SUMA cte .)
+    SUMA            reduce using rule 67 (factor -> SUMA cte .)
+    RESTA           reduce using rule 67 (factor -> SUMA cte .)
+    PUNTO_COMA      reduce using rule 67 (factor -> SUMA cte .)
+    PAREN_DER       reduce using rule 67 (factor -> SUMA cte .)
+    COMA            reduce using rule 67 (factor -> SUMA cte .)
 
-    suma_op                        shift and go to state 81
-    resta_op                       shift and go to state 82
 
 state 106
 
-    (38) expresion -> exp igual_op exp .
-    (41) exp -> exp . suma_op termino
-    (42) exp -> exp . resta_op termino
-    (46) suma_op -> . SUMA
-    (47) resta_op -> . RESTA
+    (68) factor -> RESTA cte .
 
-    PUNTO_COMA      reduce using rule 38 (expresion -> exp igual_op exp .)
-    PAREN_DER       reduce using rule 38 (expresion -> exp igual_op exp .)
-    COMA            reduce using rule 38 (expresion -> exp igual_op exp .)
-    SUMA            shift and go to state 87
-    RESTA           shift and go to state 88
+    MULT            reduce using rule 68 (factor -> RESTA cte .)
+    DIV             reduce using rule 68 (factor -> RESTA cte .)
+    MAYOR           reduce using rule 68 (factor -> RESTA cte .)
+    MENOR           reduce using rule 68 (factor -> RESTA cte .)
+    IGUAL           reduce using rule 68 (factor -> RESTA cte .)
+    DIFERENTE       reduce using rule 68 (factor -> RESTA cte .)
+    SUMA            reduce using rule 68 (factor -> RESTA cte .)
+    RESTA           reduce using rule 68 (factor -> RESTA cte .)
+    PUNTO_COMA      reduce using rule 68 (factor -> RESTA cte .)
+    PAREN_DER       reduce using rule 68 (factor -> RESTA cte .)
+    COMA            reduce using rule 68 (factor -> RESTA cte .)
 
-    suma_op                        shift and go to state 81
-    resta_op                       shift and go to state 82
 
 state 107
 
-    (39) expresion -> exp diferente_op exp .
-    (41) exp -> exp . suma_op termino
-    (42) exp -> exp . resta_op termino
-    (46) suma_op -> . SUMA
-    (47) resta_op -> . RESTA
+    (36) si_header -> SI PAREN_IZQ expresion . PAREN_DER
 
-    PUNTO_COMA      reduce using rule 39 (expresion -> exp diferente_op exp .)
-    PAREN_DER       reduce using rule 39 (expresion -> exp diferente_op exp .)
-    COMA            reduce using rule 39 (expresion -> exp diferente_op exp .)
-    SUMA            shift and go to state 87
-    RESTA           shift and go to state 88
+    PAREN_DER       shift and go to state 133
 
-    suma_op                        shift and go to state 81
-    resta_op                       shift and go to state 82
 
 state 108
 
-    (41) exp -> exp suma_op termino .
-    (44) termino -> termino . mult_op factor
-    (45) termino -> termino . div_op factor
-    (48) mult_op -> . MULT
-    (49) div_op -> . DIV
+    (41) mientras_cond -> mientras_header PAREN_IZQ expresion . PAREN_DER
 
-    MAYOR           reduce using rule 41 (exp -> exp suma_op termino .)
-    MENOR           reduce using rule 41 (exp -> exp suma_op termino .)
-    IGUAL           reduce using rule 41 (exp -> exp suma_op termino .)
-    DIFERENTE       reduce using rule 41 (exp -> exp suma_op termino .)
-    SUMA            reduce using rule 41 (exp -> exp suma_op termino .)
-    RESTA           reduce using rule 41 (exp -> exp suma_op termino .)
-    PUNTO_COMA      reduce using rule 41 (exp -> exp suma_op termino .)
-    PAREN_DER       reduce using rule 41 (exp -> exp suma_op termino .)
-    COMA            reduce using rule 41 (exp -> exp suma_op termino .)
-    MULT            shift and go to state 91
-    DIV             shift and go to state 92
+    PAREN_DER       shift and go to state 134
 
-    mult_op                        shift and go to state 89
-    div_op                         shift and go to state 90
 
 state 109
 
-    (42) exp -> exp resta_op termino .
-    (44) termino -> termino . mult_op factor
-    (45) termino -> termino . div_op factor
-    (48) mult_op -> . MULT
-    (49) div_op -> . DIV
+    (18) funcs -> funcs func_header LLAVE_IZQ vars cuerpo . LLAVE_DER PUNTO_COMA
+    (21) cuerpo -> cuerpo . estatuto
+    (23) estatuto -> . asigna
+    (24) estatuto -> . condicion
+    (25) estatuto -> . ciclo
+    (26) estatuto -> . imprime
+    (27) estatuto -> . llamada PUNTO_COMA
+    (28) estatuto -> . retorna
+    (30) asigna -> . ID ASIGNA expresion PUNTO_COMA
+    (37) condicion -> . si_header CORCHETE_IZQ cuerpo CORCHETE_DER
+    (39) condicion -> . si_header CORCHETE_IZQ cuerpo CORCHETE_DER sino_header CORCHETE_IZQ cuerpo CORCHETE_DER
+    (42) ciclo -> . mientras_cond HAZ CORCHETE_IZQ cuerpo CORCHETE_DER PUNTO_COMA
+    (31) imprime -> . ESCRIBE PAREN_IZQ imp_lista PAREN_DER PUNTO_COMA
+    (43) llamada -> . ID PAREN_IZQ args PAREN_DER
+    (29) retorna -> . REGRESA expresion PUNTO_COMA
+    (36) si_header -> . SI PAREN_IZQ expresion PAREN_DER
+    (41) mientras_cond -> . mientras_header PAREN_IZQ expresion PAREN_DER
+    (40) mientras_header -> . MIENTRAS
 
-    MAYOR           reduce using rule 42 (exp -> exp resta_op termino .)
-    MENOR           reduce using rule 42 (exp -> exp resta_op termino .)
-    IGUAL           reduce using rule 42 (exp -> exp resta_op termino .)
-    DIFERENTE       reduce using rule 42 (exp -> exp resta_op termino .)
-    SUMA            reduce using rule 42 (exp -> exp resta_op termino .)
-    RESTA           reduce using rule 42 (exp -> exp resta_op termino .)
-    PUNTO_COMA      reduce using rule 42 (exp -> exp resta_op termino .)
-    PAREN_DER       reduce using rule 42 (exp -> exp resta_op termino .)
-    COMA            reduce using rule 42 (exp -> exp resta_op termino .)
-    MULT            shift and go to state 91
-    DIV             shift and go to state 92
+    LLAVE_DER       shift and go to state 135
+    ID              shift and go to state 24
+    ESCRIBE         shift and go to state 36
+    REGRESA         shift and go to state 37
+    SI              shift and go to state 38
+    MIENTRAS        shift and go to state 40
 
-    mult_op                        shift and go to state 89
-    div_op                         shift and go to state 90
+    estatuto                       shift and go to state 51
+    asigna                         shift and go to state 28
+    condicion                      shift and go to state 29
+    ciclo                          shift and go to state 30
+    imprime                        shift and go to state 31
+    llamada                        shift and go to state 32
+    retorna                        shift and go to state 33
+    si_header                      shift and go to state 34
+    mientras_cond                  shift and go to state 35
+    mientras_header                shift and go to state 39
 
 state 110
 
-    (44) termino -> termino mult_op factor .
+    (12) params_decl -> ID . DOS_PUNTOS tipo
 
-    MULT            reduce using rule 44 (termino -> termino mult_op factor .)
-    DIV             reduce using rule 44 (termino -> termino mult_op factor .)
-    MAYOR           reduce using rule 44 (termino -> termino mult_op factor .)
-    MENOR           reduce using rule 44 (termino -> termino mult_op factor .)
-    IGUAL           reduce using rule 44 (termino -> termino mult_op factor .)
-    DIFERENTE       reduce using rule 44 (termino -> termino mult_op factor .)
-    SUMA            reduce using rule 44 (termino -> termino mult_op factor .)
-    RESTA           reduce using rule 44 (termino -> termino mult_op factor .)
-    PUNTO_COMA      reduce using rule 44 (termino -> termino mult_op factor .)
-    PAREN_DER       reduce using rule 44 (termino -> termino mult_op factor .)
-    COMA            reduce using rule 44 (termino -> termino mult_op factor .)
+    DOS_PUNTOS      shift and go to state 136
 
 
 state 111
 
-    (45) termino -> termino div_op factor .
+    (15) func_header -> ENTERO ID PAREN_IZQ params_decl . PAREN_DER
+    (13) params_decl -> params_decl . COMA ID DOS_PUNTOS tipo
 
-    MULT            reduce using rule 45 (termino -> termino div_op factor .)
-    DIV             reduce using rule 45 (termino -> termino div_op factor .)
-    MAYOR           reduce using rule 45 (termino -> termino div_op factor .)
-    MENOR           reduce using rule 45 (termino -> termino div_op factor .)
-    IGUAL           reduce using rule 45 (termino -> termino div_op factor .)
-    DIFERENTE       reduce using rule 45 (termino -> termino div_op factor .)
-    SUMA            reduce using rule 45 (termino -> termino div_op factor .)
-    RESTA           reduce using rule 45 (termino -> termino div_op factor .)
-    PUNTO_COMA      reduce using rule 45 (termino -> termino div_op factor .)
-    PAREN_DER       reduce using rule 45 (termino -> termino div_op factor .)
-    COMA            reduce using rule 45 (termino -> termino div_op factor .)
+    PAREN_DER       shift and go to state 137
+    COMA            shift and go to state 138
 
 
 state 112
 
-    (54) factor -> PAREN_IZQ expresion PAREN_DER .
+    (14) params_decl -> empty .
 
-    MULT            reduce using rule 54 (factor -> PAREN_IZQ expresion PAREN_DER .)
-    DIV             reduce using rule 54 (factor -> PAREN_IZQ expresion PAREN_DER .)
-    MAYOR           reduce using rule 54 (factor -> PAREN_IZQ expresion PAREN_DER .)
-    MENOR           reduce using rule 54 (factor -> PAREN_IZQ expresion PAREN_DER .)
-    IGUAL           reduce using rule 54 (factor -> PAREN_IZQ expresion PAREN_DER .)
-    DIFERENTE       reduce using rule 54 (factor -> PAREN_IZQ expresion PAREN_DER .)
-    SUMA            reduce using rule 54 (factor -> PAREN_IZQ expresion PAREN_DER .)
-    RESTA           reduce using rule 54 (factor -> PAREN_IZQ expresion PAREN_DER .)
-    PUNTO_COMA      reduce using rule 54 (factor -> PAREN_IZQ expresion PAREN_DER .)
-    PAREN_DER       reduce using rule 54 (factor -> PAREN_IZQ expresion PAREN_DER .)
-    COMA            reduce using rule 54 (factor -> PAREN_IZQ expresion PAREN_DER .)
+    PAREN_DER       reduce using rule 14 (params_decl -> empty .)
+    COMA            reduce using rule 14 (params_decl -> empty .)
 
 
 state 113
 
-    (33) args -> args COMA expresion .
+    (16) func_header -> FLOTANTE ID PAREN_IZQ params_decl . PAREN_DER
+    (13) params_decl -> params_decl . COMA ID DOS_PUNTOS tipo
 
-    PAREN_DER       reduce using rule 33 (args -> args COMA expresion .)
-    COMA            reduce using rule 33 (args -> args COMA expresion .)
+    PAREN_DER       shift and go to state 139
+    COMA            shift and go to state 138
 
 
 state 114
 
-    (28) condicion -> SI PAREN_IZQ expresion PAREN_DER CORCHETE_IZQ . cuerpo CORCHETE_DER
-    (29) condicion -> SI PAREN_IZQ expresion PAREN_DER CORCHETE_IZQ . cuerpo CORCHETE_DER SINO CORCHETE_IZQ cuerpo CORCHETE_DER
-    (14) cuerpo -> . estatuto
-    (15) cuerpo -> . cuerpo estatuto
-    (16) cuerpo -> . empty
-    (17) estatuto -> . asigna
-    (18) estatuto -> . condicion
-    (19) estatuto -> . ciclo
-    (20) estatuto -> . imprime
-    (21) estatuto -> . llamada PUNTO_COMA
-    (61) empty -> .
-    (22) asigna -> . ID ASIGNA expresion PUNTO_COMA
-    (28) condicion -> . SI PAREN_IZQ expresion PAREN_DER CORCHETE_IZQ cuerpo CORCHETE_DER
-    (29) condicion -> . SI PAREN_IZQ expresion PAREN_DER CORCHETE_IZQ cuerpo CORCHETE_DER SINO CORCHETE_IZQ cuerpo CORCHETE_DER
-    (30) ciclo -> . MIENTRAS PAREN_IZQ expresion PAREN_DER HAZ CORCHETE_IZQ cuerpo CORCHETE_DER PUNTO_COMA
-    (23) imprime -> . ESCRIBE PAREN_IZQ imp_lista PAREN_DER PUNTO_COMA
-    (31) llamada -> . ID PAREN_IZQ args PAREN_DER
+    (17) func_header -> NULA ID PAREN_IZQ params_decl . PAREN_DER
+    (13) params_decl -> params_decl . COMA ID DOS_PUNTOS tipo
 
-  ! shift/reduce conflict for ID resolved as shift
-  ! shift/reduce conflict for SI resolved as shift
-  ! shift/reduce conflict for MIENTRAS resolved as shift
-  ! shift/reduce conflict for ESCRIBE resolved as shift
-    CORCHETE_DER    reduce using rule 61 (empty -> .)
-    ID              shift and go to state 20
-    SI              shift and go to state 29
-    MIENTRAS        shift and go to state 30
-    ESCRIBE         shift and go to state 31
+    PAREN_DER       shift and go to state 140
+    COMA            shift and go to state 138
 
-  ! ID              [ reduce using rule 61 (empty -> .) ]
-  ! SI              [ reduce using rule 61 (empty -> .) ]
-  ! MIENTRAS        [ reduce using rule 61 (empty -> .) ]
-  ! ESCRIBE         [ reduce using rule 61 (empty -> .) ]
-
-    cuerpo                         shift and go to state 120
-    estatuto                       shift and go to state 22
-    empty                          shift and go to state 23
-    asigna                         shift and go to state 24
-    condicion                      shift and go to state 25
-    ciclo                          shift and go to state 26
-    imprime                        shift and go to state 27
-    llamada                        shift and go to state 28
 
 state 115
 
-    (30) ciclo -> MIENTRAS PAREN_IZQ expresion PAREN_DER HAZ . CORCHETE_IZQ cuerpo CORCHETE_DER PUNTO_COMA
+    (7) lista_vars -> lista_vars ID_VAR mas_ids DOS_PUNTOS tipo . PUNTO_COMA
 
-    CORCHETE_IZQ    shift and go to state 121
+    PUNTO_COMA      shift and go to state 141
 
 
 state 116
 
-    (23) imprime -> ESCRIBE PAREN_IZQ imp_lista PAREN_DER PUNTO_COMA .
+    (6) lista_vars -> ID_VAR mas_ids DOS_PUNTOS tipo PUNTO_COMA .
 
-    FIN             reduce using rule 23 (imprime -> ESCRIBE PAREN_IZQ imp_lista PAREN_DER PUNTO_COMA .)
-    ID              reduce using rule 23 (imprime -> ESCRIBE PAREN_IZQ imp_lista PAREN_DER PUNTO_COMA .)
-    SI              reduce using rule 23 (imprime -> ESCRIBE PAREN_IZQ imp_lista PAREN_DER PUNTO_COMA .)
-    MIENTRAS        reduce using rule 23 (imprime -> ESCRIBE PAREN_IZQ imp_lista PAREN_DER PUNTO_COMA .)
-    ESCRIBE         reduce using rule 23 (imprime -> ESCRIBE PAREN_IZQ imp_lista PAREN_DER PUNTO_COMA .)
-    LLAVE_DER       reduce using rule 23 (imprime -> ESCRIBE PAREN_IZQ imp_lista PAREN_DER PUNTO_COMA .)
-    CORCHETE_DER    reduce using rule 23 (imprime -> ESCRIBE PAREN_IZQ imp_lista PAREN_DER PUNTO_COMA .)
+    ID_VAR          reduce using rule 6 (lista_vars -> ID_VAR mas_ids DOS_PUNTOS tipo PUNTO_COMA .)
+    INICIO          reduce using rule 6 (lista_vars -> ID_VAR mas_ids DOS_PUNTOS tipo PUNTO_COMA .)
+    ENTERO          reduce using rule 6 (lista_vars -> ID_VAR mas_ids DOS_PUNTOS tipo PUNTO_COMA .)
+    FLOTANTE        reduce using rule 6 (lista_vars -> ID_VAR mas_ids DOS_PUNTOS tipo PUNTO_COMA .)
+    NULA            reduce using rule 6 (lista_vars -> ID_VAR mas_ids DOS_PUNTOS tipo PUNTO_COMA .)
+    ID              reduce using rule 6 (lista_vars -> ID_VAR mas_ids DOS_PUNTOS tipo PUNTO_COMA .)
+    ESCRIBE         reduce using rule 6 (lista_vars -> ID_VAR mas_ids DOS_PUNTOS tipo PUNTO_COMA .)
+    REGRESA         reduce using rule 6 (lista_vars -> ID_VAR mas_ids DOS_PUNTOS tipo PUNTO_COMA .)
+    SI              reduce using rule 6 (lista_vars -> ID_VAR mas_ids DOS_PUNTOS tipo PUNTO_COMA .)
+    MIENTRAS        reduce using rule 6 (lista_vars -> ID_VAR mas_ids DOS_PUNTOS tipo PUNTO_COMA .)
+    LLAVE_DER       reduce using rule 6 (lista_vars -> ID_VAR mas_ids DOS_PUNTOS tipo PUNTO_COMA .)
 
 
 state 117
 
-    (26) imp_lista -> imp_lista COMA expresion .
+    (30) asigna -> ID ASIGNA expresion PUNTO_COMA .
 
-    PAREN_DER       reduce using rule 26 (imp_lista -> imp_lista COMA expresion .)
-    COMA            reduce using rule 26 (imp_lista -> imp_lista COMA expresion .)
+    FIN             reduce using rule 30 (asigna -> ID ASIGNA expresion PUNTO_COMA .)
+    ID              reduce using rule 30 (asigna -> ID ASIGNA expresion PUNTO_COMA .)
+    ESCRIBE         reduce using rule 30 (asigna -> ID ASIGNA expresion PUNTO_COMA .)
+    REGRESA         reduce using rule 30 (asigna -> ID ASIGNA expresion PUNTO_COMA .)
+    SI              reduce using rule 30 (asigna -> ID ASIGNA expresion PUNTO_COMA .)
+    MIENTRAS        reduce using rule 30 (asigna -> ID ASIGNA expresion PUNTO_COMA .)
+    CORCHETE_DER    reduce using rule 30 (asigna -> ID ASIGNA expresion PUNTO_COMA .)
+    LLAVE_DER       reduce using rule 30 (asigna -> ID ASIGNA expresion PUNTO_COMA .)
 
 
 state 118
 
-    (27) imp_lista -> imp_lista COMA CADENA .
+    (43) llamada -> ID PAREN_IZQ args PAREN_DER .
 
-    PAREN_DER       reduce using rule 27 (imp_lista -> imp_lista COMA CADENA .)
-    COMA            reduce using rule 27 (imp_lista -> imp_lista COMA CADENA .)
+    PUNTO_COMA      reduce using rule 43 (llamada -> ID PAREN_IZQ args PAREN_DER .)
 
 
 state 119
 
-    (12) funcs -> funcs func_header LLAVE_IZQ vars cuerpo LLAVE_DER PUNTO_COMA .
+    (45) args -> args COMA . expresion
+    (47) expresion -> . exp
+    (48) expresion -> . exp mayor_op exp
+    (49) expresion -> . exp menor_op exp
+    (50) expresion -> . exp igual_op exp
+    (51) expresion -> . exp diferente_op exp
+    (52) exp -> . termino
+    (53) exp -> . exp suma_op termino
+    (54) exp -> . exp resta_op termino
+    (55) termino -> . factor
+    (56) termino -> . termino mult_op factor
+    (57) termino -> . termino div_op factor
+    (66) factor -> . PAREN_IZQ expresion PAREN_DER
+    (67) factor -> . SUMA cte
+    (68) factor -> . RESTA cte
+    (69) factor -> . cte
+    (70) factor -> . ID
+    (71) cte -> . CTE_ENT
+    (72) cte -> . CTE_FLOT
 
-    INICIO          reduce using rule 12 (funcs -> funcs func_header LLAVE_IZQ vars cuerpo LLAVE_DER PUNTO_COMA .)
-    ID              reduce using rule 12 (funcs -> funcs func_header LLAVE_IZQ vars cuerpo LLAVE_DER PUNTO_COMA .)
+    PAREN_IZQ       shift and go to state 60
+    SUMA            shift and go to state 61
+    RESTA           shift and go to state 63
+    ID              shift and go to state 64
+    CTE_ENT         shift and go to state 65
+    CTE_FLOT        shift and go to state 66
 
+    expresion                      shift and go to state 142
+    exp                            shift and go to state 57
+    termino                        shift and go to state 58
+    factor                         shift and go to state 59
+    cte                            shift and go to state 62
 
 state 120
 
-    (28) condicion -> SI PAREN_IZQ expresion PAREN_DER CORCHETE_IZQ cuerpo . CORCHETE_DER
-    (29) condicion -> SI PAREN_IZQ expresion PAREN_DER CORCHETE_IZQ cuerpo . CORCHETE_DER SINO CORCHETE_IZQ cuerpo CORCHETE_DER
-    (15) cuerpo -> cuerpo . estatuto
-    (17) estatuto -> . asigna
-    (18) estatuto -> . condicion
-    (19) estatuto -> . ciclo
-    (20) estatuto -> . imprime
-    (21) estatuto -> . llamada PUNTO_COMA
-    (22) asigna -> . ID ASIGNA expresion PUNTO_COMA
-    (28) condicion -> . SI PAREN_IZQ expresion PAREN_DER CORCHETE_IZQ cuerpo CORCHETE_DER
-    (29) condicion -> . SI PAREN_IZQ expresion PAREN_DER CORCHETE_IZQ cuerpo CORCHETE_DER SINO CORCHETE_IZQ cuerpo CORCHETE_DER
-    (30) ciclo -> . MIENTRAS PAREN_IZQ expresion PAREN_DER HAZ CORCHETE_IZQ cuerpo CORCHETE_DER PUNTO_COMA
-    (23) imprime -> . ESCRIBE PAREN_IZQ imp_lista PAREN_DER PUNTO_COMA
-    (31) llamada -> . ID PAREN_IZQ args PAREN_DER
+    (37) condicion -> si_header CORCHETE_IZQ cuerpo CORCHETE_DER .
+    (39) condicion -> si_header CORCHETE_IZQ cuerpo CORCHETE_DER . sino_header CORCHETE_IZQ cuerpo CORCHETE_DER
+    (38) sino_header -> . SINO
 
-    CORCHETE_DER    shift and go to state 122
-    ID              shift and go to state 20
-    SI              shift and go to state 29
-    MIENTRAS        shift and go to state 30
-    ESCRIBE         shift and go to state 31
+    FIN             reduce using rule 37 (condicion -> si_header CORCHETE_IZQ cuerpo CORCHETE_DER .)
+    ID              reduce using rule 37 (condicion -> si_header CORCHETE_IZQ cuerpo CORCHETE_DER .)
+    ESCRIBE         reduce using rule 37 (condicion -> si_header CORCHETE_IZQ cuerpo CORCHETE_DER .)
+    REGRESA         reduce using rule 37 (condicion -> si_header CORCHETE_IZQ cuerpo CORCHETE_DER .)
+    SI              reduce using rule 37 (condicion -> si_header CORCHETE_IZQ cuerpo CORCHETE_DER .)
+    MIENTRAS        reduce using rule 37 (condicion -> si_header CORCHETE_IZQ cuerpo CORCHETE_DER .)
+    CORCHETE_DER    reduce using rule 37 (condicion -> si_header CORCHETE_IZQ cuerpo CORCHETE_DER .)
+    LLAVE_DER       reduce using rule 37 (condicion -> si_header CORCHETE_IZQ cuerpo CORCHETE_DER .)
+    SINO            shift and go to state 144
 
-    estatuto                       shift and go to state 43
-    asigna                         shift and go to state 24
-    condicion                      shift and go to state 25
-    ciclo                          shift and go to state 26
-    imprime                        shift and go to state 27
-    llamada                        shift and go to state 28
+    sino_header                    shift and go to state 143
 
 state 121
 
-    (30) ciclo -> MIENTRAS PAREN_IZQ expresion PAREN_DER HAZ CORCHETE_IZQ . cuerpo CORCHETE_DER PUNTO_COMA
-    (14) cuerpo -> . estatuto
-    (15) cuerpo -> . cuerpo estatuto
-    (16) cuerpo -> . empty
-    (17) estatuto -> . asigna
-    (18) estatuto -> . condicion
-    (19) estatuto -> . ciclo
-    (20) estatuto -> . imprime
-    (21) estatuto -> . llamada PUNTO_COMA
-    (61) empty -> .
-    (22) asigna -> . ID ASIGNA expresion PUNTO_COMA
-    (28) condicion -> . SI PAREN_IZQ expresion PAREN_DER CORCHETE_IZQ cuerpo CORCHETE_DER
-    (29) condicion -> . SI PAREN_IZQ expresion PAREN_DER CORCHETE_IZQ cuerpo CORCHETE_DER SINO CORCHETE_IZQ cuerpo CORCHETE_DER
-    (30) ciclo -> . MIENTRAS PAREN_IZQ expresion PAREN_DER HAZ CORCHETE_IZQ cuerpo CORCHETE_DER PUNTO_COMA
-    (23) imprime -> . ESCRIBE PAREN_IZQ imp_lista PAREN_DER PUNTO_COMA
-    (31) llamada -> . ID PAREN_IZQ args PAREN_DER
+    (42) ciclo -> mientras_cond HAZ CORCHETE_IZQ cuerpo . CORCHETE_DER PUNTO_COMA
+    (21) cuerpo -> cuerpo . estatuto
+    (23) estatuto -> . asigna
+    (24) estatuto -> . condicion
+    (25) estatuto -> . ciclo
+    (26) estatuto -> . imprime
+    (27) estatuto -> . llamada PUNTO_COMA
+    (28) estatuto -> . retorna
+    (30) asigna -> . ID ASIGNA expresion PUNTO_COMA
+    (37) condicion -> . si_header CORCHETE_IZQ cuerpo CORCHETE_DER
+    (39) condicion -> . si_header CORCHETE_IZQ cuerpo CORCHETE_DER sino_header CORCHETE_IZQ cuerpo CORCHETE_DER
+    (42) ciclo -> . mientras_cond HAZ CORCHETE_IZQ cuerpo CORCHETE_DER PUNTO_COMA
+    (31) imprime -> . ESCRIBE PAREN_IZQ imp_lista PAREN_DER PUNTO_COMA
+    (43) llamada -> . ID PAREN_IZQ args PAREN_DER
+    (29) retorna -> . REGRESA expresion PUNTO_COMA
+    (36) si_header -> . SI PAREN_IZQ expresion PAREN_DER
+    (41) mientras_cond -> . mientras_header PAREN_IZQ expresion PAREN_DER
+    (40) mientras_header -> . MIENTRAS
 
-  ! shift/reduce conflict for ID resolved as shift
-  ! shift/reduce conflict for SI resolved as shift
-  ! shift/reduce conflict for MIENTRAS resolved as shift
-  ! shift/reduce conflict for ESCRIBE resolved as shift
-    CORCHETE_DER    reduce using rule 61 (empty -> .)
-    ID              shift and go to state 20
-    SI              shift and go to state 29
-    MIENTRAS        shift and go to state 30
-    ESCRIBE         shift and go to state 31
+    CORCHETE_DER    shift and go to state 145
+    ID              shift and go to state 24
+    ESCRIBE         shift and go to state 36
+    REGRESA         shift and go to state 37
+    SI              shift and go to state 38
+    MIENTRAS        shift and go to state 40
 
-  ! ID              [ reduce using rule 61 (empty -> .) ]
-  ! SI              [ reduce using rule 61 (empty -> .) ]
-  ! MIENTRAS        [ reduce using rule 61 (empty -> .) ]
-  ! ESCRIBE         [ reduce using rule 61 (empty -> .) ]
-
-    cuerpo                         shift and go to state 123
-    estatuto                       shift and go to state 22
-    empty                          shift and go to state 23
-    asigna                         shift and go to state 24
-    condicion                      shift and go to state 25
-    ciclo                          shift and go to state 26
-    imprime                        shift and go to state 27
-    llamada                        shift and go to state 28
+    mientras_cond                  shift and go to state 35
+    estatuto                       shift and go to state 51
+    asigna                         shift and go to state 28
+    condicion                      shift and go to state 29
+    ciclo                          shift and go to state 30
+    imprime                        shift and go to state 31
+    llamada                        shift and go to state 32
+    retorna                        shift and go to state 33
+    si_header                      shift and go to state 34
+    mientras_header                shift and go to state 39
 
 state 122
 
-    (28) condicion -> SI PAREN_IZQ expresion PAREN_DER CORCHETE_IZQ cuerpo CORCHETE_DER .
-    (29) condicion -> SI PAREN_IZQ expresion PAREN_DER CORCHETE_IZQ cuerpo CORCHETE_DER . SINO CORCHETE_IZQ cuerpo CORCHETE_DER
+    (31) imprime -> ESCRIBE PAREN_IZQ imp_lista PAREN_DER . PUNTO_COMA
 
-    FIN             reduce using rule 28 (condicion -> SI PAREN_IZQ expresion PAREN_DER CORCHETE_IZQ cuerpo CORCHETE_DER .)
-    ID              reduce using rule 28 (condicion -> SI PAREN_IZQ expresion PAREN_DER CORCHETE_IZQ cuerpo CORCHETE_DER .)
-    SI              reduce using rule 28 (condicion -> SI PAREN_IZQ expresion PAREN_DER CORCHETE_IZQ cuerpo CORCHETE_DER .)
-    MIENTRAS        reduce using rule 28 (condicion -> SI PAREN_IZQ expresion PAREN_DER CORCHETE_IZQ cuerpo CORCHETE_DER .)
-    ESCRIBE         reduce using rule 28 (condicion -> SI PAREN_IZQ expresion PAREN_DER CORCHETE_IZQ cuerpo CORCHETE_DER .)
-    LLAVE_DER       reduce using rule 28 (condicion -> SI PAREN_IZQ expresion PAREN_DER CORCHETE_IZQ cuerpo CORCHETE_DER .)
-    CORCHETE_DER    reduce using rule 28 (condicion -> SI PAREN_IZQ expresion PAREN_DER CORCHETE_IZQ cuerpo CORCHETE_DER .)
-    SINO            shift and go to state 124
+    PUNTO_COMA      shift and go to state 146
 
 
 state 123
 
-    (30) ciclo -> MIENTRAS PAREN_IZQ expresion PAREN_DER HAZ CORCHETE_IZQ cuerpo . CORCHETE_DER PUNTO_COMA
-    (15) cuerpo -> cuerpo . estatuto
-    (17) estatuto -> . asigna
-    (18) estatuto -> . condicion
-    (19) estatuto -> . ciclo
-    (20) estatuto -> . imprime
-    (21) estatuto -> . llamada PUNTO_COMA
-    (22) asigna -> . ID ASIGNA expresion PUNTO_COMA
-    (28) condicion -> . SI PAREN_IZQ expresion PAREN_DER CORCHETE_IZQ cuerpo CORCHETE_DER
-    (29) condicion -> . SI PAREN_IZQ expresion PAREN_DER CORCHETE_IZQ cuerpo CORCHETE_DER SINO CORCHETE_IZQ cuerpo CORCHETE_DER
-    (30) ciclo -> . MIENTRAS PAREN_IZQ expresion PAREN_DER HAZ CORCHETE_IZQ cuerpo CORCHETE_DER PUNTO_COMA
-    (23) imprime -> . ESCRIBE PAREN_IZQ imp_lista PAREN_DER PUNTO_COMA
-    (31) llamada -> . ID PAREN_IZQ args PAREN_DER
+    (34) imp_lista -> imp_lista COMA . expresion
+    (35) imp_lista -> imp_lista COMA . CADENA
+    (47) expresion -> . exp
+    (48) expresion -> . exp mayor_op exp
+    (49) expresion -> . exp menor_op exp
+    (50) expresion -> . exp igual_op exp
+    (51) expresion -> . exp diferente_op exp
+    (52) exp -> . termino
+    (53) exp -> . exp suma_op termino
+    (54) exp -> . exp resta_op termino
+    (55) termino -> . factor
+    (56) termino -> . termino mult_op factor
+    (57) termino -> . termino div_op factor
+    (66) factor -> . PAREN_IZQ expresion PAREN_DER
+    (67) factor -> . SUMA cte
+    (68) factor -> . RESTA cte
+    (69) factor -> . cte
+    (70) factor -> . ID
+    (71) cte -> . CTE_ENT
+    (72) cte -> . CTE_FLOT
 
-    CORCHETE_DER    shift and go to state 125
-    ID              shift and go to state 20
-    SI              shift and go to state 29
-    MIENTRAS        shift and go to state 30
-    ESCRIBE         shift and go to state 31
+    CADENA          shift and go to state 148
+    PAREN_IZQ       shift and go to state 60
+    SUMA            shift and go to state 61
+    RESTA           shift and go to state 63
+    ID              shift and go to state 64
+    CTE_ENT         shift and go to state 65
+    CTE_FLOT        shift and go to state 66
 
-    estatuto                       shift and go to state 43
-    asigna                         shift and go to state 24
-    condicion                      shift and go to state 25
-    ciclo                          shift and go to state 26
-    imprime                        shift and go to state 27
-    llamada                        shift and go to state 28
+    expresion                      shift and go to state 147
+    exp                            shift and go to state 57
+    termino                        shift and go to state 58
+    factor                         shift and go to state 59
+    cte                            shift and go to state 62
 
 state 124
 
-    (29) condicion -> SI PAREN_IZQ expresion PAREN_DER CORCHETE_IZQ cuerpo CORCHETE_DER SINO . CORCHETE_IZQ cuerpo CORCHETE_DER
+    (48) expresion -> exp mayor_op exp .
+    (53) exp -> exp . suma_op termino
+    (54) exp -> exp . resta_op termino
+    (58) suma_op -> . SUMA
+    (59) resta_op -> . RESTA
 
-    CORCHETE_IZQ    shift and go to state 126
+    PUNTO_COMA      reduce using rule 48 (expresion -> exp mayor_op exp .)
+    PAREN_DER       reduce using rule 48 (expresion -> exp mayor_op exp .)
+    COMA            reduce using rule 48 (expresion -> exp mayor_op exp .)
+    SUMA            shift and go to state 98
+    RESTA           shift and go to state 99
 
+    suma_op                        shift and go to state 92
+    resta_op                       shift and go to state 93
 
 state 125
 
-    (30) ciclo -> MIENTRAS PAREN_IZQ expresion PAREN_DER HAZ CORCHETE_IZQ cuerpo CORCHETE_DER . PUNTO_COMA
+    (49) expresion -> exp menor_op exp .
+    (53) exp -> exp . suma_op termino
+    (54) exp -> exp . resta_op termino
+    (58) suma_op -> . SUMA
+    (59) resta_op -> . RESTA
 
-    PUNTO_COMA      shift and go to state 127
+    PUNTO_COMA      reduce using rule 49 (expresion -> exp menor_op exp .)
+    PAREN_DER       reduce using rule 49 (expresion -> exp menor_op exp .)
+    COMA            reduce using rule 49 (expresion -> exp menor_op exp .)
+    SUMA            shift and go to state 98
+    RESTA           shift and go to state 99
 
+    suma_op                        shift and go to state 92
+    resta_op                       shift and go to state 93
 
 state 126
 
-    (29) condicion -> SI PAREN_IZQ expresion PAREN_DER CORCHETE_IZQ cuerpo CORCHETE_DER SINO CORCHETE_IZQ . cuerpo CORCHETE_DER
-    (14) cuerpo -> . estatuto
-    (15) cuerpo -> . cuerpo estatuto
-    (16) cuerpo -> . empty
-    (17) estatuto -> . asigna
-    (18) estatuto -> . condicion
-    (19) estatuto -> . ciclo
-    (20) estatuto -> . imprime
-    (21) estatuto -> . llamada PUNTO_COMA
-    (61) empty -> .
-    (22) asigna -> . ID ASIGNA expresion PUNTO_COMA
-    (28) condicion -> . SI PAREN_IZQ expresion PAREN_DER CORCHETE_IZQ cuerpo CORCHETE_DER
-    (29) condicion -> . SI PAREN_IZQ expresion PAREN_DER CORCHETE_IZQ cuerpo CORCHETE_DER SINO CORCHETE_IZQ cuerpo CORCHETE_DER
-    (30) ciclo -> . MIENTRAS PAREN_IZQ expresion PAREN_DER HAZ CORCHETE_IZQ cuerpo CORCHETE_DER PUNTO_COMA
-    (23) imprime -> . ESCRIBE PAREN_IZQ imp_lista PAREN_DER PUNTO_COMA
-    (31) llamada -> . ID PAREN_IZQ args PAREN_DER
+    (50) expresion -> exp igual_op exp .
+    (53) exp -> exp . suma_op termino
+    (54) exp -> exp . resta_op termino
+    (58) suma_op -> . SUMA
+    (59) resta_op -> . RESTA
 
-  ! shift/reduce conflict for ID resolved as shift
-  ! shift/reduce conflict for SI resolved as shift
-  ! shift/reduce conflict for MIENTRAS resolved as shift
-  ! shift/reduce conflict for ESCRIBE resolved as shift
-    CORCHETE_DER    reduce using rule 61 (empty -> .)
-    ID              shift and go to state 20
-    SI              shift and go to state 29
-    MIENTRAS        shift and go to state 30
-    ESCRIBE         shift and go to state 31
+    PUNTO_COMA      reduce using rule 50 (expresion -> exp igual_op exp .)
+    PAREN_DER       reduce using rule 50 (expresion -> exp igual_op exp .)
+    COMA            reduce using rule 50 (expresion -> exp igual_op exp .)
+    SUMA            shift and go to state 98
+    RESTA           shift and go to state 99
 
-  ! ID              [ reduce using rule 61 (empty -> .) ]
-  ! SI              [ reduce using rule 61 (empty -> .) ]
-  ! MIENTRAS        [ reduce using rule 61 (empty -> .) ]
-  ! ESCRIBE         [ reduce using rule 61 (empty -> .) ]
-
-    cuerpo                         shift and go to state 128
-    estatuto                       shift and go to state 22
-    empty                          shift and go to state 23
-    asigna                         shift and go to state 24
-    condicion                      shift and go to state 25
-    ciclo                          shift and go to state 26
-    imprime                        shift and go to state 27
-    llamada                        shift and go to state 28
+    suma_op                        shift and go to state 92
+    resta_op                       shift and go to state 93
 
 state 127
 
-    (30) ciclo -> MIENTRAS PAREN_IZQ expresion PAREN_DER HAZ CORCHETE_IZQ cuerpo CORCHETE_DER PUNTO_COMA .
+    (51) expresion -> exp diferente_op exp .
+    (53) exp -> exp . suma_op termino
+    (54) exp -> exp . resta_op termino
+    (58) suma_op -> . SUMA
+    (59) resta_op -> . RESTA
 
-    FIN             reduce using rule 30 (ciclo -> MIENTRAS PAREN_IZQ expresion PAREN_DER HAZ CORCHETE_IZQ cuerpo CORCHETE_DER PUNTO_COMA .)
-    ID              reduce using rule 30 (ciclo -> MIENTRAS PAREN_IZQ expresion PAREN_DER HAZ CORCHETE_IZQ cuerpo CORCHETE_DER PUNTO_COMA .)
-    SI              reduce using rule 30 (ciclo -> MIENTRAS PAREN_IZQ expresion PAREN_DER HAZ CORCHETE_IZQ cuerpo CORCHETE_DER PUNTO_COMA .)
-    MIENTRAS        reduce using rule 30 (ciclo -> MIENTRAS PAREN_IZQ expresion PAREN_DER HAZ CORCHETE_IZQ cuerpo CORCHETE_DER PUNTO_COMA .)
-    ESCRIBE         reduce using rule 30 (ciclo -> MIENTRAS PAREN_IZQ expresion PAREN_DER HAZ CORCHETE_IZQ cuerpo CORCHETE_DER PUNTO_COMA .)
-    LLAVE_DER       reduce using rule 30 (ciclo -> MIENTRAS PAREN_IZQ expresion PAREN_DER HAZ CORCHETE_IZQ cuerpo CORCHETE_DER PUNTO_COMA .)
-    CORCHETE_DER    reduce using rule 30 (ciclo -> MIENTRAS PAREN_IZQ expresion PAREN_DER HAZ CORCHETE_IZQ cuerpo CORCHETE_DER PUNTO_COMA .)
+    PUNTO_COMA      reduce using rule 51 (expresion -> exp diferente_op exp .)
+    PAREN_DER       reduce using rule 51 (expresion -> exp diferente_op exp .)
+    COMA            reduce using rule 51 (expresion -> exp diferente_op exp .)
+    SUMA            shift and go to state 98
+    RESTA           shift and go to state 99
 
+    suma_op                        shift and go to state 92
+    resta_op                       shift and go to state 93
 
 state 128
 
-    (29) condicion -> SI PAREN_IZQ expresion PAREN_DER CORCHETE_IZQ cuerpo CORCHETE_DER SINO CORCHETE_IZQ cuerpo . CORCHETE_DER
-    (15) cuerpo -> cuerpo . estatuto
-    (17) estatuto -> . asigna
-    (18) estatuto -> . condicion
-    (19) estatuto -> . ciclo
-    (20) estatuto -> . imprime
-    (21) estatuto -> . llamada PUNTO_COMA
-    (22) asigna -> . ID ASIGNA expresion PUNTO_COMA
-    (28) condicion -> . SI PAREN_IZQ expresion PAREN_DER CORCHETE_IZQ cuerpo CORCHETE_DER
-    (29) condicion -> . SI PAREN_IZQ expresion PAREN_DER CORCHETE_IZQ cuerpo CORCHETE_DER SINO CORCHETE_IZQ cuerpo CORCHETE_DER
-    (30) ciclo -> . MIENTRAS PAREN_IZQ expresion PAREN_DER HAZ CORCHETE_IZQ cuerpo CORCHETE_DER PUNTO_COMA
-    (23) imprime -> . ESCRIBE PAREN_IZQ imp_lista PAREN_DER PUNTO_COMA
-    (31) llamada -> . ID PAREN_IZQ args PAREN_DER
+    (53) exp -> exp suma_op termino .
+    (56) termino -> termino . mult_op factor
+    (57) termino -> termino . div_op factor
+    (60) mult_op -> . MULT
+    (61) div_op -> . DIV
 
-    CORCHETE_DER    shift and go to state 129
-    ID              shift and go to state 20
-    SI              shift and go to state 29
-    MIENTRAS        shift and go to state 30
-    ESCRIBE         shift and go to state 31
+    MAYOR           reduce using rule 53 (exp -> exp suma_op termino .)
+    MENOR           reduce using rule 53 (exp -> exp suma_op termino .)
+    IGUAL           reduce using rule 53 (exp -> exp suma_op termino .)
+    DIFERENTE       reduce using rule 53 (exp -> exp suma_op termino .)
+    SUMA            reduce using rule 53 (exp -> exp suma_op termino .)
+    RESTA           reduce using rule 53 (exp -> exp suma_op termino .)
+    PUNTO_COMA      reduce using rule 53 (exp -> exp suma_op termino .)
+    PAREN_DER       reduce using rule 53 (exp -> exp suma_op termino .)
+    COMA            reduce using rule 53 (exp -> exp suma_op termino .)
+    MULT            shift and go to state 102
+    DIV             shift and go to state 103
 
-    estatuto                       shift and go to state 43
-    asigna                         shift and go to state 24
-    condicion                      shift and go to state 25
-    ciclo                          shift and go to state 26
-    imprime                        shift and go to state 27
-    llamada                        shift and go to state 28
+    mult_op                        shift and go to state 100
+    div_op                         shift and go to state 101
 
 state 129
 
-    (29) condicion -> SI PAREN_IZQ expresion PAREN_DER CORCHETE_IZQ cuerpo CORCHETE_DER SINO CORCHETE_IZQ cuerpo CORCHETE_DER .
+    (54) exp -> exp resta_op termino .
+    (56) termino -> termino . mult_op factor
+    (57) termino -> termino . div_op factor
+    (60) mult_op -> . MULT
+    (61) div_op -> . DIV
 
-    FIN             reduce using rule 29 (condicion -> SI PAREN_IZQ expresion PAREN_DER CORCHETE_IZQ cuerpo CORCHETE_DER SINO CORCHETE_IZQ cuerpo CORCHETE_DER .)
-    ID              reduce using rule 29 (condicion -> SI PAREN_IZQ expresion PAREN_DER CORCHETE_IZQ cuerpo CORCHETE_DER SINO CORCHETE_IZQ cuerpo CORCHETE_DER .)
-    SI              reduce using rule 29 (condicion -> SI PAREN_IZQ expresion PAREN_DER CORCHETE_IZQ cuerpo CORCHETE_DER SINO CORCHETE_IZQ cuerpo CORCHETE_DER .)
-    MIENTRAS        reduce using rule 29 (condicion -> SI PAREN_IZQ expresion PAREN_DER CORCHETE_IZQ cuerpo CORCHETE_DER SINO CORCHETE_IZQ cuerpo CORCHETE_DER .)
-    ESCRIBE         reduce using rule 29 (condicion -> SI PAREN_IZQ expresion PAREN_DER CORCHETE_IZQ cuerpo CORCHETE_DER SINO CORCHETE_IZQ cuerpo CORCHETE_DER .)
-    LLAVE_DER       reduce using rule 29 (condicion -> SI PAREN_IZQ expresion PAREN_DER CORCHETE_IZQ cuerpo CORCHETE_DER SINO CORCHETE_IZQ cuerpo CORCHETE_DER .)
-    CORCHETE_DER    reduce using rule 29 (condicion -> SI PAREN_IZQ expresion PAREN_DER CORCHETE_IZQ cuerpo CORCHETE_DER SINO CORCHETE_IZQ cuerpo CORCHETE_DER .)
+    MAYOR           reduce using rule 54 (exp -> exp resta_op termino .)
+    MENOR           reduce using rule 54 (exp -> exp resta_op termino .)
+    IGUAL           reduce using rule 54 (exp -> exp resta_op termino .)
+    DIFERENTE       reduce using rule 54 (exp -> exp resta_op termino .)
+    SUMA            reduce using rule 54 (exp -> exp resta_op termino .)
+    RESTA           reduce using rule 54 (exp -> exp resta_op termino .)
+    PUNTO_COMA      reduce using rule 54 (exp -> exp resta_op termino .)
+    PAREN_DER       reduce using rule 54 (exp -> exp resta_op termino .)
+    COMA            reduce using rule 54 (exp -> exp resta_op termino .)
+    MULT            shift and go to state 102
+    DIV             shift and go to state 103
+
+    mult_op                        shift and go to state 100
+    div_op                         shift and go to state 101
+
+state 130
+
+    (56) termino -> termino mult_op factor .
+
+    MULT            reduce using rule 56 (termino -> termino mult_op factor .)
+    DIV             reduce using rule 56 (termino -> termino mult_op factor .)
+    MAYOR           reduce using rule 56 (termino -> termino mult_op factor .)
+    MENOR           reduce using rule 56 (termino -> termino mult_op factor .)
+    IGUAL           reduce using rule 56 (termino -> termino mult_op factor .)
+    DIFERENTE       reduce using rule 56 (termino -> termino mult_op factor .)
+    SUMA            reduce using rule 56 (termino -> termino mult_op factor .)
+    RESTA           reduce using rule 56 (termino -> termino mult_op factor .)
+    PUNTO_COMA      reduce using rule 56 (termino -> termino mult_op factor .)
+    PAREN_DER       reduce using rule 56 (termino -> termino mult_op factor .)
+    COMA            reduce using rule 56 (termino -> termino mult_op factor .)
+
+
+state 131
+
+    (57) termino -> termino div_op factor .
+
+    MULT            reduce using rule 57 (termino -> termino div_op factor .)
+    DIV             reduce using rule 57 (termino -> termino div_op factor .)
+    MAYOR           reduce using rule 57 (termino -> termino div_op factor .)
+    MENOR           reduce using rule 57 (termino -> termino div_op factor .)
+    IGUAL           reduce using rule 57 (termino -> termino div_op factor .)
+    DIFERENTE       reduce using rule 57 (termino -> termino div_op factor .)
+    SUMA            reduce using rule 57 (termino -> termino div_op factor .)
+    RESTA           reduce using rule 57 (termino -> termino div_op factor .)
+    PUNTO_COMA      reduce using rule 57 (termino -> termino div_op factor .)
+    PAREN_DER       reduce using rule 57 (termino -> termino div_op factor .)
+    COMA            reduce using rule 57 (termino -> termino div_op factor .)
+
+
+state 132
+
+    (66) factor -> PAREN_IZQ expresion PAREN_DER .
+
+    MULT            reduce using rule 66 (factor -> PAREN_IZQ expresion PAREN_DER .)
+    DIV             reduce using rule 66 (factor -> PAREN_IZQ expresion PAREN_DER .)
+    MAYOR           reduce using rule 66 (factor -> PAREN_IZQ expresion PAREN_DER .)
+    MENOR           reduce using rule 66 (factor -> PAREN_IZQ expresion PAREN_DER .)
+    IGUAL           reduce using rule 66 (factor -> PAREN_IZQ expresion PAREN_DER .)
+    DIFERENTE       reduce using rule 66 (factor -> PAREN_IZQ expresion PAREN_DER .)
+    SUMA            reduce using rule 66 (factor -> PAREN_IZQ expresion PAREN_DER .)
+    RESTA           reduce using rule 66 (factor -> PAREN_IZQ expresion PAREN_DER .)
+    PUNTO_COMA      reduce using rule 66 (factor -> PAREN_IZQ expresion PAREN_DER .)
+    PAREN_DER       reduce using rule 66 (factor -> PAREN_IZQ expresion PAREN_DER .)
+    COMA            reduce using rule 66 (factor -> PAREN_IZQ expresion PAREN_DER .)
+
+
+state 133
+
+    (36) si_header -> SI PAREN_IZQ expresion PAREN_DER .
+
+    CORCHETE_IZQ    reduce using rule 36 (si_header -> SI PAREN_IZQ expresion PAREN_DER .)
+
+
+state 134
+
+    (41) mientras_cond -> mientras_header PAREN_IZQ expresion PAREN_DER .
+
+    HAZ             reduce using rule 41 (mientras_cond -> mientras_header PAREN_IZQ expresion PAREN_DER .)
+
+
+state 135
+
+    (18) funcs -> funcs func_header LLAVE_IZQ vars cuerpo LLAVE_DER . PUNTO_COMA
+
+    PUNTO_COMA      shift and go to state 149
+
+
+state 136
+
+    (12) params_decl -> ID DOS_PUNTOS . tipo
+    (10) tipo -> . ENTERO
+    (11) tipo -> . FLOTANTE
+
+    ENTERO          shift and go to state 75
+    FLOTANTE        shift and go to state 76
+
+    tipo                           shift and go to state 150
+
+state 137
+
+    (15) func_header -> ENTERO ID PAREN_IZQ params_decl PAREN_DER .
+
+    LLAVE_IZQ       reduce using rule 15 (func_header -> ENTERO ID PAREN_IZQ params_decl PAREN_DER .)
+
+
+state 138
+
+    (13) params_decl -> params_decl COMA . ID DOS_PUNTOS tipo
+
+    ID              shift and go to state 151
+
+
+state 139
+
+    (16) func_header -> FLOTANTE ID PAREN_IZQ params_decl PAREN_DER .
+
+    LLAVE_IZQ       reduce using rule 16 (func_header -> FLOTANTE ID PAREN_IZQ params_decl PAREN_DER .)
+
+
+state 140
+
+    (17) func_header -> NULA ID PAREN_IZQ params_decl PAREN_DER .
+
+    LLAVE_IZQ       reduce using rule 17 (func_header -> NULA ID PAREN_IZQ params_decl PAREN_DER .)
+
+
+state 141
+
+    (7) lista_vars -> lista_vars ID_VAR mas_ids DOS_PUNTOS tipo PUNTO_COMA .
+
+    ID_VAR          reduce using rule 7 (lista_vars -> lista_vars ID_VAR mas_ids DOS_PUNTOS tipo PUNTO_COMA .)
+    INICIO          reduce using rule 7 (lista_vars -> lista_vars ID_VAR mas_ids DOS_PUNTOS tipo PUNTO_COMA .)
+    ENTERO          reduce using rule 7 (lista_vars -> lista_vars ID_VAR mas_ids DOS_PUNTOS tipo PUNTO_COMA .)
+    FLOTANTE        reduce using rule 7 (lista_vars -> lista_vars ID_VAR mas_ids DOS_PUNTOS tipo PUNTO_COMA .)
+    NULA            reduce using rule 7 (lista_vars -> lista_vars ID_VAR mas_ids DOS_PUNTOS tipo PUNTO_COMA .)
+    ID              reduce using rule 7 (lista_vars -> lista_vars ID_VAR mas_ids DOS_PUNTOS tipo PUNTO_COMA .)
+    ESCRIBE         reduce using rule 7 (lista_vars -> lista_vars ID_VAR mas_ids DOS_PUNTOS tipo PUNTO_COMA .)
+    REGRESA         reduce using rule 7 (lista_vars -> lista_vars ID_VAR mas_ids DOS_PUNTOS tipo PUNTO_COMA .)
+    SI              reduce using rule 7 (lista_vars -> lista_vars ID_VAR mas_ids DOS_PUNTOS tipo PUNTO_COMA .)
+    MIENTRAS        reduce using rule 7 (lista_vars -> lista_vars ID_VAR mas_ids DOS_PUNTOS tipo PUNTO_COMA .)
+    LLAVE_DER       reduce using rule 7 (lista_vars -> lista_vars ID_VAR mas_ids DOS_PUNTOS tipo PUNTO_COMA .)
+
+
+state 142
+
+    (45) args -> args COMA expresion .
+
+    PAREN_DER       reduce using rule 45 (args -> args COMA expresion .)
+    COMA            reduce using rule 45 (args -> args COMA expresion .)
+
+
+state 143
+
+    (39) condicion -> si_header CORCHETE_IZQ cuerpo CORCHETE_DER sino_header . CORCHETE_IZQ cuerpo CORCHETE_DER
+
+    CORCHETE_IZQ    shift and go to state 152
+
+
+state 144
+
+    (38) sino_header -> SINO .
+
+    CORCHETE_IZQ    reduce using rule 38 (sino_header -> SINO .)
+
+
+state 145
+
+    (42) ciclo -> mientras_cond HAZ CORCHETE_IZQ cuerpo CORCHETE_DER . PUNTO_COMA
+
+    PUNTO_COMA      shift and go to state 153
+
+
+state 146
+
+    (31) imprime -> ESCRIBE PAREN_IZQ imp_lista PAREN_DER PUNTO_COMA .
+
+    FIN             reduce using rule 31 (imprime -> ESCRIBE PAREN_IZQ imp_lista PAREN_DER PUNTO_COMA .)
+    ID              reduce using rule 31 (imprime -> ESCRIBE PAREN_IZQ imp_lista PAREN_DER PUNTO_COMA .)
+    ESCRIBE         reduce using rule 31 (imprime -> ESCRIBE PAREN_IZQ imp_lista PAREN_DER PUNTO_COMA .)
+    REGRESA         reduce using rule 31 (imprime -> ESCRIBE PAREN_IZQ imp_lista PAREN_DER PUNTO_COMA .)
+    SI              reduce using rule 31 (imprime -> ESCRIBE PAREN_IZQ imp_lista PAREN_DER PUNTO_COMA .)
+    MIENTRAS        reduce using rule 31 (imprime -> ESCRIBE PAREN_IZQ imp_lista PAREN_DER PUNTO_COMA .)
+    CORCHETE_DER    reduce using rule 31 (imprime -> ESCRIBE PAREN_IZQ imp_lista PAREN_DER PUNTO_COMA .)
+    LLAVE_DER       reduce using rule 31 (imprime -> ESCRIBE PAREN_IZQ imp_lista PAREN_DER PUNTO_COMA .)
+
+
+state 147
+
+    (34) imp_lista -> imp_lista COMA expresion .
+
+    PAREN_DER       reduce using rule 34 (imp_lista -> imp_lista COMA expresion .)
+    COMA            reduce using rule 34 (imp_lista -> imp_lista COMA expresion .)
+
+
+state 148
+
+    (35) imp_lista -> imp_lista COMA CADENA .
+
+    PAREN_DER       reduce using rule 35 (imp_lista -> imp_lista COMA CADENA .)
+    COMA            reduce using rule 35 (imp_lista -> imp_lista COMA CADENA .)
+
+
+state 149
+
+    (18) funcs -> funcs func_header LLAVE_IZQ vars cuerpo LLAVE_DER PUNTO_COMA .
+
+    INICIO          reduce using rule 18 (funcs -> funcs func_header LLAVE_IZQ vars cuerpo LLAVE_DER PUNTO_COMA .)
+    ENTERO          reduce using rule 18 (funcs -> funcs func_header LLAVE_IZQ vars cuerpo LLAVE_DER PUNTO_COMA .)
+    FLOTANTE        reduce using rule 18 (funcs -> funcs func_header LLAVE_IZQ vars cuerpo LLAVE_DER PUNTO_COMA .)
+    NULA            reduce using rule 18 (funcs -> funcs func_header LLAVE_IZQ vars cuerpo LLAVE_DER PUNTO_COMA .)
+
+
+state 150
+
+    (12) params_decl -> ID DOS_PUNTOS tipo .
+
+    PAREN_DER       reduce using rule 12 (params_decl -> ID DOS_PUNTOS tipo .)
+    COMA            reduce using rule 12 (params_decl -> ID DOS_PUNTOS tipo .)
+
+
+state 151
+
+    (13) params_decl -> params_decl COMA ID . DOS_PUNTOS tipo
+
+    DOS_PUNTOS      shift and go to state 154
+
+
+state 152
+
+    (39) condicion -> si_header CORCHETE_IZQ cuerpo CORCHETE_DER sino_header CORCHETE_IZQ . cuerpo CORCHETE_DER
+    (20) cuerpo -> . estatuto
+    (21) cuerpo -> . cuerpo estatuto
+    (22) cuerpo -> . empty
+    (23) estatuto -> . asigna
+    (24) estatuto -> . condicion
+    (25) estatuto -> . ciclo
+    (26) estatuto -> . imprime
+    (27) estatuto -> . llamada PUNTO_COMA
+    (28) estatuto -> . retorna
+    (73) empty -> .
+    (30) asigna -> . ID ASIGNA expresion PUNTO_COMA
+    (37) condicion -> . si_header CORCHETE_IZQ cuerpo CORCHETE_DER
+    (39) condicion -> . si_header CORCHETE_IZQ cuerpo CORCHETE_DER sino_header CORCHETE_IZQ cuerpo CORCHETE_DER
+    (42) ciclo -> . mientras_cond HAZ CORCHETE_IZQ cuerpo CORCHETE_DER PUNTO_COMA
+    (31) imprime -> . ESCRIBE PAREN_IZQ imp_lista PAREN_DER PUNTO_COMA
+    (43) llamada -> . ID PAREN_IZQ args PAREN_DER
+    (29) retorna -> . REGRESA expresion PUNTO_COMA
+    (36) si_header -> . SI PAREN_IZQ expresion PAREN_DER
+    (41) mientras_cond -> . mientras_header PAREN_IZQ expresion PAREN_DER
+    (40) mientras_header -> . MIENTRAS
+
+  ! shift/reduce conflict for ID resolved as shift
+  ! shift/reduce conflict for ESCRIBE resolved as shift
+  ! shift/reduce conflict for REGRESA resolved as shift
+  ! shift/reduce conflict for SI resolved as shift
+  ! shift/reduce conflict for MIENTRAS resolved as shift
+    CORCHETE_DER    reduce using rule 73 (empty -> .)
+    ID              shift and go to state 24
+    ESCRIBE         shift and go to state 36
+    REGRESA         shift and go to state 37
+    SI              shift and go to state 38
+    MIENTRAS        shift and go to state 40
+
+  ! ID              [ reduce using rule 73 (empty -> .) ]
+  ! ESCRIBE         [ reduce using rule 73 (empty -> .) ]
+  ! REGRESA         [ reduce using rule 73 (empty -> .) ]
+  ! SI              [ reduce using rule 73 (empty -> .) ]
+  ! MIENTRAS        [ reduce using rule 73 (empty -> .) ]
+
+    si_header                      shift and go to state 34
+    cuerpo                         shift and go to state 155
+    estatuto                       shift and go to state 26
+    empty                          shift and go to state 27
+    asigna                         shift and go to state 28
+    condicion                      shift and go to state 29
+    ciclo                          shift and go to state 30
+    imprime                        shift and go to state 31
+    llamada                        shift and go to state 32
+    retorna                        shift and go to state 33
+    mientras_cond                  shift and go to state 35
+    mientras_header                shift and go to state 39
+
+state 153
+
+    (42) ciclo -> mientras_cond HAZ CORCHETE_IZQ cuerpo CORCHETE_DER PUNTO_COMA .
+
+    FIN             reduce using rule 42 (ciclo -> mientras_cond HAZ CORCHETE_IZQ cuerpo CORCHETE_DER PUNTO_COMA .)
+    ID              reduce using rule 42 (ciclo -> mientras_cond HAZ CORCHETE_IZQ cuerpo CORCHETE_DER PUNTO_COMA .)
+    ESCRIBE         reduce using rule 42 (ciclo -> mientras_cond HAZ CORCHETE_IZQ cuerpo CORCHETE_DER PUNTO_COMA .)
+    REGRESA         reduce using rule 42 (ciclo -> mientras_cond HAZ CORCHETE_IZQ cuerpo CORCHETE_DER PUNTO_COMA .)
+    SI              reduce using rule 42 (ciclo -> mientras_cond HAZ CORCHETE_IZQ cuerpo CORCHETE_DER PUNTO_COMA .)
+    MIENTRAS        reduce using rule 42 (ciclo -> mientras_cond HAZ CORCHETE_IZQ cuerpo CORCHETE_DER PUNTO_COMA .)
+    CORCHETE_DER    reduce using rule 42 (ciclo -> mientras_cond HAZ CORCHETE_IZQ cuerpo CORCHETE_DER PUNTO_COMA .)
+    LLAVE_DER       reduce using rule 42 (ciclo -> mientras_cond HAZ CORCHETE_IZQ cuerpo CORCHETE_DER PUNTO_COMA .)
+
+
+state 154
+
+    (13) params_decl -> params_decl COMA ID DOS_PUNTOS . tipo
+    (10) tipo -> . ENTERO
+    (11) tipo -> . FLOTANTE
+
+    ENTERO          shift and go to state 75
+    FLOTANTE        shift and go to state 76
+
+    tipo                           shift and go to state 156
+
+state 155
+
+    (39) condicion -> si_header CORCHETE_IZQ cuerpo CORCHETE_DER sino_header CORCHETE_IZQ cuerpo . CORCHETE_DER
+    (21) cuerpo -> cuerpo . estatuto
+    (23) estatuto -> . asigna
+    (24) estatuto -> . condicion
+    (25) estatuto -> . ciclo
+    (26) estatuto -> . imprime
+    (27) estatuto -> . llamada PUNTO_COMA
+    (28) estatuto -> . retorna
+    (30) asigna -> . ID ASIGNA expresion PUNTO_COMA
+    (37) condicion -> . si_header CORCHETE_IZQ cuerpo CORCHETE_DER
+    (39) condicion -> . si_header CORCHETE_IZQ cuerpo CORCHETE_DER sino_header CORCHETE_IZQ cuerpo CORCHETE_DER
+    (42) ciclo -> . mientras_cond HAZ CORCHETE_IZQ cuerpo CORCHETE_DER PUNTO_COMA
+    (31) imprime -> . ESCRIBE PAREN_IZQ imp_lista PAREN_DER PUNTO_COMA
+    (43) llamada -> . ID PAREN_IZQ args PAREN_DER
+    (29) retorna -> . REGRESA expresion PUNTO_COMA
+    (36) si_header -> . SI PAREN_IZQ expresion PAREN_DER
+    (41) mientras_cond -> . mientras_header PAREN_IZQ expresion PAREN_DER
+    (40) mientras_header -> . MIENTRAS
+
+    CORCHETE_DER    shift and go to state 157
+    ID              shift and go to state 24
+    ESCRIBE         shift and go to state 36
+    REGRESA         shift and go to state 37
+    SI              shift and go to state 38
+    MIENTRAS        shift and go to state 40
+
+    si_header                      shift and go to state 34
+    estatuto                       shift and go to state 51
+    asigna                         shift and go to state 28
+    condicion                      shift and go to state 29
+    ciclo                          shift and go to state 30
+    imprime                        shift and go to state 31
+    llamada                        shift and go to state 32
+    retorna                        shift and go to state 33
+    mientras_cond                  shift and go to state 35
+    mientras_header                shift and go to state 39
+
+state 156
+
+    (13) params_decl -> params_decl COMA ID DOS_PUNTOS tipo .
+
+    PAREN_DER       reduce using rule 13 (params_decl -> params_decl COMA ID DOS_PUNTOS tipo .)
+    COMA            reduce using rule 13 (params_decl -> params_decl COMA ID DOS_PUNTOS tipo .)
+
+
+state 157
+
+    (39) condicion -> si_header CORCHETE_IZQ cuerpo CORCHETE_DER sino_header CORCHETE_IZQ cuerpo CORCHETE_DER .
+
+    FIN             reduce using rule 39 (condicion -> si_header CORCHETE_IZQ cuerpo CORCHETE_DER sino_header CORCHETE_IZQ cuerpo CORCHETE_DER .)
+    ID              reduce using rule 39 (condicion -> si_header CORCHETE_IZQ cuerpo CORCHETE_DER sino_header CORCHETE_IZQ cuerpo CORCHETE_DER .)
+    ESCRIBE         reduce using rule 39 (condicion -> si_header CORCHETE_IZQ cuerpo CORCHETE_DER sino_header CORCHETE_IZQ cuerpo CORCHETE_DER .)
+    REGRESA         reduce using rule 39 (condicion -> si_header CORCHETE_IZQ cuerpo CORCHETE_DER sino_header CORCHETE_IZQ cuerpo CORCHETE_DER .)
+    SI              reduce using rule 39 (condicion -> si_header CORCHETE_IZQ cuerpo CORCHETE_DER sino_header CORCHETE_IZQ cuerpo CORCHETE_DER .)
+    MIENTRAS        reduce using rule 39 (condicion -> si_header CORCHETE_IZQ cuerpo CORCHETE_DER sino_header CORCHETE_IZQ cuerpo CORCHETE_DER .)
+    CORCHETE_DER    reduce using rule 39 (condicion -> si_header CORCHETE_IZQ cuerpo CORCHETE_DER sino_header CORCHETE_IZQ cuerpo CORCHETE_DER .)
+    LLAVE_DER       reduce using rule 39 (condicion -> si_header CORCHETE_IZQ cuerpo CORCHETE_DER sino_header CORCHETE_IZQ cuerpo CORCHETE_DER .)
 
 WARNING: 
 WARNING: Conflicts:
 WARNING: 
-WARNING: shift/reduce conflict for ID in state 10 resolved as shift
 WARNING: shift/reduce conflict for ID in state 13 resolved as shift
+WARNING: shift/reduce conflict for ESCRIBE in state 13 resolved as shift
+WARNING: shift/reduce conflict for REGRESA in state 13 resolved as shift
 WARNING: shift/reduce conflict for SI in state 13 resolved as shift
 WARNING: shift/reduce conflict for MIENTRAS in state 13 resolved as shift
-WARNING: shift/reduce conflict for ESCRIBE in state 13 resolved as shift
-WARNING: shift/reduce conflict for ID in state 48 resolved as shift
-WARNING: shift/reduce conflict for SI in state 48 resolved as shift
-WARNING: shift/reduce conflict for MIENTRAS in state 48 resolved as shift
-WARNING: shift/reduce conflict for ESCRIBE in state 48 resolved as shift
-WARNING: shift/reduce conflict for ID in state 114 resolved as shift
-WARNING: shift/reduce conflict for SI in state 114 resolved as shift
-WARNING: shift/reduce conflict for MIENTRAS in state 114 resolved as shift
-WARNING: shift/reduce conflict for ESCRIBE in state 114 resolved as shift
-WARNING: shift/reduce conflict for ID in state 121 resolved as shift
-WARNING: shift/reduce conflict for SI in state 121 resolved as shift
-WARNING: shift/reduce conflict for MIENTRAS in state 121 resolved as shift
-WARNING: shift/reduce conflict for ESCRIBE in state 121 resolved as shift
-WARNING: shift/reduce conflict for ID in state 126 resolved as shift
-WARNING: shift/reduce conflict for SI in state 126 resolved as shift
-WARNING: shift/reduce conflict for MIENTRAS in state 126 resolved as shift
-WARNING: shift/reduce conflict for ESCRIBE in state 126 resolved as shift
+WARNING: shift/reduce conflict for ID in state 53 resolved as shift
+WARNING: shift/reduce conflict for ESCRIBE in state 53 resolved as shift
+WARNING: shift/reduce conflict for REGRESA in state 53 resolved as shift
+WARNING: shift/reduce conflict for SI in state 53 resolved as shift
+WARNING: shift/reduce conflict for MIENTRAS in state 53 resolved as shift
+WARNING: shift/reduce conflict for ID in state 69 resolved as shift
+WARNING: shift/reduce conflict for ESCRIBE in state 69 resolved as shift
+WARNING: shift/reduce conflict for REGRESA in state 69 resolved as shift
+WARNING: shift/reduce conflict for SI in state 69 resolved as shift
+WARNING: shift/reduce conflict for MIENTRAS in state 69 resolved as shift
+WARNING: shift/reduce conflict for ID in state 83 resolved as shift
+WARNING: shift/reduce conflict for ESCRIBE in state 83 resolved as shift
+WARNING: shift/reduce conflict for REGRESA in state 83 resolved as shift
+WARNING: shift/reduce conflict for SI in state 83 resolved as shift
+WARNING: shift/reduce conflict for MIENTRAS in state 83 resolved as shift
+WARNING: shift/reduce conflict for ID in state 152 resolved as shift
+WARNING: shift/reduce conflict for ESCRIBE in state 152 resolved as shift
+WARNING: shift/reduce conflict for REGRESA in state 152 resolved as shift
+WARNING: shift/reduce conflict for SI in state 152 resolved as shift
+WARNING: shift/reduce conflict for MIENTRAS in state 152 resolved as shift
