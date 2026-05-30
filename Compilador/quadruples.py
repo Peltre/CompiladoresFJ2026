@@ -145,4 +145,17 @@ class GeneradorCuadruplos:
         fin = self.contador_actual()
         indice_gotof = self.pila_saltos.pop()
         self.rellenar_salto(indice_gotof, fin)
-            
+
+    # Function handling
+    def agregar_era(self, nombre_func):
+        # Marcar el inicio de una funcion
+        self.agregar_cuadruplo('ERA',nombre_func,'_','_')
+    
+    # Marcar el final de una func
+    def agregar_endfunc(self):
+        self.agregar_cuadruplo('ENDFUNC', '_','_','_')
+
+    # Metodo para agregar el GOSUB (llamada a una func)
+    # indice_era es donde empieza la func en la fila de cuadruplos
+    def agregar_gosub(self, nombre_func, indice_era):
+        self.agregar_cuadruplo('GOSUB', nombre_func, indice_era, '_')
