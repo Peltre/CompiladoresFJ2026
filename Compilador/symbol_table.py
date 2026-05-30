@@ -42,9 +42,22 @@ class DirectorioFunciones:
             'variables': TablaVariables()
         }
 
-    def agregar_funcion(self, nombre, tipo):
+    def agregar_funcion(self, nombre, tipo, memoria):
         # El parser llamara a esto cuando encuentra la declaracion de una funcion
-        self._agregar(nombre, tipo)
+        if nombre in self.funciones:
+            raise ErrorSemantico(f"Funcion '{nombre} ya fue declarada")
+        self.funciones[nombre] = {
+            'tipo' : tipo,
+            'variables': TablaVariables(),
+            'indice_era': None # se rellena auto cuando el parser genere ERA
+        }
+
+        # Si la funcion retorna algo, dar de alta una var global con su nombre
+        # Esa variable guardara el valor de retorno al ejecutar return
+        if tipo != 'nula':
+            scope_mem = 'global'
+            direccion = memoria.asignar(scope_mem, tipo)
+            self.funciones['global']['variables'].agregar(nombre, tipo, direccion)
 
     def entrar_funcion(self, nombre):
         # El parser llama esto al entrar al cuerpo de una funcion *actualiza el scope
