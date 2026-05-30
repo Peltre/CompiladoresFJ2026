@@ -15,6 +15,7 @@ reserved = {
     'haz' : 'HAZ',
     'escribe' : 'ESCRIBE',
     'nula' : 'NULA',
+    'regresa' : 'REGRESA',
 }
 
 # Lista de tokens
