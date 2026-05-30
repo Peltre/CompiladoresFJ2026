@@ -119,8 +119,20 @@ def p_estatuto(p):
                 | condicion
                 | ciclo
                 | imprime
-                | llamada PUNTO_COMA'''
+                | llamada PUNTO_COMA
+                | retorna'''
     
+def p_retorna(p):
+    'retorna : REGRESA expresion PUNTO_COMA'
+    # Buscar la variable global que guarda el retorno de la func actual
+    nombre_func = directorio.scope_actual
+    info = directorio.buscar_variable(nombre_func)
+    if info is None:
+        print(f"[ERROR SEMANTICO] La funcion '{nombre_func}' es nula, no puede retornar un valor")
+        return
+    # En caso de que no sea nula, generar cuadruplos de return
+    generador.agregar_return(info['direccion'])
+        
 # Asignación
 def p_asigna(p):
     'asigna : ID ASIGNA expresion PUNTO_COMA'
