@@ -82,7 +82,7 @@ def p_func_header_tipo(p):
     nombre = p[1]
     tipo = p[3]
     try:
-        directorio.agregar_funcion(nombre, tipo)
+        directorio.agregar_funcion(nombre, tipo, memoria)
         directorio.entrar_funcion(nombre)
     except ErrorSemantico as e:
         global hay_error_semantico
@@ -93,7 +93,7 @@ def p_func_header_nula(p):
     'func_header : ID PAREN_IZQ NULA PAREN_DER'
     nombre = p[1]
     try:
-        directorio.agregar_funcion(nombre, 'nula')
+        directorio.agregar_funcion(nombre, 'nula', memoria)
         directorio.entrar_funcion(nombre)
     except ErrorSemantico as e:
         print(e)
