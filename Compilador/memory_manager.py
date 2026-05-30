@@ -1,6 +1,10 @@
-# Archivo para el manejo de las direcciones virtuales para cada variable temporal y constante del programa
+# memory_manager | LM: 5/29/2026 | By: Pedro Sotelo
+# Manejo de direcciones virtuales para variables, temporales y constantes.
+# Cada variable del programa recibe un numero entero como direccion
 
-# Mapa de memoria, separado por tipo (propuesto en clase 5/21/2026)
+# MAPA DE MEMORIA
+# Define en donde empieza y termina cada segmento, separado por scope y tipo.
+# Dada cualquier direccion, se puede saber su scope y tipo sin consultar ninguna tabla adicional
 MAPA_MEMORIA = {
     'global': { 'entero': 0, 'flotante': 2000 },
     'local': { 'entero': 4000, 'flotante': 6000},
@@ -15,15 +19,19 @@ LIMITES_MEMORIA = {
     'constante': { 'entero': 13999, 'flotante': 15999},
 }
 
-# Clase personalizada, para resaltar errores semanticos
+# ERROR DE MEMORIA
+# Excepcion personalizada para manejo de errores de memroia
 class ErrorMemoria(Exception):
-    def __int__(self, mensaje):
+    def __init__(self, mensaje):
         super().__init__(f"[ERROR de MEMORIA] {mensaje}")
         
-
+# MANEJO DE MEMORIA
+# Clase principal que mantiene contadores por segmento y tipo
+# Cada vez que se asigna una direccion, el contador sube 1
 class ManejoMemoria:
     def __init__(self):
-        # Inicializar contadores por segmento y tipo, cada vez que se asigna una direccion, contador sube
+        # Contadores actuales por segmento y tipo
+        # Arrancan en la misma direccion que el mapa
         self.contadores = {
             'global': { 'entero': 0, 'flotante': 2000 },
             'local': { 'entero': 4000, 'flotante': 6000},
@@ -31,20 +39,18 @@ class ManejoMemoria:
             'constante': { 'entero': 12000, 'flotante': 14000},
         }
 
-        # Tabla de constantes ya registradas para no duplicar direcciones
+        # Guarda las constantes ya registradas para no duplicar direcciones
+        # Estructura: { (valor, tipo) -> direccion }
         self.tabla_constantes = {}
 
+    # ASIGNACION DE DIRECCIONES
     def asignar(self, scope, tipo):
-            # Asignar la sig direccion disponible para el scope y tipo de datos
+            # Entrega la siguiente direccion disponible para el scope y tipo dados
+            # y avanza el contador. Lanza error si el segmento esta lleno
             direccion = self.contadores[scope][tipo]
-
-            # Verificar que estemos dentro del rango
             if direccion > LIMITES_MEMORIA[scope][tipo]:
                 raise ErrorMemoria(f"Memoria {scope}/{tipo} agotada en direccion {direccion}")
-            
-            # avanzar el contador para la siguiente asignacion
             self.contadores[scope][tipo] += 1
-
             return direccion
         
     def asignar_temp(self, tipo):
@@ -52,26 +58,25 @@ class ManejoMemoria:
             return self.asignar('temporal', tipo)
         
     def asignar_constante(self, valor, tipo):
-            # Asigna una direccion para una constante, y si ya fue registrada, retorna la misma direccion
+            # Asigna una direccion a una constante si no existe ya
             clave = (valor, tipo)
             if clave in self.tabla_constantes:
                 return self.tabla_constantes[clave] # reutilizar en caso de que ya exista
-            
-            # Si es nueva, asignar dir y registrar
             direccion = self.asignar('constante', tipo)
             self.tabla_constantes[clave] = direccion
             return direccion
-        
+    
+    # CONSULTA DE DIRECCIONES
     def tipo_direccion(self, direccion):
-            # Dada una direccion retornar su scope y tipo
+            # Dado un numero de direccion, retorna scope y tipo
             for scope, tipos in MAPA_MEMORIA.items():
                 for tipo, inicio in tipos.items():
                     limite = LIMITES_MEMORIA[scope][tipo]
                     if inicio <= direccion <= limite:
                         return scope, tipo
-                    
             return None, None
-        
+    
+    # RESET DE SEGMENTOS -> LIBERACION DE MEMORIA
     def reset_local(self):
             # liberar direcciones locales al salir de una funcion " } "
             self.contadores['local']['entero'] = 4000
