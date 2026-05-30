@@ -89,3 +89,11 @@ class DirectorioFunciones:
     def variable_existe(self, nombre):
         return self.buscar_variable(nombre) is not None
 
+    # Metodo para guardar en que cuadruplo empieza una func
+    # Se usa despues en GOSUB para saber a donde saltar
+    def guardar_indice_era(self, nombre, indice):
+        self.funciones[nombre]['indice_era'] = indice
+
+    # Metodo para obtener indice ERA
+    def obtener_indice_era(self, nombre):
+        return self.funciones[nombre]['indice_era']
