@@ -230,7 +230,7 @@ def p_mientras_header(p):
 
 # Evalua la condicion y genera GOTOF pendiente
 def p_mientras_cond(p):
-    'mientas_cond : mientras_header PAREN_IZQ expresion PAREN_DER'
+    'mientras_cond : mientras_header PAREN_IZQ expresion PAREN_DER'
     generador.agregar_salto_falso()
 
 # Cierra el ciclo: genera GOTO al inicio y rellena el GOTOF
