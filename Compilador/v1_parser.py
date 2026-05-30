@@ -58,6 +58,7 @@ def p_lista_vars(p):
         try:
             # Asignar direccion virtual y pasar memoria al registrar variable
             scope_mem = 'global' if directorio.scope_actual == 'global' else 'local'
+            print(f"[DEBUG] registrando '{nombre}' en scope '{directorio.scope_actual}' / mem '{scope_mem}'")
             direccion = memoria.asignar(scope_mem, tipo)
             directorio.agregar_var(nombre, tipo, direccion)
         except ErrorSemantico as e:
@@ -79,6 +80,13 @@ def p_tipo(p):
     '''tipo : ENTERO
             | FLOTANTE'''
     p[0] = p[1] 
+
+# DECLARACION DE PARAMETROS
+# Soporta: vacio, un param, o multiples separados por coma
+def p_params_decl(p):
+    '''params_decl : ID DOS_PUNTOS tipo
+                   | params_decl COMA ID DOS_PUNTOS tipo
+                   | empty'''
     
 # ===========================================================================
 # FUNCIONES
@@ -92,21 +100,35 @@ def p_func_nombre(p):
 
 # Header de la funcion con tipo de retorno
 # Registra la funcion, genera ERA y GOTO de salto antes de entrar al cuerpo
-def p_func_header_tipo(p):
-    'func_header : func_nombre PAREN_IZQ tipo PAREN_DER'
-    nombre = p[1]
-    tipo = p[3]
-    p[0] = None # marca de fallo por default
+def p_func_header_entero(p):
+    'func_header : ENTERO func_nombre PAREN_IZQ params_decl PAREN_DER'
+    nombre = p[2]
+    p[0] = None
     try:
-        directorio.agregar_funcion(nombre, tipo, memoria)
-        # Generar GOTO para saltar la func al ejecutar
+        directorio.agregar_funcion(nombre, 'entero', memoria)
         generador.agregar_salto_incondicional()
-        # Generar ERA y guardar indice
         indice_era = generador.contador_actual()
         generador.agregar_era(nombre)
         directorio.guardar_indice_era(nombre, indice_era)
         directorio.entrar_funcion(nombre)
-        p[0] = nombre # Marca de exito
+        p[0] = nombre
+    except ErrorSemantico as e:
+        global hay_error_semantico
+        hay_error_semantico = True
+        print(e)
+
+def p_func_header_flotante(p):
+    'func_header : FLOTANTE func_nombre PAREN_IZQ params_decl PAREN_DER'
+    nombre = p[2]
+    p[0] = None
+    try:
+        directorio.agregar_funcion(nombre, 'flotante', memoria)
+        generador.agregar_salto_incondicional()
+        indice_era = generador.contador_actual()
+        generador.agregar_era(nombre)
+        directorio.guardar_indice_era(nombre, indice_era)
+        directorio.entrar_funcion(nombre)
+        p[0] = nombre
     except ErrorSemantico as e:
         global hay_error_semantico
         hay_error_semantico = True
@@ -114,8 +136,8 @@ def p_func_header_tipo(p):
 
 # Header de funcion sin retorno
 def p_func_header_nula(p):
-    'func_header : func_nombre PAREN_IZQ NULA PAREN_DER'
-    nombre = p[1]
+    'func_header : NULA func_nombre PAREN_IZQ params_decl PAREN_DER'
+    nombre = p[2]
     p[0] = None # marca de fallo por default
     try:
         directorio.agregar_funcion(nombre, 'nula', memoria)
@@ -134,6 +156,7 @@ def p_func_header_nula(p):
 # Al cerrar genera ENDFUNC y rellena el GOTO que la saltaba
 def p_funcs_func(p):
     'funcs : funcs func_header LLAVE_IZQ vars cuerpo LLAVE_DER PUNTO_COMA'
+    print(f"[DEBUG] cerrando funcion, p[2]={p[2]}, pila_saltos={generador.pila_saltos}")
     generador.agregar_endfunc()
     # Solo hacer pop si el header se registro correctamente
     if p[2] is not None:
