@@ -1,39 +1,45 @@
+# symbol_table.py | LM: 5/29/2026 | By: Pedro Sotelo
+# Tabla de variables por scope y directorio de funciones del programa.
 
-# Clase personalizada, para resaltar errores semanticos
+# ERROR SEMANTICO
+# Excepcion personalizada para errores de tipo y declaracion
 class ErrorSemantico(Exception):
     def __int__(self, mensaje):
         super().__init__(f"[ERROR SEMANTICO] {mensaje}")
         
-
+# TABLA DE VARIABLES
+# Contenedor de variables para un scope dado
+# Cada entrada guarda tipo y direccion virtual
 class TablaVariables:
-    # Diccionario / contenedor principal
     def __init__(self):
         self.variables = {}
 
-    # Detectar si la variable ya existe, si no, guardarla
+    # Agregar una variable al scope; lanza error si ya fue declarada
     def agregar(self, nombre, tipo, direccion):
         if nombre in self.variables:
             raise ErrorSemantico(f"Variable '{nombre}' ya fue declarada en el scope")
         self.variables[nombre] = {'tipo': tipo, 'direccion' : direccion}
-    
-    # Retornar el tipo de variable o none si no existe
+
+    # Retorna el diccionario {tipo, direccion} de la variable, o None si no existe    
     def buscar(self, nombre):
         if nombre in self.variables:
             return self.variables[nombre]
         return None
 
-# Diccionario que guarda todas las funciones del programa, y dentro de cada func, guarda su
-# Tabla de variables
+# DIRECTORIO DE FUNCIONES
+# Diccionario principal del programa: guarda cada funcion con su tipo
+# su tabla de variables, y el indice ERA para GOSUB
+# El scope global siempre existe y se inicializa en el constructor
 class DirectorioFunciones:
     def __init__(self):
         self.funciones = {}
         self.scope_actual = None
-
-        # El programa main siempre existe como scope global
+        # Crear scope global como punto de entrada del programa
         self._agregar('global','nula')
         self.scope_actual = 'global'
 
-
+    # AGREGAR FUNCION (interno)
+    # Registra un scope sin variable de retorno (global)
     def _agregar(self, nombre, tipo):
         if nombre in self.funciones:
             raise ErrorSemantico(f"Funcion '{nombre}' ya fue declarada")
@@ -42,8 +48,11 @@ class DirectorioFunciones:
             'variables': TablaVariables()
         }
 
+    # AGREGAR FUNCION (publico)
+    # El parser llama esto al encontrar la declaracion de una func
+    # Si la funcion retorna valor, registra una var global con su nombre
+    # Para guardar el resultado del return
     def agregar_funcion(self, nombre, tipo, memoria):
-        # El parser llamara a esto cuando encuentra la declaracion de una funcion
         if nombre in self.funciones:
             raise ErrorSemantico(f"Funcion '{nombre} ya fue declarada")
         self.funciones[nombre] = {
@@ -51,35 +60,33 @@ class DirectorioFunciones:
             'variables': TablaVariables(),
             'indice_era': None # se rellena auto cuando el parser genere ERA
         }
-
-        # Si la funcion retorna algo, dar de alta una var global con su nombre
-        # Esa variable guardara el valor de retorno al ejecutar return
         if tipo != 'nula':
             scope_mem = 'global'
             direccion = memoria.asignar(scope_mem, tipo)
             self.funciones['global']['variables'].agregar(nombre, tipo, direccion)
 
+    # MANEJO DE SCOPE
+    # El parser llama a estos metodos al entrar y salir del cuerpo de una funcion
     def entrar_funcion(self, nombre):
-        # El parser llama esto al entrar al cuerpo de una funcion *actualiza el scope
         self.scope_actual = nombre
 
     def salir_funcion(self):
-        # Regresar al global scope
         self.scope_actual = 'global'
-
+    
+    # CONSULTA DE FUNCIONES
     def existe_funcion(self, nombre):
         return nombre in self.funciones
     
+    # MANEJO DE VARIABLES
+    # Agregar una variable a la tabla del scope actual
     def agregar_var(self, nombre, tipo, direccion):
-        # Agregar variable a la tabla del scope actual
         self.funciones[self.scope_actual]['variables'].agregar(nombre, tipo, direccion)
 
+    # Busca una variable primero en el scope local, luego en el global
     def buscar_variable(self, nombre):
-        # Buscar en tanto el scope local como en el global
         tipo = self.funciones[self.scope_actual]['variables'].buscar(nombre)
         if tipo is not None:
             return tipo
-        # Si no se encontro en local, y no estamos en el scope global, buscarla en global
         if self.scope_actual != 'global':
             tipo = self.funciones['global']['variables'].buscar(nombre)
             if tipo is not None:
@@ -89,11 +96,10 @@ class DirectorioFunciones:
     def variable_existe(self, nombre):
         return self.buscar_variable(nombre) is not None
 
-    # Metodo para guardar en que cuadruplo empieza una func
-    # Se usa despues en GOSUB para saber a donde saltar
+    # MANEJO DE INDICE ERA
+    # Guarda en que cuadruplo empieza la funcion para usarlo en GOSUB
     def guardar_indice_era(self, nombre, indice):
         self.funciones[nombre]['indice_era'] = indice
 
-    # Metodo para obtener indice ERA
     def obtener_indice_era(self, nombre):
         return self.funciones[nombre]['indice_era']
