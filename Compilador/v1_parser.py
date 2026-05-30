@@ -83,6 +83,11 @@ def p_func_header_tipo(p):
     tipo = p[3]
     try:
         directorio.agregar_funcion(nombre, tipo, memoria)
+        # Generar GOTO para saltar la func al ejecutar
+        generador.agregar_salto_incondicional()
+        # Generar ERA y guardar indice
+        indice_era = generador.contador_actual()
+        generador.agregar_era(nombre, indice_era)
         directorio.entrar_funcion(nombre)
     except ErrorSemantico as e:
         global hay_error_semantico
@@ -94,12 +99,20 @@ def p_func_header_nula(p):
     nombre = p[1]
     try:
         directorio.agregar_funcion(nombre, 'nula', memoria)
+        generador.agregar_salto_incondicional()
+        indice_era = generador.contador_actual()
+        generador.agregar_era(nombre, indice_era)
         directorio.entrar_funcion(nombre)
     except ErrorSemantico as e:
         print(e)
 
 def p_funcs_func(p):
     'funcs : funcs func_header LLAVE_IZQ vars cuerpo LLAVE_DER PUNTO_COMA'
+    # Generar ENDFUNC al cerrar funcion
+    generador.agregar_endfunc()
+    # Rellenar el GOTO que saltaba la func
+    indice_goto = generador.pila_saltos.pop()
+    generador.rellenar_salto(indice_goto, generador.contador_actual())
     directorio.salir_funcion()
 
 def p_funcs_empty(p):
