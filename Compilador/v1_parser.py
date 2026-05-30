@@ -189,9 +189,21 @@ def p_condicion_sino(p):
     indice_goto = generador.pila_saltos.pop()
     generador.rellenar_salto(indice_goto, generador.contador_actual())
 
-# Ciclo
+# CICLO WHILE
+def p_mientras_header(p):
+    # Guardar el indice actual como inicio del ciclo
+    # se llama antes de evaluar la condicion
+    generador.guardar_inicio_ciclo()
+
+def p_mientras_cond(p):
+    'mientas_cond : mientras_header PAREN_IZQ expresion PAREN_DER'
+    # la condicion ya esta evaluada, generar GOTOF
+    generador.agregar_salto_falso()
+
 def p_ciclo(p):
-    'ciclo : MIENTRAS PAREN_IZQ expresion PAREN_DER HAZ CORCHETE_IZQ cuerpo CORCHETE_DER PUNTO_COMA'
+    'ciclo : mientras_cond PAREN_IZQ expresion HAZ CORCHETE_IZQ cuerpo CORCHETE_DER PUNTO_COMA'
+    # Generar GOTO de regreso y rellenar GOTOF pendiente
+    generador.cerrar_ciclo()
 
 # Llamada
 def p_llamada(p):
