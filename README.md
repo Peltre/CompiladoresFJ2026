@@ -76,4 +76,50 @@ Para generar los cuadruplos se implementaron tres pilas (operandos, tipos,
 operadores) y una fila de cuadruplos en `quadruples.py`. Cada cuadruplo es una
 tupla de cuatro campos:
 
+## Etapa 4 — Estatutos, Funciones y Código Intermedio Completo
+
+### Lo que ya existía desde Etapa 3
+
+El mapa de direcciones virtuales, la clase `ManejoMemoria`, y la generación
+de cuádruplos para expresiones aritméticas, relacionales y asignaciones
+simples ya estaban implementados desde la entrega anterior.
+
+### Lo nuevo en esta etapa
+
+**Direcciones virtuales completas**
+Las constantes literales se registran en el segmento constante con
+`asignar_constante(valor, tipo)`, reutilizando la misma dirección si la
+constante ya fue vista. Cada operación intermedia genera una dirección
+temporal nueva con `asignar_temp(tipo)`.
+
+**Cuádruplos para condicionales y ciclos**
+El `si` genera un `GOTOF` con destino vacío al evaluar la condición, cuyo
+índice se guarda en `pila_saltos` para rellenarse al cerrar el bloque. El
+`sino` intercala un `GOTO` incondicional antes de su bloque. El `mientras`
+guarda el índice de inicio en `pila_ciclos` y genera `GOTOF` + `GOTO` de
+regreso al cerrar.
+
+**Cuádruplos para funciones**
+Al declarar una función se genera `GOTO` para saltarla, seguido de `ERA`.
+Al cerrarla se genera `ENDFUNC` y se rellena el `GOTO`. Al invocarla se
+genera `GOSUB` apuntando al índice `ERA`. Las funciones con valor de retorno
+usan una variable global con su nombre para depositar el resultado del
+`regresa`.
+
+### Distribución de Direcciones Virtuales
+
+| Segmento  | Entero        | Flotante       |
+|-----------|---------------|----------------|
+| Global    | 0 – 1999      | 2000 – 3999    |
+| Local     | 4000 – 5999   | 6000 – 7999    |
+| Temporal  | 8000 – 9999   | 10000 – 11999  |
+| Constante | 12000 – 13999 | 14000 – 15999  |
+
+Dada cualquier dirección se puede determinar su scope y tipo sin consultar
+ninguna tabla adicional.
+
+### Resultados
+
+26/26 casos de prueba exitosos.
+
 *README generado a partir de documentacion personal utilizando Claude(Sonnet 4.6)*
