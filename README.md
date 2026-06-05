@@ -122,4 +122,59 @@ ninguna tabla adicional.
 
 26/26 casos de prueba exitosos.
 
+## Etapa 5 — Maquina Virtual y Parametros de Funciones
+ 
+### Maquina Virtual
+ 
+Se implemento `virtual_machine.py`, que recibe la fila de cuadruplos generada
+por el compilador y la ejecuta instruccion por instruccion. La memoria de
+ejecucion es un diccionario `{ direccion_virtual -> valor }`, por lo que las
+mismas direcciones asignadas en tiempo de compilacion se usan directamente en
+tiempo de ejecucion sin ninguna traduccion adicional.
+ 
+Las constantes se cargan en memoria al inicializar la VM desde `tabla_constantes`
+del compilador. El contador de programa `PC` avanza secuencialmente excepto
+cuando se ejecuta un salto. Los opcodes soportados son:
+ 
+- Aritmeticos y relacionales: `+ - * / > < == !=`
+- Asignacion: `=`
+- Saltos: `GOTO`, `GOTOF`
+- Impresion: `ESCRIBE`
+- Funciones: `ERA`, `GOSUB`, `ENDFUNC`, `PARAM`
+Para las llamadas a funciones se usa una `pila_llamadas` que guarda el `PC`
+de retorno al ejecutar `GOSUB` y lo recupera al ejecutar `ENDFUNC`.
+ 
+### Parametros de Funciones
+ 
+Se agrego soporte completo para declarar y pasar parametros a funciones.
+Los cambios se distribuyeron en cuatro archivos:
+ 
+**`symbol_table.py`:** el directorio de funciones ahora guarda una lista
+ordenada `params` por funcion. El nuevo metodo `agregar_param` registra cada
+parametro tanto en esa lista como en la tabla de variables locales, para que
+sea accesible como variable dentro del cuerpo de la funcion.
+ 
+**`quadruples.py`:** nuevo metodo `agregar_param(dir_param)` que emite el
+cuadruplo `(PARAM, valor, _, dir_param)`, generado una vez por argumento
+antes del `GOSUB`.
+ 
+**`virtual_machine.py`:** nuevo caso `PARAM` que copia el valor del argumento
+a la direccion local del parametro, equivalente a una asignacion de memoria.
+ 
+**`v1_parser.py`:** el cambio mas importante fue resolver un problema de orden
+de ejecucion propio de los parsers LR. Las acciones semanticas de una regla
+padre se ejecutan despues de que todos sus hijos ya fueron reducidos, por lo
+que al momento de procesar `params_decl` el scope todavia era `global`. La
+solucion fue introducir el no-terminal intermedio `func_registrar`, que
+consume `TIPO func_nombre PAREN_IZQ` y ejecuta `agregar_funcion` +
+`entrar_funcion` de inmediato, garantizando que `params_decl` ya vea el scope
+correcto de la funcion. En `p_llamada` se valida la cantidad de argumentos,
+la compatibilidad de tipos contra los parametros declarados, y se emite un
+cuadruplo `PARAM` por cada argumento antes del `GOSUB`.
+ 
+### Resultados
+ 
+28/28 casos de prueba exitosos.
+ 
 *README generado a partir de documentacion personal utilizando Claude(Sonnet 4.6)*
+
