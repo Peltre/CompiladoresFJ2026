@@ -29,7 +29,7 @@ def p_programa(p):
     'programa : PROGRAMA ID PUNTO_COMA vars funcs INICIO cuerpo FIN'
     if not hay_error_semantico:
         print("[OK] Programa valido")
-        generador.imprimir()
+        # generador.imprimir()
         # Ejecutar VM
         from virtual_machine import MaquinaVirtual
         mv = MaquinaVirtual(
@@ -233,12 +233,27 @@ def p_asigna(p):
 def p_imprime(p):
     'imprime : ESCRIBE PAREN_IZQ imp_lista PAREN_DER PUNTO_COMA'
 
-def p_imp_lista(p):
-    '''imp_lista : expresion
-                 | CADENA
-                 | imp_lista COMA expresion
-                 | imp_lista COMA CADENA'''
+def p_imp_lista_exp(p):
+    'imp_lista : expresion'
+    val = generador.pila_operandos.pop()
+    generador.pila_tipos.pop()
+    generador.agregar_cuadruplo('ESCRIBE', val, '_', '_')
 
+def p_imp_lista_cadena(p):
+    'imp_lista : CADENA'
+    dir_cad = memoria.asignar_constante(p[1], 'entero')
+    generador.agregar_cuadruplo('ESCRIBE', dir_cad, '_', '_')
+
+def p_imp_lista_multiple_exp(p):
+    'imp_lista : imp_lista COMA expresion'
+    val = generador.pila_operandos.pop()
+    generador.pila_tipos.pop()
+    generador.agregar_cuadruplo('ESCRIBE', val, '_', '_')
+
+def p_imp_lista_multiple_cadena(p):
+    'imp_lista : imp_lista COMA CADENA'
+    dir_cad = memoria.asignar_constante(p[3], 'entero')
+    generador.agregar_cuadruplo('ESCRIBE', dir_cad, '_', '_')
 # ===========================================================================
 # CONDICIONALES
 # ===========================================================================
