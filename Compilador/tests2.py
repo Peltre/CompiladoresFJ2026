@@ -439,9 +439,12 @@ def run_tests():
 
         if should_pass:
             if ok_found and not err_found:
-                print(f"  Resultado: PASS ✓")
-                passed += 1
-                results.append((tc_id, desc, "PASS"))
+              print(f"  Resultado: PASS ✓")
+              if output.strip():
+                  for line in output.strip().splitlines():
+                      if not line.startswith("[DEBUG"):
+                          print(f"  Output VM: {line}")  # ← agregar esto
+              passed += 1
             else:
                 print(f"  Resultado: FAIL ✗  (se esperaba OK pero hubo error)")
                 if output.strip():
