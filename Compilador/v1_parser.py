@@ -191,6 +191,12 @@ def p_lista_estatutos_uno(p):
 def p_lista_estatutos_multiple(p):
     'lista_estatutos : lista_estatutos estatuto'
 
+def p_estatuto_bloque_vacio(p):
+    'estatuto : CORCHETE_IZQ CORCHETE_DER'
+
+def p_estatuto_bloque(p):
+    'estatuto : CORCHETE_IZQ lista_estatutos CORCHETE_DER'
+
 def p_estatuto(p):
     '''estatuto : asigna
                 | condicion
