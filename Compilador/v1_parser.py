@@ -326,6 +326,12 @@ def p_llamada(p):
     # generar GOSUB
     indice_era = directorio.obtener_indice_era(nombre)
     generador.agregar_gosub(nombre, indice_era)
+    # Si la funcion tiene retorno, pushear su variable global a la pila
+    tipo_func = directorio.funciones[nombre]['tipo']
+    if tipo_func != 'nula':
+        info = directorio.funciones['global']['variables'].buscar(nombre)
+        if info:
+            generador.push_operando(info['direccion'], info['tipo'])
 
 def p_args(p):
     '''args : expresion
@@ -436,6 +442,10 @@ def p_factor_id(p):
         print(f"[ERROR SEMANTICO] Variable '{nombre}' no declarada")
         return 
     generador.push_operando(info['direccion'], info['tipo'])
+
+def p_factor_llamada(p):
+    'factor : llamada'
+    pass  # llamada ya dejó el operando en la pila
 
 # CONSTANTES
 # Asignan direccion virtual y meten el valor a la pila de operandos
