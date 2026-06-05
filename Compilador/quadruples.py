@@ -145,6 +145,13 @@ class GeneradorCuadruplos:
     def agregar_endfunc(self):
         self.agregar_cuadruplo('ENDFUNC', '_','_','_')
 
+        # PARAM: pasa el valor del tope de la pila a la direccion local del parametro
+    # Se genera uno por argumento antes del GOSUB
+    def agregar_param(self, dir_param):
+        valor = self.pila_operandos.pop()
+        self.pila_tipos.pop()
+        self.agregar_cuadruplo('PARAM', valor, '_', dir_param)
+
     # GOSUB: genera la llamada a una funcion, apuntando a su primer cuadruplo
     def agregar_gosub(self, nombre_func, indice_era):
         self.agregar_cuadruplo('GOSUB', nombre_func, indice_era, '_')
