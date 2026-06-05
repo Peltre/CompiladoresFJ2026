@@ -105,6 +105,11 @@ class MaquinaVirtual:
             print()
             self.PC += 1
 
+        elif op == 'PARAM':
+            # op1 es el valor, res es la direccion del parametro local
+            self.escribir(res, self.leer(op1))
+            self.PC += 1
+
         # Funciones
         elif op == 'ERA':
         # Preparar el contexto de la funcion, por ahora solo avanzar
