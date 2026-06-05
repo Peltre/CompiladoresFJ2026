@@ -89,11 +89,39 @@ def p_tipo(p):
     p[0] = p[1] 
 
 # DECLARACION DE PARAMETROS
-# Soporta: vacio, un param, o multiples separados por coma
-def p_params_decl(p):
-    '''params_decl : ID DOS_PUNTOS tipo
-                   | params_decl COMA ID DOS_PUNTOS tipo
-                   | empty'''
+# Cada parametro se registra como variable local y se guarda en la lista de params de la funcion
+# La regla se reduce DESPUES de que func_header ya cambio el scope_actual a la func
+def p_params_decl_uno(p):
+    'params_decl : ID DOS_PUNTOS tipo'
+    nombre = p[1]
+    tipo = p[3]
+    nombre_func = directorio.scope_actual
+    try:
+        direccion = memoria.asignar('local', tipo)
+        directorio.agregar_param(nombre_func, nombre, tipo, direccion)
+    except ErrorSemantico as e:
+        global hay_error_semantico
+        hay_error_semantico = True
+        print(e)
+
+# Para multiples parametros separados por una coma
+def p_params_decl_multiple(p):
+    'params_decl : params_decl COMA ID DOS_PUNTOS tipo'
+    nombre = p[3]
+    tipo = p[5]
+    nombre_func = directorio.scope_actual
+    try:
+        direccion = memoria.asignar('local', tipo)
+        directorio.agregar_param(nombre_func, nombre, tipo, direccion)
+    except ErrorSemantico as e:
+        global hay_error_semantico
+        hay_error_semantico = True
+        print(e)
+
+# No recibe parametros
+def p_params_decl_vacio(p):
+    'params_decl : empty'
+    pass
     
 # ===========================================================================
 # FUNCIONES
@@ -105,54 +133,59 @@ def p_func_nombre(p):
     nombre = p[1]
     p[0] = nombre
 
-# Header de la funcion con tipo de retorno
-# Registra la funcion, genera ERA y GOTO de salto antes de entrar al cuerpo
-def p_func_header_entero(p):
-    'func_header : ENTERO func_nombre PAREN_IZQ params_decl PAREN_DER'
+# Marker que registra la funcion y cambia el scope ANTES de parsear params_decl
+# Esto es neceario por que en un parser LR, las acciones del padre se ejecutan al final
+def p_func_registrar_entero(p):
+    'func_registrar : ENTERO func_nombre PAREN_IZQ'
     nombre = p[2]
-    p[0] = None
+    p[0] = ('entero',nombre) 
     try:
         directorio.agregar_funcion(nombre, 'entero', memoria)
-        generador.agregar_salto_incondicional()
-        indice_era = generador.contador_actual()
-        generador.agregar_era(nombre)
-        directorio.guardar_indice_era(nombre, indice_era)
         directorio.entrar_funcion(nombre)
-        p[0] = nombre
     except ErrorSemantico as e:
         global hay_error_semantico
         hay_error_semantico = True
         print(e)
 
-def p_func_header_flotante(p):
-    'func_header : FLOTANTE func_nombre PAREN_IZQ params_decl PAREN_DER'
+def p_func_registrar_flotante(p):
+    'func_registrar : FLOTANTE func_nombre PAREN_IZQ'
     nombre = p[2]
-    p[0] = None
+    p[0] = ('flotante',nombre) 
     try:
         directorio.agregar_funcion(nombre, 'flotante', memoria)
-        generador.agregar_salto_incondicional()
-        indice_era = generador.contador_actual()
-        generador.agregar_era(nombre)
-        directorio.guardar_indice_era(nombre, indice_era)
         directorio.entrar_funcion(nombre)
-        p[0] = nombre
     except ErrorSemantico as e:
         global hay_error_semantico
         hay_error_semantico = True
         print(e)
 
-# Header de funcion sin retorno
-def p_func_header_nula(p):
-    'func_header : NULA func_nombre PAREN_IZQ params_decl PAREN_DER'
+def p_func_registrar_nula(p):
+    'func_registrar : NULA func_nombre PAREN_IZQ'
     nombre = p[2]
-    p[0] = None # marca de fallo por default
+    p[0] = ('nula',nombre) 
     try:
         directorio.agregar_funcion(nombre, 'nula', memoria)
+        directorio.entrar_funcion(nombre)
+    except ErrorSemantico as e:
+        global hay_error_semantico
+        hay_error_semantico = True
+        print(e)
+
+# NUEVO header de la funcion, ahora usa func_registrar en vez de TIPO func_nombre PAREN_IZQ
+# La funcion ya esta registrada y el scope ya cambio, aqui solo se generarian los cuadruplos (ERA Y GOTO)
+def p_func_header(p):
+    'func_header : func_registrar params_decl PAREN_DER'
+    info = p[1]
+    if info is None:
+        p[0] = None # Marca de fallo
+        return
+    tipo, nombre = info
+    p[0] = None
+    try:
         generador.agregar_salto_incondicional()
         indice_era = generador.contador_actual()
         generador.agregar_era(nombre)
         directorio.guardar_indice_era(nombre, indice_era)
-        directorio.entrar_funcion(nombre)
         p[0] = nombre # Marca de exito
     except ErrorSemantico as e:
         global hay_error_semantico
@@ -163,7 +196,7 @@ def p_func_header_nula(p):
 # Al cerrar genera ENDFUNC y rellena el GOTO que la saltaba
 def p_funcs_func(p):
     'funcs : funcs func_header LLAVE_IZQ vars cuerpo LLAVE_DER PUNTO_COMA'
-    print(f"[DEBUG] cerrando funcion, p[2]={p[2]}, pila_saltos={generador.pila_saltos}")
+    # print(f"[DEBUG] cerrando funcion, p[2]={p[2]}, pila_saltos={generador.pila_saltos}")
     generador.agregar_endfunc()
     # Solo hacer pop si el header se registro correctamente
     if p[2] is not None:
@@ -318,11 +351,38 @@ def p_ciclo(p):
 def p_llamada(p):
     'llamada : ID PAREN_IZQ args PAREN_DER'
     nombre = p[1]
+    tipos_args = p[3] if p[3] else []
+
     if not directorio.existe_funcion(nombre):
         global hay_error_semantico
         hay_error_semantico = True
         print(f"[ERROR SEMANTICO] Funcion '{nombre}' no declarada (linea {p.lineno(1)})")
         return
+    
+    params = directorio.obtener_params(nombre)
+    
+    # Validar cantidad de args
+    if len(tipos_args) != len(params):
+        hay_error_semantico = True
+        print(f"[ERROR SEMANTICO] Cantidad de argumentos no coincide en llamada a '{nombre}' (linea {p.lineno(1)})")
+        return
+
+    # Los valores ya estan en la pila en orden inverso siendo el ultimo arg el tope
+    # Aqui se sacan todos, se invierten y se generan en el orden correcto.
+    vals = []
+    for _ in params:
+        vals.append((generador.pila_operandos.pop(), generador.pila_tipos.pop()))
+    vals.reverse()
+
+    for i, (dir_val, tipo_arg) in enumerate(vals):
+        tipo_param = params[i]['tipo']
+        dir_param  = params[i]['direccion']
+        # Validar compatibilidad de tipo (usando cubo semantico)
+        if tipo_arg != tipo_param and not (tipo_arg in {'entero','flotante'} and tipo_param in {'entero','flotante'}):
+            hay_error_semantico = True
+            print(f"[ERROR SEMANTICO] Tipo de argumento {i+1} incompatible en llamada a '{nombre}' (linea {p.lineno(1)})")
+            return
+        generador.agregar_cuadruplo('PARAM', dir_val, '_', dir_param)
     # generar GOSUB
     indice_era = directorio.obtener_indice_era(nombre)
     generador.agregar_gosub(nombre, indice_era)
@@ -333,10 +393,22 @@ def p_llamada(p):
         if info:
             generador.push_operando(info['direccion'], info['tipo'])
 
-def p_args(p):
-    '''args : expresion
-            | args COMA expresion
-            | empty'''
+def p_args_empty(p):
+    'args : empty'
+    p[0] = []
+
+def p_args_uno(p):
+    'args : arg_item'
+    p[0] = [p[1]]
+
+def p_args_multiple(p):
+    'args : args COMA arg_item'
+    p[0] = p[1] + [p[3]]
+
+# Cada argumento evalua la expresion y retorna el tipo del tope de la pila
+def p_arg_item(p):
+    'arg_item : expresion'
+    p[0] = generador.pila_tipos[-1] if generador.pila_tipos else None
 
 # ===========================================================================
 # EXPRESIONES
