@@ -437,6 +437,20 @@ test_cases = [
         fin
         """, True),
       # Salida esperada: 11
+      ("TC-28", "Funcion con parametros",
+        """
+        programa test;
+        nula suma (a : entero, b : entero) {
+          {
+            escribe (a + b);
+          }
+        } ;
+        inicio
+        {
+          suma(3, 4);
+        }
+        fin
+        """, True),
 ]
 
 # ─────────────────────────────────────────────────────────────────────────────
