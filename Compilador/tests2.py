@@ -324,24 +324,24 @@ test_cases = [
 
     ("TC-22", "Ejecucion: funcion con retorno entero",
      """
-     programa test;
-     entero duplica () {
-       vars
-         x : entero;
-       {
-         x = 4;
-         regresa x + x;
-       }
-     } ;
-     vars
-       r : entero;
-     inicio
-     {
-       duplica();
-       r = duplica;
-       escribe (r);
-     }
-     fin
+    programa test;
+    vars            
+      r : entero;
+    entero duplica () {
+      vars
+        x : entero;
+      {
+        x = 4;
+        regresa x + x;
+      }
+    } ;
+    inicio
+    {
+      duplica();
+      r = duplica;
+      escribe (r);
+    }
+    fin
      """, True),
     # Salida esperada: 8
 
