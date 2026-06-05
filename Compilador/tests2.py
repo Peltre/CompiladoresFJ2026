@@ -401,6 +401,42 @@ test_cases = [
      fin
      """, True),
     # Salida esperada: 9  (3x3 iteraciones)
+    ("TC-26", "Bloque con corchetes",
+      """
+      programa test;
+      vars
+        x : entero;
+      inicio
+      {
+        x = 1;
+        [ x = x + 1; ] 
+        escribe (x);
+      }
+      fin
+      """, True),
+      # Salida esperada: 2
+
+      ("TC-27", "Llamada como factor en expresion",
+        """
+        programa test;
+        vars
+          r : entero;
+        entero doble () {
+          vars
+            x : entero;
+          {
+            x = 5;
+            regresa x + x;
+          }
+        } ;
+        inicio
+        {
+          r = doble() + 1;
+          escribe (r);
+        }
+        fin
+        """, True),
+      # Salida esperada: 11
 ]
 
 # ─────────────────────────────────────────────────────────────────────────────
