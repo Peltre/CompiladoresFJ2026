@@ -4,7 +4,7 @@
 # ERROR SEMANTICO
 # Excepcion personalizada para errores de tipo y declaracion
 class ErrorSemantico(Exception):
-    def __int__(self, mensaje):
+    def __init__(self, mensaje):
         super().__init__(f"[ERROR SEMANTICO] {mensaje}")
         
 # TABLA DE VARIABLES
