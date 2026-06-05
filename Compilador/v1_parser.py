@@ -30,6 +30,13 @@ def p_programa(p):
     if not hay_error_semantico:
         print("[OK] Programa valido")
         generador.imprimir()
+        # Ejecutar VM
+        from virtual_machine import MaquinaVirtual
+        mv = MaquinaVirtual(
+            generador.cuadruplos,
+            memoria.tabla_constantes,
+        )
+        mv.ejecutar()
     else:
         print("[ERROR SEMANTICO] El programa contiene errores semanticos")
 
