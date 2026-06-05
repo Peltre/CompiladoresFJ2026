@@ -299,7 +299,7 @@ test_cases = [
          b = temp;
          i = i + 1;
        } ;
-       escribe (a);
+       escribe (b);
      }
      fin
      """, True),
