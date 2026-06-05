@@ -58,7 +58,8 @@ class DirectorioFunciones:
         self.funciones[nombre] = {
             'tipo' : tipo,
             'variables': TablaVariables(),
-            'indice_era': None # se rellena auto cuando el parser genere ERA
+            'indice_era': None, # se rellena auto cuando el parser genere ERA
+            'params': [] # lista de {nombre, tipo, direccion}
         }
         if tipo != 'nula':
             scope_mem = 'global'
@@ -103,3 +104,17 @@ class DirectorioFunciones:
 
     def obtener_indice_era(self, nombre):
         return self.funciones[nombre]['indice_era']
+    
+    # MANEJO DE PARAMETROS
+    # Agrega un parametro a la lista de la funcion y lo registra como variable local
+    def agregar_param(self, nombre_func, nombre_param, tipo, direccion):
+        self.funciones[nombre_func]['params'].append({
+            'nombre': nombre_param,
+            'tipo': tipo,
+            'direccion': direccion
+        })
+        # Registrar el parametro como variable local de la funcion
+        self.funciones[nombre_func]['variables'].agregar(nombre_param, tipo, direccion)
+
+    def obtener_params(self, nombre):
+        return self.funciones[nombre].get('params', [])
